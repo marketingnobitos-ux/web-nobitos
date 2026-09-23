@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import BrandFooter from "@/components/public/BrandFooter";
 import BrandHeader from "@/components/public/BrandHeader";
+import Tracker from "@/components/public/Tracker";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,6 +30,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <BrandHeader brand={brand} />
       <main className="flex-1">{children}</main>
       <BrandFooter brand={brand} />
+      <Tracker brandSlug={brand.slug} />
     </div>
   );
 }

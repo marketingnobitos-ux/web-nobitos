@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 import type { AdminRole } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { hit, isRateLimited, resetLimit } from "@/lib/rate-limit";
+import { clientIp, hit, isRateLimited, resetLimit } from "@/lib/rate-limit";
 
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_PER_EMAIL = 5;
@@ -21,14 +21,6 @@ const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email(),
   password: z.string().min(1).max(200),
 });
-
-function clientIp(request: Request): string {
-  return (
-    request.headers.get("x-real-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown"
-  );
-}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true, // di belakang Nginx, banyak domain

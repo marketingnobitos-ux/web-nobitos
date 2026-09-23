@@ -5,7 +5,7 @@ import PromoCard from "@/components/public/PromoCard";
 import SectionHeading from "@/components/public/SectionHeading";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
-import { whatsappUrl } from "@/lib/format";
+import { slugify, whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
 const menuCardSelect = {
@@ -59,10 +59,10 @@ export default async function HomePage() {
             <p className="mt-4 max-w-2xl text-lg text-white/90 sm:text-xl">{hero.subtitle ?? brand.tagline}</p>
           )}
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/menu" className="rounded-lg bg-white px-6 py-3 font-semibold text-primary hover:bg-white/90">
+            <Link href="/menu" data-track="cta-lihat-menu" className="rounded-lg bg-white px-6 py-3 font-semibold text-primary hover:bg-white/90">
               Lihat Menu
             </Link>
-            <Link href="/cabang" className="rounded-lg border border-white/70 px-6 py-3 font-semibold hover:bg-white/10">
+            <Link href="/cabang" data-track="cta-cari-cabang" className="rounded-lg border border-white/70 px-6 py-3 font-semibold hover:bg-white/10">
               Cari Cabang
             </Link>
           </div>
@@ -75,7 +75,7 @@ export default async function HomePage() {
           <SectionHeading title="Menu Andalan" href="/menu" linkLabel="Semua menu" />
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {featured.map((item) => (
-              <MenuCard key={item.id} item={item} />
+              <MenuCard key={item.id} item={item} track={`menu-andalan-${slugify(item.name)}`} />
             ))}
           </div>
         </section>
@@ -108,7 +108,7 @@ export default async function HomePage() {
         <div className="rounded-2xl border border-gray-200 p-6 sm:p-8">
           <h2 className="text-2xl font-bold">Cerita {brand.name}</h2>
           <p className="mt-2 text-gray-600">Kenali perjalanan, nilai, dan suasana outlet kami.</p>
-          <Link href="/cerita" className="mt-6 inline-block font-semibold text-primary hover:underline">
+          <Link href="/cerita" data-track="cta-lihat-cerita" className="mt-6 inline-block font-semibold text-primary hover:underline">
             Lihat Cerita →
           </Link>
         </div>
@@ -120,7 +120,7 @@ export default async function HomePage() {
               : "Info cabang segera hadir."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/cabang" className="rounded-lg bg-white px-5 py-2.5 font-semibold text-primary hover:bg-white/90">
+            <Link href="/cabang" data-track="cta-lihat-cabang" className="rounded-lg bg-white px-5 py-2.5 font-semibold text-primary hover:bg-white/90">
               Lihat Cabang
             </Link>
             {waBranch?.whatsapp && (
@@ -128,7 +128,7 @@ export default async function HomePage() {
                 href={whatsappUrl(waBranch.whatsapp, `Halo ${brand.name}`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-track={`wa-home-${waBranch.id}`}
+                data-track={`wa-beranda-${slugify(waBranch.name)}`}
                 className="rounded-lg border border-white/70 px-5 py-2.5 font-semibold hover:bg-white/10"
               >
                 WhatsApp

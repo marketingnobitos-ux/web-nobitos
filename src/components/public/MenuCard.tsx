@@ -13,10 +13,11 @@ export type MenuCardItem = {
 };
 
 // Kartu menu (katalog saja, tanpa tombol pesan).
-export default function MenuCard({ item }: { item: MenuCardItem }) {
+export default function MenuCard({ item, track }: { item: MenuCardItem; track?: string }) {
   return (
     <Link
       href={`/menu/${item.id}`}
+      data-track={track}
       className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
     >
       <div className="relative aspect-[4/3] bg-primary/10">
