@@ -8,6 +8,20 @@ import { NAV_ITEMS } from "@/components/public/nav";
 
 type Props = { brandName: string; logoUrl: string | null };
 
+/** True kalau pojok kiri atas gambar tidak transparan (logo masih berlatar polos). */
+function isOpaque(img: HTMLImageElement): boolean {
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 1;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return false;
+    ctx.drawImage(img, 0, 0, 1, 1, 0, 0, 1, 1);
+    return ctx.getImageData(0, 0, 1, 1).data[3] > 200;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Header Editorial: tipis & tenang. Transparan di atas hero Beranda, maroon setelah scroll.
  * Di HP: tombol teks "Menu" membuka layar penuh dengan daftar link besar.
@@ -18,6 +32,8 @@ export default function EditorialHeader({ brandName, logoUrl }: Props) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  // Logo lama berlatar putih akan tampil sebagai kotak lewat mask; tampilkan nama brand saja sampai logo di-upload ulang.
+  const [opaqueLogo, setOpaqueLogo] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -51,13 +67,18 @@ export default function EditorialHeader({ brandName, logoUrl }: Props) {
           solid ? "bg-ink" : "bg-transparent"
         } ${hidden && !open ? "-translate-y-full" : ""}`}
       >
-        <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 sm:px-8 md:h-20 md:px-12">
+        <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 sm:px-8 md:h-24 md:px-12 lg:h-28">
           <Link href="/" className="text-lg font-medium tracking-tight" aria-label={`${brandName} — Beranda`}>
-            {logoUrl ? (
+            {logoUrl && !opaqueLogo ? (
               // Logo diwarnai krem lewat mask (img tak terlihat hanya memberi ukuran), jadi tetap kontras di latar maroon.
               <span className="relative block">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={logoUrl} alt={brandName} className="h-12 w-auto opacity-0 md:h-16" />
+                <img
+                  src={logoUrl}
+                  alt={brandName}
+                  className="h-14 w-auto opacity-0 md:h-[72px] lg:h-20"
+                  onLoad={(e) => isOpaque(e.currentTarget) && setOpaqueLogo(true)}
+                />
                 <span
                   aria-hidden
                   className="absolute inset-0 bg-current"
@@ -70,7 +91,7 @@ export default function EditorialHeader({ brandName, logoUrl }: Props) {
           </Link>
 
           <nav aria-label="Navigasi utama" className="hidden md:block">
-            <ul className="flex items-center gap-9 text-[0.95rem]">
+            <ul className="flex items-center gap-9 text-base lg:gap-11 lg:text-[1.05rem]">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -109,7 +130,7 @@ export default function EditorialHeader({ brandName, logoUrl }: Props) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 0.8, 0.2, 1] }}
           >
-            <div className="flex h-16 items-center justify-between">
+            <div className="flex h-20 items-center justify-between">
               <span className="text-lg font-medium tracking-tight">{brandName}</span>
               <button type="button" onClick={() => setOpen(false)} className="ed-link text-[0.95rem]">
                 Tutup

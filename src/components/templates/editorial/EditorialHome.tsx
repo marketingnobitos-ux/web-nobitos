@@ -23,7 +23,7 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
       where: { brandId: brand.id, isAvailable: true },
       orderBy: [{ isFeatured: "desc" }, { category: { order: "asc" } }, { order: "asc" }],
       take: 6,
-      select: { id: true, name: true, price: true },
+      select: { id: true, name: true, price: true, category: { select: { name: true } } },
     }),
     prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" } }),
   ]);
@@ -72,7 +72,7 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
 
       <EdStatement label="Tentang kami" text={intro?.body ?? story("profile")?.body ?? brand.tagline ?? brand.name} />
 
-      {items.length > 0 && <EdProductList items={items} />}
+      {items.length > 0 && <EdProductList items={items.map((i) => ({ ...i, category: i.category.name }))} />}
 
       {chapters.length > 0 && <EdChapters heading="Cerita & proses" chapters={chapters} />}
 

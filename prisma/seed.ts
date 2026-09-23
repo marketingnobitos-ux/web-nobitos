@@ -5,10 +5,19 @@
 // - teks contoh dari seed lama ("(Teks contoh ...)", "Promo Contoh", foto SVG) diganti
 //   copy baru HANYA kalau isinya masih persis sama dengan versi seed lama.
 import { PrismaClient, type Prisma } from "@prisma/client";
+import { BOLU_BRANCHES, BOLU_MENU, BOLU_STORY, BOLU_TAGLINE } from "./bolu-sunyaragi";
 
 const prisma = new PrismaClient();
 
-type SeedBranch = { name: string; address: string; openHours?: string };
+type SeedBranch = {
+  name: string;
+  address: string;
+  openHours?: string;
+  mapsUrl?: string;
+  lat?: number;
+  lng?: number;
+  whatsapp?: string;
+};
 type SeedMenuItem = {
   name: string;
   price: number;
@@ -124,62 +133,22 @@ const brands: SeedBrand[] = [
   {
     slug: "bolu-sunyaragi",
     name: "Bolu Sunyaragi",
-    tagline: "Bolu lembut, oleh-oleh wajib kalau mampir Cirebon.",
+    tagline: BOLU_TAGLINE,
     // Template Editorial: maroon + cream, aksen emas redup.
     colorPrimary: "#6b1e2a",
     colorSecondary: "#f3e9dc",
     colorAccent: "#b38b59",
     template: "EDITORIAL",
-    editorial: {
-      intro:
-        "Sejak dapur kecil di Sunyaragi, kami memanggang bolu dengan cara yang sama setiap pagi: *pelan, sabar,* dan tanpa jalan pintas.",
-      chapters: [
-        "Dapur kecil di Sunyaragi | Semuanya dimulai dari satu oven di rumah, resep keluarga, dan pesanan tetangga untuk arisan.",
-        "Telur, gula, sabar | Telur dan gula dikocok lama sampai pucat dan mengembang. Bagian ini tidak bisa dipercepat.",
-        "Diayak dua kali | Tepung diayak dua kali lalu dilipat perlahan, supaya bolu tetap ringan dan tidak bantat.",
-        "Masuk oven pagi-pagi | Dipanggang sebelum toko buka, lalu didinginkan pelan-pelan di rak kayu.",
-        "Sampai di tangan kamu | Diiris, dikemas rapi, dan siap jadi oleh-oleh khas Cirebon.",
-      ],
-    },
-    branches: [
-      { name: "Kartini", address: "Jl. Kartini, Cirebon", openHours: "08.00 - 21.00 setiap hari" },
-      { name: "Pabrik", address: "Sunyaragi, Cirebon", openHours: "08.00 - 17.00 Senin - Sabtu" },
-    ],
-    menu: [
-      {
-        name: "Bolu",
-        items: [
-          { name: "Bolu Pandan", price: 45000, portion: "1 loyang", description: "Wangi pandan asli, lembutnya kebangetan.", featured: true },
-          { name: "Bolu Cokelat", price: 45000, portion: "1 loyang", description: "Cokelatnya pekat, teksturnya moist.", featured: true },
-          { name: "Bolu Keju", price: 55000, portion: "1 loyang", description: "Kejunya nggak pelit, parutannya numpuk.", featured: true },
-          { name: "Bolu Marmer", price: 48000, portion: "1 loyang", description: "Motif cokelat-vanila, lembut dan tidak terlalu manis.", featured: true },
-          { name: "Bolu Gulung Srikaya", price: 42000, portion: "1 gulung", description: "Isian srikaya pandan, digulung tipis." },
-          { name: "Bolu Tape", price: 50000, portion: "1 loyang", description: "Tape singkong asli, aromanya khas." },
-        ],
-      },
-      {
-        name: "Kue Lainnya",
-        items: [
-          { name: "Lapis Legit", price: 40000, portion: "1/2 loyang", description: "Lapisannya rapet, rempahnya kerasa." },
-          { name: "Brownies Panggang", price: 38000, portion: "1 loyang", description: "Pinggirnya renyah, tengahnya lembap." },
-          { name: "Kue Sus Vla", price: 5000, portion: "1 pcs", description: "Kulit tipis, vla vanila." },
-        ],
-      },
-      {
-        name: "Paket Oleh-oleh",
-        items: [
-          { name: "Paket Duo Bolu", price: 85000, portion: "2 loyang", description: "Pilih dua varian, dikemas dalam satu dus." },
-          { name: "Paket Keluarga", price: 160000, portion: "4 loyang", description: "Empat varian favorit untuk dibawa pulang." },
-        ],
-      },
-    ],
+    editorial: { intro: BOLU_STORY.intro, chapters: BOLU_STORY.chapters },
+    branches: BOLU_BRANCHES,
+    menu: BOLU_MENU,
     story: {
-      profile: "Dipanggang tiap pagi di dapur Sunyaragi, dikirim ke toko masih anget.",
-      history: "Dari resep bolu rumahan yang dibikin buat arisan, sekarang jadi oleh-oleh andalan orang Cirebon.",
-      values: ["Dipanggang tiap pagi", "Tanpa pengawet", "Resep keluarga", "Dikemas rapi buat oleh-oleh"],
-      atmosphere: "Toko wangi mentega, etalase penuh loyang. Tinggal tunjuk, dibungkusin.",
-      process: ["Diaduk.", "Dipanggang.", "Dibungkus anget."],
-      processBody: "Adonan diaduk pagi-pagi, masuk oven, terus langsung ke etalase. Nggak nginep.",
+      profile: BOLU_STORY.profile.body,
+      history: BOLU_STORY.history.body,
+      values: BOLU_STORY.values.items,
+      atmosphere: BOLU_STORY.atmosphere.body,
+      process: BOLU_STORY.process.items,
+      processBody: BOLU_STORY.process.body,
     },
     promo: { title: "Beli 3 loyang, lebih hemat", description: "Borong 3 loyang bolu varian apa aja, potongan Rp10.000." },
     gallery: [],

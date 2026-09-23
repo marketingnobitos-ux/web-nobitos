@@ -11,6 +11,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
+    "bolu:sync": "tsx --env-file=.env prisma/bolu-sunyaragi.ts --replace --story --branches --logo",
     "admin:set-password": "tsx --env-file=.env prisma/admin-user.ts",
     "postinstall": "prisma generate"
   },

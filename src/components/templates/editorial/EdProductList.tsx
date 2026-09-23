@@ -2,7 +2,7 @@ import Reveal from "@/components/animations/Reveal";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { formatRupiah } from "@/lib/format";
 
-type Item = { id: string; name: string; price: number };
+type Item = { id: string; name: string; price: number; category: string };
 
 /** Sorotan produk: daftar TEKS besar (nama + harga), tanpa foto. Hover: nama bergeser & miring halus. */
 export default function EdProductList({ items }: { items: Item[] }) {
@@ -29,6 +29,7 @@ export default function EdProductList({ items }: { items: Item[] }) {
                 <span className="text-sm tabular-nums text-paper/40">{String(i + 1).padStart(2, "0")}</span>
                 <span className="ed-title text-[clamp(26px,3.6vw,52px)] transition-[transform,font-style] duration-700 ease-[cubic-bezier(.16,.8,.2,1)] group-hover:translate-x-3 group-hover:italic">
                   {item.name}
+                  <span className="ml-3 align-middle font-sans text-sm not-italic tracking-normal text-paper/45 md:text-base">{item.category}</span>
                 </span>
                 <span className="text-lg tabular-nums text-paper/75 transition-colors duration-500 group-hover:text-accent md:text-xl">
                   {formatRupiah(item.price)}

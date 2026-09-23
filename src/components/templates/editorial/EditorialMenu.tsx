@@ -1,11 +1,12 @@
 import Reveal from "@/components/animations/Reveal";
 import { formatRupiah } from "@/lib/format";
 
-type Category = { id: string; name: string; items: { id: string; name: string; price: number; isAvailable: boolean }[] };
+type Category = { id: string; name: string; items: { id: string; name: string; description: string | null; price: number; isAvailable: boolean }[] };
 
 /**
  * Menu template Editorial: daftar harga tipografis seperti menu restoran.
- * Per kategori; nama di kiri, garis titik penghubung, harga di kanan. Tanpa foto & tanpa tombol pesan.
+ * Per kategori; nama di kiri, garis titik penghubung, harga di kanan, deskripsi singkat di bawahnya.
+ * Tanpa foto & tanpa tombol pesan.
  */
 export default function EditorialMenu({ brandName, categories }: { brandName: string; categories: Category[] }) {
   const filled = categories.filter((c) => c.items.length > 0);
@@ -44,15 +45,16 @@ export default function EditorialMenu({ brandName, categories }: { brandName: st
             <ul className="md:col-span-8">
               {cat.items.map((item, i) => (
                 <Reveal as="li" key={item.id} delay={Math.min(i, 8) * 0.05} y={12}>
-                  <div
-                    className={`group flex items-baseline gap-4 py-4 md:py-5 ${item.isAvailable ? "" : "opacity-45"}`}
-                  >
-                    <span className="text-[clamp(20px,2vw,28px)] font-medium tracking-tight transition-[font-style] duration-500 group-hover:italic">
-                      {item.name}
-                      {!item.isAvailable && <span className="ml-3 align-middle text-sm font-normal text-ink/60">sedang habis</span>}
-                    </span>
-                    <span className="min-w-8 flex-1 translate-y-[-0.3em] border-b border-dotted border-ink/35" aria-hidden />
-                    <span className="text-[clamp(18px,1.7vw,24px)] tabular-nums text-ink/80">{formatRupiah(item.price)}</span>
+                  <div className={`group py-4 md:py-5 ${item.isAvailable ? "" : "opacity-45"}`}>
+                    <div className="flex items-baseline gap-4">
+                      <span className="text-[clamp(20px,2vw,28px)] font-medium tracking-tight transition-[font-style] duration-500 group-hover:italic">
+                        {item.name}
+                        {!item.isAvailable && <span className="ml-3 align-middle text-sm font-normal text-ink/60">sedang habis</span>}
+                      </span>
+                      <span className="min-w-8 flex-1 translate-y-[-0.3em] border-b border-dotted border-ink/35" aria-hidden />
+                      <span className="text-[clamp(18px,1.7vw,24px)] tabular-nums text-ink/80">{formatRupiah(item.price)}</span>
+                    </div>
+                    {item.description && <p className="mt-1.5 max-w-xl text-[0.95rem] leading-relaxed text-ink/60">{item.description}</p>}
                   </div>
                 </Reveal>
               ))}
