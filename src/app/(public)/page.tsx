@@ -1,34 +1,36 @@
 import Link from "next/link";
-import GalleryGrid from "@/components/public/GalleryGrid";
-import MenuCard from "@/components/public/MenuCard";
-import PromoCard from "@/components/public/PromoCard";
-import SectionHeading from "@/components/public/SectionHeading";
+import Reveal from "@/components/animations/Reveal";
+import BranchCta from "@/components/public/home/BranchCta";
+import FeaturedCarousel from "@/components/public/home/FeaturedCarousel";
+import GalleryTeaser from "@/components/public/home/GalleryTeaser";
+import HeroSection from "@/components/public/home/HeroSection";
+import PromoSpotlight from "@/components/public/home/PromoSpotlight";
+import SectionIntro from "@/components/public/home/SectionIntro";
+import StoryTeaser from "@/components/public/home/StoryTeaser";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
-import { slugify, whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
-const menuCardSelect = {
-  id: true,
-  name: true,
-  description: true,
-  price: true,
-  portion: true,
-  imageUrl: true,
-  isAvailable: true,
-} as const;
-
-// Halaman Utama: hero, menu andalan, promo, teaser galeri & cerita, CTA cabang.
+// Halaman Utama (Milestone 7): hero, menu andalan, promo, cerita, galeri, CTA cabang.
 export default async function HomePage() {
   const brand = await requireActiveBrand();
 
-  const [sections, featured, promos, photos, branches] = await Promise.all([
+  const [homeSections, storySections, featured, promos, photos, branches] = await Promise.all([
     getSections(brand.id, "home"),
+    getSections(brand.id, "story"),
     prisma.menuItem.findMany({
       where: { brandId: brand.id, isFeatured: true },
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-      take: 8,
-      select: menuCardSelect,
+      take: 10,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        portion: true,
+        imageUrl: true,
+        category: { select: { name: true } },
+      },
     }),
     getActivePromos(brand.id),
     prisma.galleryPhoto.findMany({
@@ -40,103 +42,70 @@ export default async function HomePage() {
     prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" } }),
   ]);
 
-  const hero = sections.find((s) => s.key === "hero")?.data ?? {};
-  const waBranch = branches.find((b) => b.whatsapp);
+  const hero = homeSections.find((s) => s.key === "hero")?.data ?? {};
+  const story = (key: string) => storySections.find((s) => s.key === key)?.data;
+  // Foto hero: dari konten Beranda; kalau kosong pakai foto menu andalan pertama.
+  const heroImage = hero.imageUrl ?? featured.find((f) => f.imageUrl)?.imageUrl ?? null;
+  const storyText = story("profile")?.body ?? story("history")?.body ?? brand.tagline ?? `Selamat datang di ${brand.name}.`;
+  const storyImage = story("atmosphere")?.imageUrl ?? story("profile")?.imageUrl ?? story("history")?.imageUrl ?? null;
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative isolate overflow-hidden bg-primary text-white">
-        {hero.imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={hero.imageUrl} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40" />
-        )}
-        <div className="mx-auto flex min-h-[60vh] max-w-6xl flex-col justify-center px-4 py-20">
-          <h1 className="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-            {hero.title ?? brand.name}
-          </h1>
-          {(hero.subtitle ?? brand.tagline) && (
-            <p className="mt-4 max-w-2xl text-lg text-white/90 sm:text-xl">{hero.subtitle ?? brand.tagline}</p>
-          )}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/menu" data-track="cta-lihat-menu" className="rounded-lg bg-white px-6 py-3 font-semibold text-primary hover:bg-white/90">
-              Lihat Menu
-            </Link>
-            <Link href="/cabang" data-track="cta-cari-cabang" className="rounded-lg border border-white/70 px-6 py-3 font-semibold hover:bg-white/10">
-              Cari Cabang
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        eyebrow={(hero.title ?? brand.name) === brand.name ? "Selamat datang di" : brand.name}
+        title={hero.title ?? brand.name}
+        subtitle={hero.subtitle ?? brand.tagline}
+        imageUrl={heroImage}
+      />
 
-      {/* Menu andalan */}
       {featured.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-14">
-          <SectionHeading title="Menu Andalan" href="/menu" linkLabel="Semua menu" />
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {featured.map((item) => (
-              <MenuCard key={item.id} item={item} track={`menu-andalan-${slugify(item.name)}`} />
-            ))}
+        <section className="py-16 sm:py-24" aria-labelledby="featured-title">
+          <div className="mx-auto mb-10 max-w-6xl px-5">
+            <SectionIntro
+              id="featured-title"
+              eyebrow="Menu andalan"
+              title="Yang paling sering dipesan"
+              description="Pilihan favorit pelanggan kami. Geser untuk melihat semuanya."
+            />
           </div>
-        </section>
-      )}
-
-      {/* Promo */}
-      {promos.length > 0 && (
-        <section className="bg-primary/5">
-          <div className="mx-auto max-w-6xl px-4 py-14">
-            <SectionHeading title="Promo" />
-            <div className="grid gap-4 md:grid-cols-2">
-              {promos.map((promo) => (
-                <PromoCard key={promo.id} promo={promo} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Teaser galeri */}
-      {photos.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-14">
-          <SectionHeading title="Galeri" href="/galeri" linkLabel="Lihat galeri" />
-          <GalleryGrid photos={photos} />
-        </section>
-      )}
-
-      {/* Teaser cerita + CTA cabang */}
-      <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-gray-200 p-6 sm:p-8">
-          <h2 className="text-2xl font-bold">Cerita {brand.name}</h2>
-          <p className="mt-2 text-gray-600">Kenali perjalanan, nilai, dan suasana outlet kami.</p>
-          <Link href="/cerita" data-track="cta-lihat-cerita" className="mt-6 inline-block font-semibold text-primary hover:underline">
-            Lihat Cerita →
-          </Link>
-        </div>
-        <div className="rounded-2xl bg-primary p-6 text-white sm:p-8">
-          <h2 className="text-2xl font-bold">Kunjungi Kami</h2>
-          <p className="mt-2 text-white/90">
-            {branches.length > 0
-              ? `${branches.length} cabang: ${branches.map((b) => b.name).join(", ")}.`
-              : "Info cabang segera hadir."}
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/cabang" data-track="cta-lihat-cabang" className="rounded-lg bg-white px-5 py-2.5 font-semibold text-primary hover:bg-white/90">
-              Lihat Cabang
+          <FeaturedCarousel items={featured.map(({ category, ...f }) => ({ ...f, category: category.name }))} />
+          <div className="mt-10 text-center">
+            <Link
+              href="/menu"
+              data-track="cta-semua-menu"
+              className="inline-flex rounded-full border-2 border-ink px-6 py-3 text-sm font-bold transition hover:bg-ink hover:text-white"
+            >
+              Lihat semua menu
             </Link>
-            {waBranch?.whatsapp && (
-              <a
-                href={whatsappUrl(waBranch.whatsapp, `Halo ${brand.name}`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-track={`wa-beranda-${slugify(waBranch.name)}`}
-                className="rounded-lg border border-white/70 px-5 py-2.5 font-semibold hover:bg-white/10"
-              >
-                WhatsApp
-              </a>
-            )}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {promos.length > 0 && <PromoSpotlight promos={promos} />}
+
+      <StoryTeaser brandName={brand.name} text={storyText} imageUrl={storyImage} />
+
+      {photos.length > 0 && (
+        <section className="py-16 sm:py-24" aria-labelledby="gallery-title">
+          <div className="mx-auto max-w-6xl px-5">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <SectionIntro id="gallery-title" align="left" eyebrow="Galeri" title="Suasana & sajian kami" />
+              <Reveal>
+                <Link
+                  href="/galeri"
+                  data-track="cta-lihat-galeri"
+                  className="inline-flex rounded-full border-2 border-ink px-6 py-3 text-sm font-bold transition hover:bg-ink hover:text-white"
+                >
+                  Lihat galeri
+                </Link>
+              </Reveal>
+            </div>
+            <GalleryTeaser photos={photos} />
+          </div>
+        </section>
+      )}
+
+      <BranchCta brandName={brand.name} branches={branches} />
     </>
   );
 }

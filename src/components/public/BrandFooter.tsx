@@ -1,23 +1,31 @@
 import Link from "next/link";
 import type { Brand } from "@prisma/client";
-import { NAV_ITEMS } from "@/components/public/BrandHeader";
+import { NAV_ITEMS } from "@/components/public/nav";
 
 export default function BrandFooter({ brand }: { brand: Brand }) {
   return (
-    <footer className="mt-16 border-t border-gray-200 bg-gray-50">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-gray-600 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="bg-deep text-white/80">
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.4fr_1fr]">
         <div>
-          <p className="font-semibold text-gray-900">{brand.name}</p>
-          {brand.tagline && <p>{brand.tagline}</p>}
-          <p className="mt-1 text-xs">Bagian dari Nobitos Indonesia · © {new Date().getFullYear()}</p>
+          <p className="font-display text-3xl font-extrabold tracking-tight text-white">{brand.name}</p>
+          {brand.tagline && <p className="mt-3 max-w-md">{brand.tagline}</p>}
         </div>
-        <nav className="flex flex-wrap gap-4">
-          {NAV_ITEMS.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:text-primary">
-              {item.label}
-            </Link>
-          ))}
+        <nav aria-label="Navigasi footer">
+          <ul className="grid grid-cols-2 gap-3 text-sm font-semibold">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="hover:text-white">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </nav>
+      </div>
+      <div className="border-t border-white/10">
+        <p className="mx-auto max-w-6xl px-5 py-5 text-xs text-white/55">
+          © {new Date().getFullYear()} {brand.name} · Bagian dari Nobitos Indonesia
+        </p>
       </div>
     </footer>
   );

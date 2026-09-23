@@ -11,3 +11,9 @@ export function imageVariant(url: string, width: (typeof IMAGE_WIDTHS)[number]):
   if (!url.startsWith("/uploads/")) return url;
   return url.replace(new RegExp(`-${LARGEST_WIDTH}\\.webp$`), `-${width}.webp`);
 }
+
+/** srcSet responsif untuk gambar upload (400/1000/1920 WebP); undefined untuk URL lain. */
+export function imageSrcSet(url: string): string | undefined {
+  if (!url.startsWith("/uploads/")) return undefined;
+  return IMAGE_WIDTHS.map((w) => `${imageVariant(url, w)} ${w}w`).join(", ");
+}
