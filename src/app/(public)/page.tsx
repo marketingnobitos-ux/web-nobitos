@@ -1,27 +1,31 @@
 import Link from "next/link";
-import Reveal from "@/components/animations/Reveal";
-import BranchCta from "@/components/public/home/BranchCta";
+import BranchList from "@/components/public/home/BranchList";
 import FeaturedCarousel from "@/components/public/home/FeaturedCarousel";
-import GalleryTeaser from "@/components/public/home/GalleryTeaser";
+import GalleryCollage from "@/components/public/home/GalleryCollage";
+import Headline from "@/components/public/home/Headline";
 import HeroSection from "@/components/public/home/HeroSection";
-import PromoSpotlight from "@/components/public/home/PromoSpotlight";
-import SectionIntro from "@/components/public/home/SectionIntro";
-import StoryTeaser from "@/components/public/home/StoryTeaser";
+import Marquee from "@/components/public/home/Marquee";
+import MenuPicker from "@/components/public/home/MenuPicker";
+import PromoPoster from "@/components/public/home/PromoPoster";
+import StoryPinned from "@/components/public/home/StoryPinned";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
+import { greetingFor, wibHour } from "@/lib/greeting";
+import { GALLERY_PLACEHOLDERS, PLACEHOLDER, menuPhoto, realPhoto } from "@/lib/placeholder";
 import { prisma } from "@/lib/prisma";
 
-// Halaman Utama (Milestone 7): hero, menu andalan, promo, cerita, galeri, CTA cabang.
+const DEFAULT_PROCESS = ["Diulek.", "Digoreng.", "Disajikan hangat."];
+
+// Halaman Utama: hero, marquee, menu andalan, picker, cerita, promo, galeri, cabang.
 export default async function HomePage() {
   const brand = await requireActiveBrand();
 
-  const [homeSections, storySections, featured, promos, photos, branches] = await Promise.all([
+  const [homeSections, storySections, menu, promos, photos, branches] = await Promise.all([
     getSections(brand.id, "home"),
     getSections(brand.id, "story"),
     prisma.menuItem.findMany({
-      where: { brandId: brand.id, isFeatured: true },
-      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-      take: 10,
+      where: { brandId: brand.id, isAvailable: true },
+      orderBy: [{ category: { order: "asc" } }, { order: "asc" }, { createdAt: "asc" }],
       select: {
         id: true,
         name: true,
@@ -29,6 +33,7 @@ export default async function HomePage() {
         price: true,
         portion: true,
         imageUrl: true,
+        isFeatured: true,
         category: { select: { name: true } },
       },
     }),
@@ -39,73 +44,93 @@ export default async function HomePage() {
       take: 6,
       select: { id: true, imageUrl: true, caption: true },
     }),
-    prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" } }),
+    prisma.branch.findMany({
+      where: { brandId: brand.id },
+      orderBy: { order: "asc" },
+      select: { id: true, name: true, address: true, mapsUrl: true, lat: true, lng: true, openHours: true, whatsapp: true },
+    }),
   ]);
 
-  const hero = homeSections.find((s) => s.key === "hero")?.data ?? {};
-  const story = (key: string) => storySections.find((s) => s.key === key)?.data;
-  // Foto hero: dari konten Beranda; kalau kosong pakai foto menu andalan pertama.
-  const heroImage = hero.imageUrl ?? featured.find((f) => f.imageUrl)?.imageUrl ?? null;
-  const storyText = story("profile")?.body ?? story("history")?.body ?? brand.tagline ?? `Selamat datang di ${brand.name}.`;
-  const storyImage = story("atmosphere")?.imageUrl ?? story("profile")?.imageUrl ?? story("history")?.imageUrl ?? null;
+  const section = (list: typeof homeSections, key: string) => list.find((s) => s.key === key)?.data;
+  const hero = section(homeSections, "hero") ?? {};
+  const steps = section(homeSections, "process") ?? {};
+  const story = section(storySections, "profile") ?? section(storySections, "history");
+
+  const items = menu.map(({ category, ...m }) => ({ ...m, category: category.name, photo: menuPhoto(m, category.name) }));
+  const featured = items.filter((i) => i.isFeatured).slice(0, 10);
+
+  // Foto: pakai foto dari admin; kalau belum ada, foto contoh (placeholder).
+  const heroImage = realPhoto(hero.imageUrl) ?? PLACEHOLDER.hero;
+  const processImage = realPhoto(steps.imageUrl) ?? PLACEHOLDER.ulekSambal;
+  const galleryReal = photos.flatMap((p) => {
+    const url = realPhoto(p.imageUrl);
+    return url ? [{ ...p, imageUrl: url }] : [];
+  });
+  const gallery = galleryReal.length
+    ? galleryReal
+    : GALLERY_PLACEHOLDERS.map((p, i) => ({ id: `placeholder-${i}`, ...p }));
 
   return (
     <>
       <HeroSection
-        eyebrow={(hero.title ?? brand.name) === brand.name ? "Selamat datang di" : brand.name}
         title={hero.title ?? brand.name}
         subtitle={hero.subtitle ?? brand.tagline}
         imageUrl={heroImage}
+        greeting={greetingFor(wibHour())}
+        sticker="Sambal diulek tiap hari"
       />
 
+      <Marquee items={items.map((i) => i.name)} />
+
       {featured.length > 0 && (
-        <section className="py-16 sm:py-24" aria-labelledby="featured-title">
-          <div className="mx-auto mb-10 max-w-6xl px-5">
-            <SectionIntro
-              id="featured-title"
-              eyebrow="Menu andalan"
-              title="Yang paling sering dipesan"
-              description="Pilihan favorit pelanggan kami. Geser untuk melihat semuanya."
-            />
-          </div>
-          <FeaturedCarousel items={featured.map(({ category, ...f }) => ({ ...f, category: category.name }))} />
-          <div className="mt-10 text-center">
-            <Link
-              href="/menu"
-              data-track="cta-semua-menu"
-              className="inline-flex rounded-full border-2 border-ink px-6 py-3 text-sm font-bold transition hover:bg-ink hover:text-white"
-            >
-              Lihat semua menu
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {promos.length > 0 && <PromoSpotlight promos={promos} />}
-
-      <StoryTeaser brandName={brand.name} text={storyText} imageUrl={storyImage} />
-
-      {photos.length > 0 && (
-        <section className="py-16 sm:py-24" aria-labelledby="gallery-title">
-          <div className="mx-auto max-w-6xl px-5">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <SectionIntro id="gallery-title" align="left" eyebrow="Galeri" title="Suasana & sajian kami" />
-              <Reveal>
-                <Link
-                  href="/galeri"
-                  data-track="cta-lihat-galeri"
-                  className="inline-flex rounded-full border-2 border-ink px-6 py-3 text-sm font-bold transition hover:bg-ink hover:text-white"
-                >
-                  Lihat galeri
-                </Link>
-              </Reveal>
+        <section aria-labelledby="featured-title" className="overflow-hidden bg-paper pb-20 pt-24 md:pb-28 md:pt-32">
+          <div className="mx-auto mb-12 flex max-w-[1400px] flex-col gap-6 px-4 sm:px-6 md:mb-16 lg:flex-row lg:items-end lg:justify-between">
+            <Headline id="featured-title" text="Paling sering dipesan" className="max-w-xl text-[clamp(32px,5vw,64px)]" />
+            <div className="max-w-xs lg:pb-3">
+              <p className="text-ink/70">Yang ini jarang sisa sampai tutup. Geser, pilih, gas.</p>
+              <Link
+                href="/menu"
+                data-track="cta-semua-menu"
+                className="mt-4 inline-flex items-center gap-2 border-b-2 border-ink pb-1 font-semibold transition hover:border-brand hover:text-brand"
+              >
+                Semua menu <span aria-hidden>→</span>
+              </Link>
             </div>
-            <GalleryTeaser photos={photos} />
+          </div>
+          <FeaturedCarousel items={featured} />
+        </section>
+      )}
+
+      {items.length > 0 && (
+        <section aria-labelledby="picker-title" className="grain relative bg-ink py-20 text-paper md:py-32">
+          <div className="mx-auto grid max-w-[1400px] gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+            <div>
+              <Headline id="picker-title" text="Lagi pengen apa?" className="text-[clamp(32px,5vw,64px)]" />
+              <p className="mt-6 max-w-sm text-paper/65">
+                Bingung milih? Jawab tiga pertanyaan, kita pilihin satu menu yang paling cocok buat perutmu malam ini.
+              </p>
+            </div>
+            <MenuPicker items={items} />
           </div>
         </section>
       )}
 
-      <BranchCta brandName={brand.name} branches={branches} />
+      <StoryPinned
+        lines={steps.items?.length ? steps.items : DEFAULT_PROCESS}
+        body={steps.body ?? story?.body ?? brand.tagline}
+        imageUrl={processImage}
+      />
+
+      {promos.length > 0 && (
+        <PromoPoster
+          promos={promos.map((p) => ({ ...p, imageUrl: realPhoto(p.imageUrl) }))}
+          fallbackPhoto={featured[0]?.photo ?? PLACEHOLDER.lele}
+        />
+      )}
+
+      <GalleryCollage photos={gallery} />
+
+      {branches.length > 0 && <BranchList brandName={brand.name} branches={branches} />}
     </>
   );
 }

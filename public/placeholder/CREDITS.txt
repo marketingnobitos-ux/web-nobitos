@@ -1,0 +1,19 @@
+Placeholder photos from Unsplash (https://unsplash.com), free to use under the
+Unsplash License (https://unsplash.com/license). Shown only while a brand has
+no photo uploaded through the admin panel. Source image IDs:
+
+hero-pecel-lele.jpg      photo-1719726760546-cd0c8a812a4d
+lele-goreng.jpg          photo-1569409611632-b87901f4c74a
+ayam-goreng-kremes.jpg   photo-1666239308347-4292ea2ff777
+bebek-goreng.jpg         photo-1698309377471-54a87740d979
+tahu-tempe.jpg           photo-1716801564904-5605f562b664
+es-teh.jpg               photo-1556679343-c7306c1976bc
+ulek-sambal.jpg          photo-1764032758935-679135aa0afc
+cobek-cabai.jpg          photo-1755706205965-5244689a23af
+warung-tenda-malam.jpg   photo-1737786609145-2b24ed22cfe9
+warung-kursi-merah.jpg   photo-1569925873429-e769889c2077
+dapur-malam.jpg          photo-1733959541069-1a289a05a59f
+lele-wajan.jpg           photo-1785817380353-10371a9bb750
+
+Each file has an 800px-wide "-800.jpg" variant for small screens.
+Full image URL: https://images.unsplash.com/<id>

@@ -53,8 +53,36 @@ export function getActivePromos(brandId: string) {
 type SectionField = "title" | "subtitle" | "body" | "imageUrl" | "items";
 
 /** Section yang bisa diedit dari admin, per halaman publik. */
-export const PAGE_SECTIONS: { pageKey: string; sectionKey: string; label: string; fields: SectionField[] }[] = [
-  { pageKey: "home", sectionKey: "hero", label: "Beranda — Hero sambutan", fields: ["title", "subtitle", "imageUrl"] },
+export const PAGE_SECTIONS: {
+  pageKey: string;
+  sectionKey: string;
+  label: string;
+  fields: SectionField[];
+  imageLabel?: string;
+  itemsHint?: string;
+}[] = [
+  {
+    pageKey: "home",
+    sectionKey: "hero",
+    label: "Beranda — Hero sambutan",
+    fields: ["title", "subtitle", "imageUrl"],
+    imageLabel: "Foto hero (layar penuh, sebaiknya foto makanan landscape)",
+  },
+  {
+    pageKey: "home",
+    sectionKey: "process",
+    label: "Beranda — Cerita singkat (teks berganti saat scroll)",
+    fields: ["body", "items", "imageUrl"],
+    imageLabel: "Foto proses (mis. ngulek sambal)",
+    itemsHint: "Satu baris per langkah, mis. Diulek. / Digoreng. / Disajikan hangat.",
+  },
+  {
+    pageKey: "site",
+    sectionKey: "social",
+    label: "Footer — Sosial media",
+    fields: ["items"],
+    itemsHint: "Satu akun per baris: Nama | link. Contoh: Instagram | https://instagram.com/namaakun",
+  },
   { pageKey: "story", sectionKey: "profile", label: "Cerita — Profil", fields: ["title", "subtitle", "body", "imageUrl"] },
   { pageKey: "story", sectionKey: "history", label: "Cerita — Sejarah", fields: ["title", "body", "imageUrl"] },
   { pageKey: "story", sectionKey: "values", label: "Cerita — Nilai", fields: ["title", "body", "items"] },

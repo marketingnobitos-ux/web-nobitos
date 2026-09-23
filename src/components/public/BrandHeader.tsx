@@ -8,11 +8,16 @@ import { NAV_ITEMS } from "@/components/public/nav";
 
 type Props = { brandName: string; logoUrl: string | null };
 
-/** Header: bar gelap dengan logo di tengah + baris navigasi; sembunyi saat scroll turun. */
+/**
+ * Header: di Beranda transparan di atas foto hero, jadi gelap setelah scroll.
+ * Halaman lain selalu gelap. Sembunyi saat scroll turun, muncul lagi saat naik.
+ */
 export default function BrandHeader({ brandName, logoUrl }: Props) {
   const pathname = usePathname().replace(/^\/preview\/[^/]+/, "") || "/";
+  const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -20,9 +25,11 @@ export default function BrandHeader({ brandName, logoUrl }: Props) {
     let lastY = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
-      setHidden(y > 160 && y > lastY);
+      setHidden(y > 200 && y > lastY);
+      setScrolled(y > 40);
       lastY = y;
     };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -35,62 +42,67 @@ export default function BrandHeader({ brandName, logoUrl }: Props) {
   }, [open]);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const solid = !isHome || scrolled;
 
   return (
     <>
       <header
-        className={`sticky top-0 z-40 transition-transform duration-300 ${hidden && !open ? "-translate-y-full" : ""}`}
+        className={`${isHome ? "fixed" : "sticky"} inset-x-0 top-0 z-40 text-paper transition-[transform,background-color] duration-500 ${
+          solid ? "bg-ink" : "bg-transparent"
+        } ${hidden && !open ? "-translate-y-full" : ""}`}
       >
-        <div className="bg-deep text-white">
-          <div className="mx-auto grid h-16 max-w-6xl grid-cols-[3rem_1fr_3rem] items-center px-3">
+        <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-6 px-4 sm:px-6 md:h-20">
+          <Link href="/" className="display shrink-0 text-xl leading-none md:text-2xl" aria-label={`${brandName} — Beranda`}>
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoUrl} alt={brandName} className="h-10 w-auto" />
+            ) : (
+              brandName
+            )}
+          </Link>
+
+          <nav aria-label="Navigasi utama" className="hidden md:block">
+            <ul className="flex items-center gap-8">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    className={`relative block py-2 text-[0.95rem] font-medium transition-opacity ${
+                      isActive(item.href) ? "opacity-100" : "opacity-70 hover:opacity-100"
+                    }`}
+                  >
+                    {item.label}
+                    {isActive(item.href) && (
+                      <m.span layoutId="nav-underline" className="absolute inset-x-0 -bottom-0.5 h-[3px] rounded-full bg-accent" />
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/cabang"
+              data-track="header-cabang"
+              className="hidden whitespace-nowrap rounded-full bg-paper px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-paper/85 sm:inline-flex"
+            >
+              Cari cabang
+            </Link>
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Buka menu"
               aria-expanded={open}
-              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 md:invisible"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-paper/30 transition hover:bg-paper/10 md:hidden"
             >
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M4 8h16M4 16h16" strokeLinecap="round" />
               </svg>
             </button>
-            <Link href="/" className="mx-auto flex items-center justify-center font-display text-lg font-extrabold tracking-tight">
-              {logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt={brandName} className="h-9 w-auto" />
-              ) : (
-                <span className="truncate">{brandName}</span>
-              )}
-            </Link>
-            <Link
-              href="/cabang"
-              aria-label="Cabang terdekat"
-              data-track="header-cabang"
-              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10"
-            >
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                <path d="M12 21s-7-6.2-7-11.5a7 7 0 1114 0C19 14.8 12 21 12 21z" strokeLinejoin="round" />
-                <circle cx="12" cy="9.5" r="2.5" />
-              </svg>
-            </Link>
           </div>
         </div>
-        <nav aria-label="Navigasi utama" className="hidden border-b border-ink/10 bg-paper/95 backdrop-blur md:block">
-          <ul className="mx-auto flex max-w-6xl justify-center gap-10 px-5">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  className={`relative block py-3.5 text-sm font-semibold transition ${isActive(item.href) ? "text-primary" : "text-ink/75 hover:text-ink"}`}
-                >
-                  {item.label}
-                  {isActive(item.href) && <m.span layoutId="nav-underline" className="absolute inset-x-0 bottom-0 h-[3px] rounded-full bg-primary" />}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </header>
 
       <AnimatePresence>
@@ -100,38 +112,50 @@ export default function BrandHeader({ brandName, logoUrl }: Props) {
             role="dialog"
             aria-modal="true"
             aria-label="Menu"
-            className="fixed inset-0 z-50 flex flex-col bg-deep text-white"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50 flex flex-col bg-ink text-paper"
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0% 0)" }}
+            exit={{ clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.55, ease: [0.7, 0, 0.2, 1] }}
           >
-            <div className="flex h-16 items-center justify-between px-3">
-              <span className="px-2 font-display font-extrabold">{brandName}</span>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Tutup menu" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10">
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+            <div className="flex h-16 items-center justify-between px-4">
+              <span className="display text-2xl">{brandName}</span>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Tutup menu"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-paper/30"
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
               </button>
             </div>
-            <ul className="flex flex-1 flex-col justify-center gap-2 px-8">
+            <ul className="flex flex-1 flex-col justify-center px-5">
               {NAV_ITEMS.map((item, i) => (
-                <m.li
-                  key={item.href}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 + i * 0.06, duration: 0.4, ease: [0.2, 0.7, 0.2, 1] }}
-                >
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={`block py-2 font-display text-4xl font-extrabold tracking-tight ${isActive(item.href) ? "text-white" : "text-white/60"}`}
+                <li key={item.href} className="overflow-hidden border-b border-paper/10">
+                  <m.div
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    transition={{ delay: 0.25 + i * 0.06, duration: 0.6, ease: [0.2, 0.75, 0.15, 1] }}
                   >
-                    {item.label}
-                  </Link>
-                </m.li>
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className={`display flex items-baseline justify-between py-4 text-[2.6rem] ${isActive(item.href) ? "" : "text-paper/60"}`}
+                    >
+                      {item.label}
+                      <span className="font-sans text-sm tracking-normal opacity-50">0{i + 1}</span>
+                    </Link>
+                  </m.div>
+                </li>
               ))}
             </ul>
+            <div className="px-5 pb-8">
+              <Link href="/cabang" onClick={() => setOpen(false)} className="flex h-14 items-center justify-center rounded-full bg-paper font-semibold text-ink">
+                Cari cabang terdekat
+              </Link>
+            </div>
           </m.div>
         )}
       </AnimatePresence>

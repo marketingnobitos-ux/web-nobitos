@@ -12,8 +12,14 @@ export function imageVariant(url: string, width: (typeof IMAGE_WIDTHS)[number]):
   return url.replace(new RegExp(`-${LARGEST_WIDTH}\\.webp$`), `-${width}.webp`);
 }
 
-/** srcSet responsif untuk gambar upload (400/1000/1920 WebP); undefined untuk URL lain. */
+/**
+ * srcSet responsif: gambar upload (400/1000/1920 WebP) atau foto placeholder
+ * (versi -800.jpg + 1600px). Undefined untuk URL lain.
+ */
 export function imageSrcSet(url: string): string | undefined {
+  if (url.startsWith("/placeholder/") && url.endsWith(".jpg")) {
+    return `${url.replace(/\.jpg$/, "-800.jpg")} 800w, ${url} 1600w`;
+  }
   if (!url.startsWith("/uploads/")) return undefined;
   return IMAGE_WIDTHS.map((w) => `${imageVariant(url, w)} ${w}w`).join(", ");
 }

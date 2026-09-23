@@ -1,45 +1,76 @@
 @import "tailwindcss";
 
 /*
- * Warna brand. Nilai default di sini ditimpa per brand lewat inline style
- * di layout publik, jadi class seperti bg-primary / text-primary ikut brand aktif.
+ * Token desain situs publik. Nilai dasar di :root; warna brand (--brand, --accent)
+ * ditimpa per brand lewat inline style di layout publik, jadi semua class
+ * (bg-ink, text-accent, bg-brand, ...) otomatis ikut brand aktif.
  */
-@theme {
-  --color-primary: #000000;
-  --color-secondary: #ffffff;
-  --color-accent: #000000;
-  --color-paper: #fffdf8;
-  --color-ink: #16130f;
-  --color-deep: #0d0b09;
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+:root {
+  /* Warna gelap dominan. Di situs publik ditimpa turunan warna brand (lib/color.ts). */
+  --ink: #0e3b26;
+  --ink-deep: #0a2a1b;
+  --paper: #f3ecdf;
+  --sambal: #d8342a;
+  --brand: #15803d; /* DB colorPrimary */
+  --accent: var(--sambal); /* DB colorAccent, fallback merah sambal */
 }
 
-/* Turunan warna brand dihitung ulang di pembungkus situs publik (ikut brand aktif). */
 .brand-scope {
-  --color-paper: color-mix(in oklab, var(--color-primary) 5%, #fffdf8);
-  --color-ink: color-mix(in oklab, var(--color-primary) 15%, #16130f);
-  --color-deep: color-mix(in oklab, var(--color-primary) 45%, #0d0b09);
-  /* --font-jakarta dipasang next/font di elemen yang sama, jadi harus di-resolve di sini. */
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  /* Brand dibuat lebih terang untuk teks di atas latar gelap, lebih gelap untuk latar blok. */
+  --brand-on-ink: color-mix(in oklab, var(--brand) 60%, white);
+  --brand-deep: color-mix(in oklab, var(--brand) 70%, black);
+  --ink-soft: color-mix(in oklab, var(--ink) 80%, var(--paper));
+  /* Variabel next/font dipasang di elemen ini, jadi font harus di-resolve di sini (bukan di :root). */
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-deep: var(--ink-deep);
+  --color-paper: var(--paper);
+  --color-sambal: var(--sambal);
+  --color-brand: var(--brand);
+  --color-brand-on-ink: var(--brand-on-ink);
+  --color-brand-deep: var(--brand-deep);
+  --color-accent: var(--accent);
+
+  /* Nama lama (halaman Menu/Galeri/Cerita/Cabang versi sebelumnya) tetap jalan. */
+  --color-primary: var(--brand);
+  --color-secondary: var(--paper);
+  --color-deep: var(--ink);
+
+  --font-display: var(--font-bricolage, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Judul: sans tebal, huruf besar-kecil, spasi huruf sedikit rapat. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.display em {
+  font-style: normal;
 }
 
 /* ---------- Animasi CSS (tetap jalan tanpa JS, mati saat reduced-motion) ---------- */
 
-/* Judul muncul kata per kata dari balik "mask". */
-.word-mask {
-  display: inline-block;
+/* Baris judul muncul dari balik "mask". */
+.line-mask {
+  display: block;
   overflow: hidden;
-  vertical-align: bottom;
-  padding-bottom: 0.1em;
-  margin-bottom: -0.1em;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
 }
-.word-mask > span {
-  display: inline-block;
-  transform: translateY(110%);
-  animation: word-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-  animation-delay: calc(var(--i, 0) * 90ms + 120ms);
+.line-mask > span {
+  display: block;
+  transform: translateY(105%);
+  animation: line-up 1s cubic-bezier(0.2, 0.75, 0.15, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 110ms + 150ms);
 }
-@keyframes word-up {
+@keyframes line-up {
   to {
     transform: none;
   }
@@ -61,28 +92,65 @@
   }
 }
 
-.scroll-cue {
-  animation: scroll-cue 1.8s ease-in-out infinite;
+/* Stiker bulat berputar. */
+.spin-slow {
+  animation: spin 22s linear infinite;
 }
-@keyframes scroll-cue {
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.6;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  50% {
-    transform: translateY(8px);
-    opacity: 1;
+}
+
+/* Pita teks berjalan: isi digandakan, geser -50% lalu ulang. */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.scroll-line {
+  animation: scroll-line 2.2s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+  transform-origin: top;
+}
+@keyframes scroll-line {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .word-mask > span,
-  .fade-up-in,
-  .scroll-cue {
+  .line-mask > span,
+  .fade-up-in {
     animation: none;
     transform: none;
     opacity: 1;
+  }
+  .spin-slow,
+  .marquee-track,
+  .scroll-line {
+    animation: none;
   }
 }
 
@@ -101,4 +169,15 @@ html.lenis body {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Butiran halus di atas blok warna, biar tidak terasa "flat". */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

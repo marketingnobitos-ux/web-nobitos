@@ -16,7 +16,7 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
   return (
     <div className="space-y-6">
       <p className="text-sm text-gray-600">
-        Teks & gambar tiap section di halaman Beranda dan Cerita. Kosongkan field yang tidak dipakai.
+        Teks & foto tiap section di halaman Beranda, Cerita, dan footer. Kosongkan field yang tidak dipakai; bagian tanpa foto memakai foto contoh bawaan.
       </p>
       {PAGE_SECTIONS.map((def) => {
         const row = byKey.get(`${def.pageKey}/${def.sectionKey}`);
@@ -34,10 +34,10 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
                   name="items"
                   defaultValue={data.items?.join("\n")}
                   rows={5}
-                  hint="Satu poin per baris."
+                  hint={def.itemsHint ?? "Satu poin per baris."}
                 />
               )}
-              {has("imageUrl") && <ImageField name="imageUrl" label="Gambar" brandId={brand.id} defaultValue={data.imageUrl} />}
+              {has("imageUrl") && <ImageField name="imageUrl" label={def.imageLabel ?? "Gambar"} brandId={brand.id} defaultValue={data.imageUrl} />}
               <Checkbox label="Tampilkan section ini" name="isVisible" defaultChecked={row?.isVisible ?? true} />
             </ActionForm>
           </Card>
