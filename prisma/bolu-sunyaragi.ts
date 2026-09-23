@@ -13,9 +13,9 @@ export const BOLU_STORY = {
   hero: {
     title: "Bolu Sunyaragi",
     subtitle: "Lembutnya Cirebon, dipanggang dengan sabar dan digulung selagi hangat.",
-    /** Video proses (hanya tangan) dari stok Pexels, lihat public/video/CREDITS.txt. Poster = frame pertama. */
-    videoUrl: "/video/bolu-sunyaragi-hero.mp4",
-    imageUrl: "/brand/bolu-sunyaragi-hero.jpg",
+    /** Rekaman asli proses Bolen Crispy (hanya tangan), diperlambat & dihaluskan. Poster = frame pertama. */
+    videoUrl: "/video/bolu-sunyaragi-proses.mp4",
+    imageUrl: "/brand/bolu-sunyaragi-proses.jpg",
   },
   /** Pernyataan pembuka Beranda. Kata di antara *bintang* tampil miring. */
   intro:
@@ -202,8 +202,10 @@ async function writeBoluStory() {
     const home = await prisma.pageContent.findUnique({
       where: { brandId_pageKey_sectionKey: { brandId: brand.id, pageKey: "home", sectionKey: "hero" } },
     });
-    // Hero: pertahankan foto/video yang sudah di-upload admin.
-    const heroMedia = (home?.data ?? {}) as { imageUrl?: string; videoUrl?: string };
+    // Hero: pertahankan foto/video yang di-upload admin (/uploads/...); path bawaan repo boleh diganti.
+    const heroMedia = Object.fromEntries(
+      Object.entries((home?.data ?? {}) as Record<string, unknown>).filter(([, v]) => typeof v === "string" && v.startsWith("/uploads/")),
+    );
     const sections: { pageKey: string; sectionKey: string; data: Prisma.InputJsonValue }[] = [
       { pageKey: "home", sectionKey: "hero", data: { ...BOLU_STORY.hero, ...pick(heroMedia, ["imageUrl", "videoUrl"]) } },
       { pageKey: "home", sectionKey: "intro", data: { body: BOLU_STORY.intro } },
