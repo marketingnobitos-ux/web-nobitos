@@ -1,0 +1,188 @@
+// schema.prisma — sesuai PRD Bagian 7 (Model Data)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id          String   @id @default(cuid())
+  slug        String   @unique          // "aminoto", "bolu-sunyaragi"
+  name        String                    // "Pecel Lele Aminoto"
+  tagline     String?
+  logoUrl     String?
+  faviconUrl  String?
+  // Branding & tema
+  colorPrimary   String  @default("#000000")
+  colorSecondary String  @default("#ffffff")
+  colorAccent    String?
+  fontHeading    String?                 // nama font
+  fontBody       String?
+  // Meta
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  domains     Domain[]
+  pages       PageContent[]
+  categories  MenuCategory[]
+  menuItems   MenuItem[]
+  albums      GalleryAlbum[]
+  promos      Promo[]
+  branches    Branch[]
+  events      AnalyticsEvent[]
+  admins      AdminBrand[]              // untuk masa depan (admin per brand)
+}
+
+model Domain {
+  id         String   @id @default(cuid())
+  hostname   String   @unique          // "pecelleleaminoto.com"
+  brandId    String
+  brand      Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  isPrimary  Boolean  @default(false)   // domain utama brand
+  status     DomainStatus @default(PENDING) // PENDING | VERIFIED | ACTIVE | ERROR
+  sslIssued  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+enum DomainStatus {
+  PENDING
+  VERIFIED
+  ACTIVE
+  ERROR
+}
+
+// Konten halaman fleksibel (hero, cerita, dll) sebagai blok JSON per section
+model PageContent {
+  id        String   @id @default(cuid())
+  brandId   String
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  pageKey   String                       // "home", "story"
+  sectionKey String                      // "hero", "welcome", "values", "atmosphere"
+  data      Json                         // { title, subtitle, imageUrl, animation, ... }
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+  @@unique([brandId, pageKey, sectionKey])
+}
+
+model MenuCategory {
+  id        String   @id @default(cuid())
+  brandId   String
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  name      String                       // "Ayam", "Bebek", "Minuman"
+  order     Int      @default(0)
+  items     MenuItem[]
+}
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  price       Int                          // dalam Rupiah (bilangan bulat, tanpa desimal)
+  portion     String?                      // "1 porsi", "500 gr"
+  imageUrl    String?
+  isFeatured  Boolean  @default(false)     // menu andalan / sorotan
+  isAvailable Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model GalleryAlbum {
+  id        String   @id @default(cuid())
+  brandId   String
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  title     String
+  order     Int      @default(0)
+  photos    GalleryPhoto[]
+}
+
+model GalleryPhoto {
+  id        String   @id @default(cuid())
+  albumId   String
+  album     GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  caption   String?
+  order     Int      @default(0)
+}
+
+model Promo {
+  id         String   @id @default(cuid())
+  brandId    String
+  brand      Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  title      String
+  description String?
+  imageUrl   String?
+  startsAt   DateTime?
+  endsAt     DateTime?
+  isActive   Boolean  @default(true)
+  order      Int      @default(0)
+}
+
+model Branch {
+  id         String   @id @default(cuid())
+  brandId    String
+  brand      Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  name       String                       // "AMG - Ciledug"
+  address    String
+  mapsUrl    String?                       // link Google Maps
+  lat        Float?
+  lng        Float?
+  openHours  String?                       // "10.00 - 22.00 setiap hari"
+  whatsapp   String?
+  phone      String?
+  order      Int      @default(0)
+}
+
+// ---- ADMIN / AUTH ----
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         AdminRole @default(SUPER_ADMIN)  // siap untuk multi-role nanti
+  createdAt    DateTime @default(now())
+  brands       AdminBrand[]                      // relasi untuk admin-per-brand (masa depan)
+  resetToken   String?
+  resetExpires DateTime?
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  BRAND_ADMIN
+  EDITOR
+  VIEWER
+}
+
+model AdminBrand {
+  adminId String
+  brandId String
+  admin   AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  brand   Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  @@id([adminId, brandId])
+}
+
+// ---- ANALYTICS ----
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  brandId   String?
+  brand     Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  type      String                       // "pageview" | "click"
+  path      String                       // "/menu"
+  target    String?                      // untuk click: id/label elemen (mis. "wa-cabang-amg")
+  referrer  String?
+  device    String?                      // "mobile" | "desktop" | "tablet"
+  sessionId String?                      // id anonim (cookie/first-party) untuk hitung unique
+  createdAt DateTime @default(now())
+
+  @@index([brandId, createdAt])
+  @@index([type, createdAt])
+}
