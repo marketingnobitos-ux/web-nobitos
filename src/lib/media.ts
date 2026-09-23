@@ -25,8 +25,43 @@ export function uploadRoot(): string {
   return path.resolve(process.env.UPLOAD_DIR || path.join(process.cwd(), "uploads"));
 }
 
+/**
+ * Logo: warna latar (diambil dari pojok-pojok gambar) dijadikan transparan dengan tepi halus,
+ * lalu ruang kosong di sekelilingnya dipotong. Logo yang sudah transparan cukup dipotong.
+ */
+export async function prepareLogo(input: Buffer): Promise<Buffer> {
+  const { data, info } = await sharp(input).rotate().ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width, height } = info;
+  const px = (x: number, y: number) => (y * width + x) * 4;
+
+  const corners = [px(0, 0), px(width - 1, 0), px(0, height - 1), px(width - 1, height - 1)];
+  const opaqueBg = corners.every((i) => data[i + 3] > 250);
+  if (opaqueBg) {
+    const bg = [0, 1, 2].map((c) => corners.reduce((sum, i) => sum + data[i + c], 0) / corners.length);
+    // Jarak warna ke latar: < LOW = latar (transparan penuh), > HIGH = logo (tetap), di antaranya = tepi halus.
+    const LOW = 18;
+    const HIGH = 90;
+    for (let i = 0; i < data.length; i += 4) {
+      const dist = Math.hypot(data[i] - bg[0], data[i + 1] - bg[1], data[i + 2] - bg[2]);
+      const a = Math.min(1, Math.max(0, (dist - LOW) / (HIGH - LOW)));
+      if (a < 1) {
+        // Buang campuran warna latar dari piksel tepi supaya tidak ada "halo" terang.
+        for (let c = 0; c < 3; c++) {
+          data[i + c] = a > 0 ? Math.min(255, Math.max(0, Math.round((data[i + c] - bg[c] * (1 - a)) / a))) : 0;
+        }
+      }
+      data[i + 3] = Math.round(data[i + 3] * a);
+    }
+  }
+
+  return sharp(data, { raw: { width, height, channels: 4 } })
+    .trim({ threshold: 1 })
+    .png()
+    .toBuffer();
+}
+
 /** Simpan gambar (resize + WebP) ke <UPLOAD_DIR>/<brandSlug>/ dan kembalikan URL publiknya. */
-export async function saveImage(input: Buffer, brandSlug: string): Promise<string> {
+export async function saveImage(input: Buffer, brandSlug: string, opts: { logo?: boolean } = {}): Promise<string> {
   let format: string | undefined;
   try {
     format = (await sharp(input).metadata()).format;
@@ -36,6 +71,7 @@ export async function saveImage(input: Buffer, brandSlug: string): Promise<strin
   if (!format || !["jpeg", "png", "webp"].includes(format)) {
     throw new MediaError("Format gambar harus JPG, PNG, atau WebP.");
   }
+  if (opts.logo) input = await prepareLogo(input);
 
   const dir = path.join(uploadRoot(), brandSlug);
   await mkdir(dir, { recursive: true });

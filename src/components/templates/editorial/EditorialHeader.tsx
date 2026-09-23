@@ -54,8 +54,16 @@ export default function EditorialHeader({ brandName, logoUrl }: Props) {
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 sm:px-8 md:h-20 md:px-12">
           <Link href="/" className="text-lg font-medium tracking-tight" aria-label={`${brandName} — Beranda`}>
             {logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt={brandName} className="h-9 w-auto" />
+              // Logo diwarnai krem lewat mask (img tak terlihat hanya memberi ukuran), jadi tetap kontras di latar maroon.
+              <span className="relative block">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={logoUrl} alt={brandName} className="h-12 w-auto opacity-0 md:h-16" />
+                <span
+                  aria-hidden
+                  className="absolute inset-0 bg-current"
+                  style={{ mask: `url("${logoUrl}") center / contain no-repeat`, WebkitMask: `url("${logoUrl}") center / contain no-repeat` }}
+                />
+              </span>
             ) : (
               brandName
             )}

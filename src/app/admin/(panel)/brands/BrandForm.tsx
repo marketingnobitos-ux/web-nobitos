@@ -28,7 +28,14 @@ export default function BrandForm({ action, brand, submitLabel }: Props) {
 
       {brand ? (
         <div className="grid gap-4 sm:grid-cols-2">
-          <ImageField name="logoUrl" label="Logo" brandId={brand.id} defaultValue={brand.logoUrl} />
+          <ImageField
+            name="logoUrl"
+            label="Logo"
+            brandId={brand.id}
+            defaultValue={brand.logoUrl}
+            logo
+            hint="Latar polos (putih/krem) otomatis dibuat transparan dan ruang kosong di sekeliling logo dipotong."
+          />
           <ImageField name="faviconUrl" label="Favicon" brandId={brand.id} defaultValue={brand.faviconUrl} hint="Gambar persegi." />
         </div>
       ) : (

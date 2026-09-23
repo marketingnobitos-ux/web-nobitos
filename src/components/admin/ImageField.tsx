@@ -3,10 +3,18 @@
 import { useState } from "react";
 import { imageVariant } from "@/lib/image";
 
-type Props = { name: string; label: string; brandId: string; defaultValue?: string | null; hint?: string };
+type Props = {
+  name: string;
+  label: string;
+  brandId: string;
+  defaultValue?: string | null;
+  hint?: string;
+  /** Logo: latar polos dibuat transparan & ruang kosong dipotong saat upload. */
+  logo?: boolean;
+};
 
 /** Upload satu gambar ke /api/upload lalu simpan URL-nya di hidden input `name`. */
-export default function ImageField({ name, label, brandId, defaultValue, hint }: Props) {
+export default function ImageField({ name, label, brandId, defaultValue, hint, logo }: Props) {
   const [url, setUrl] = useState(defaultValue ?? "");
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -18,7 +26,7 @@ export default function ImageField({ name, label, brandId, defaultValue, hint }:
     setBusy(true);
     setStatus("Mengunggah & mengoptimasi...");
     try {
-      setUrl(await uploadImage(file, brandId));
+      setUrl(await uploadImage(file, brandId, logo ? "logo" : undefined));
       setStatus(null);
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Upload gagal.");
@@ -34,7 +42,7 @@ export default function ImageField({ name, label, brandId, defaultValue, hint }:
       <div className="flex flex-wrap items-center gap-3">
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageVariant(url, 400)} alt="" className="h-20 w-20 rounded border border-gray-200 object-cover" />
+          <img src={imageVariant(url, 400)} alt="" className={`h-20 w-20 rounded border border-gray-200 ${logo ? "bg-gray-100 object-contain p-1" : "object-cover"}`} />
         ) : (
           <div className="flex h-20 w-20 items-center justify-center rounded border border-dashed border-gray-300 text-xs text-gray-400">
             Kosong
@@ -56,10 +64,11 @@ export default function ImageField({ name, label, brandId, defaultValue, hint }:
   );
 }
 
-export async function uploadImage(file: File, brandId: string): Promise<string> {
+export async function uploadImage(file: File, brandId: string, kind?: "logo"): Promise<string> {
   const body = new FormData();
   body.append("file", file);
   body.append("brandId", brandId);
+  if (kind) body.append("kind", kind);
   const res = await fetch("/api/upload", { method: "POST", body });
   const json = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
   if (!res.ok || !json.url) throw new Error(json.error ?? `Upload gagal (${res.status}).`);

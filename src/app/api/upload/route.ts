@@ -53,7 +53,8 @@ export async function POST(req: Request) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const url = isVideo ? await saveVideo(buffer, brand.slug) : await saveImage(buffer, brand.slug);
+    const logo = form.get("kind") === "logo";
+    const url = isVideo ? await saveVideo(buffer, brand.slug) : await saveImage(buffer, brand.slug, { logo });
     return NextResponse.json({ url });
   } catch (e) {
     if (e instanceof MediaError) return NextResponse.json({ error: e.message }, { status: 422 });
