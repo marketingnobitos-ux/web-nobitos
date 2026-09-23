@@ -1,20 +1,27 @@
 import { NextResponse } from "next/server";
 import { getAdmin, hasBrandAccess } from "@/lib/admin";
-import { ALLOWED_IMAGE_TYPES, MediaError, maxUploadBytes, saveImage } from "@/lib/media";
+import {
+  ALLOWED_IMAGE_TYPES,
+  ALLOWED_VIDEO_TYPES,
+  MediaError,
+  maxUploadBytes,
+  maxVideoBytes,
+  saveImage,
+  saveVideo,
+} from "@/lib/media";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
-// Upload 1 gambar untuk sebuah brand -> dioptimasi sharp -> { url }.
+// Upload 1 file untuk sebuah brand: gambar -> dioptimasi sharp; video MP4 -> disimpan apa adanya. -> { url }.
 export async function POST(req: Request) {
   const admin = await getAdmin();
   if (!admin) return NextResponse.json({ error: "Belum login." }, { status: 401 });
 
-  const maxBytes = maxUploadBytes();
-  const maxMb = Math.round(maxBytes / 1024 / 1024);
-  // Tolak lebih awal kalau jelas terlalu besar (+1 MB toleransi untuk overhead multipart).
-  if (Number(req.headers.get("content-length") ?? 0) > maxBytes + 1024 * 1024) {
-    return NextResponse.json({ error: `Ukuran file maksimal ${maxMb} MB.` }, { status: 413 });
+  // Batas kasar untuk seluruh request (video paling besar); dicek lagi per jenis file di bawah.
+  const hardMax = Math.max(maxUploadBytes(), maxVideoBytes());
+  if (Number(req.headers.get("content-length") ?? 0) > hardMax + 1024 * 1024) {
+    return NextResponse.json({ error: `Ukuran file maksimal ${Math.round(hardMax / 1024 / 1024)} MB.` }, { status: 413 });
   }
 
   let form: FormData;
@@ -29,11 +36,14 @@ export async function POST(req: Request) {
   if (!(file instanceof File) || typeof brandId !== "string") {
     return NextResponse.json({ error: "File atau brand tidak ada." }, { status: 400 });
   }
-  if (file.size > maxBytes) {
-    return NextResponse.json({ error: `Ukuran file maksimal ${maxMb} MB.` }, { status: 413 });
+
+  const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type);
+  if (!isVideo && !ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return NextResponse.json({ error: "Format harus JPG, PNG, WebP, atau video MP4." }, { status: 415 });
   }
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    return NextResponse.json({ error: "Format gambar harus JPG, PNG, atau WebP." }, { status: 415 });
+  const maxBytes = isVideo ? maxVideoBytes() : maxUploadBytes();
+  if (file.size > maxBytes) {
+    return NextResponse.json({ error: `Ukuran file maksimal ${Math.round(maxBytes / 1024 / 1024)} MB.` }, { status: 413 });
   }
 
   const brand = await prisma.brand.findUnique({ where: { id: brandId }, select: { id: true, slug: true } });
@@ -42,11 +52,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const url = await saveImage(Buffer.from(await file.arrayBuffer()), brand.slug);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const url = isVideo ? await saveVideo(buffer, brand.slug) : await saveImage(buffer, brand.slug);
     return NextResponse.json({ url });
   } catch (e) {
     if (e instanceof MediaError) return NextResponse.json({ error: e.message }, { status: 422 });
     console.error("[upload] gagal:", e);
-    return NextResponse.json({ error: "Gagal memproses gambar." }, { status: 500 });
+    return NextResponse.json({ error: "Gagal memproses file." }, { status: 500 });
   }
 }

@@ -20,11 +20,15 @@ const hsl = (h: number, s: number, l: number) => `hsl(${h.toFixed(1)} ${(s * 100
 /**
  * Warna gelap dominan situs dari warna brand: hue sama, dibuat sangat gelap.
  * Contoh Aminoto #15803d -> ink ≈ #0E3A1E, ink-deep ≈ #0A2915 (hijau tua).
+ * Editorial (L 18%/13%): Bolu #6B1E2A -> ink ≈ #48141C (maroon gelap).
  */
-export function darkTones(brandHex: string): { ink: string; inkDeep: string } | null {
+export function darkTones(
+  brandHex: string,
+  lightness: { ink: number; inkDeep: number } = { ink: 0.14, inkDeep: 0.1 },
+): { ink: string; inkDeep: string } | null {
   const c = hexToHsl(brandHex);
   if (!c) return null;
   const [h, s] = c;
   const sat = Math.min(s, 0.62);
-  return { ink: hsl(h, sat, 0.14), inkDeep: hsl(h, sat, 0.1) };
+  return { ink: hsl(h, sat, lightness.ink), inkDeep: hsl(h, sat, lightness.inkDeep) };
 }

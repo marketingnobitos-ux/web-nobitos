@@ -15,5 +15,13 @@ warung-kursi-merah.jpg   photo-1569925873429-e769889c2077
 dapur-malam.jpg          photo-1733959541069-1a289a05a59f
 lele-wajan.jpg           photo-1785817380353-10371a9bb750
 
+Template Editorial (Bolu Sunyaragi):
+bolu-telur-adonan.jpg    photo-1608019527897-238a401a7b7c
+bolu-ayak-tepung.jpg     photo-1611422514579-c26a57dc115f
+bolu-oven.jpg            photo-1586664510812-52b8306f3fb0
+bolu-irisan.jpg          photo-1611980740456-f5d7fddab908
+bolu-potongan.jpg        photo-1514435390218-898a0e01517a
+bolu-tepung-tangan.jpg   photo-1549590143-d5855148a9d5
+
 Each file has an 800px-wide "-800.jpg" variant for small screens.
 Full image URL: https://images.unsplash.com/<id>

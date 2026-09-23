@@ -35,7 +35,7 @@ export default function Reveal({ children, className, delay = 0, y = 24, as = "d
 export function NoScriptReveal() {
   return (
     <noscript>
-      <style>{"[data-reveal]{opacity:1!important;transform:none!important}[data-story-line]{grid-area:auto!important;opacity:1!important}"}</style>
+      <style>{"[data-reveal]{opacity:1!important;transform:none!important}[data-story-line],[data-ch-text]{grid-area:auto!important;opacity:1!important}"}</style>
     </noscript>
   );
 }

@@ -49,3 +49,23 @@ export function menuPlaceholder(name: string, category = ""): string {
 export function menuPhoto(item: { name: string; imageUrl?: string | null }, category?: string): string {
   return realPhoto(item.imageUrl) ?? menuPlaceholder(item.name, category);
 }
+
+/** Foto suasana untuk template Editorial (toko & dapur bolu). Produk tidak pakai foto. */
+export const EDITORIAL_PLACEHOLDER = {
+  hero: `${DIR}/bolu-irisan.jpg`,
+  chapters: [
+    `${DIR}/bolu-tepung-tangan.jpg`,
+    `${DIR}/bolu-telur-adonan.jpg`,
+    `${DIR}/bolu-ayak-tepung.jpg`,
+    `${DIR}/bolu-oven.jpg`,
+    `${DIR}/bolu-potongan.jpg`,
+  ],
+  outlets: [`${DIR}/bolu-potongan.jpg`, `${DIR}/bolu-oven.jpg`, `${DIR}/bolu-ayak-tepung.jpg`],
+  gallery: [
+    { imageUrl: `${DIR}/bolu-irisan.jpg`, caption: "Lembutnya kelihatan dari irisan" },
+    { imageUrl: `${DIR}/bolu-oven.jpg`, caption: "Keluar oven, masih mengembang" },
+    { imageUrl: `${DIR}/bolu-ayak-tepung.jpg`, caption: "Tepung diayak dua kali" },
+    { imageUrl: `${DIR}/bolu-potongan.jpg`, caption: "Sepotong untuk dicoba" },
+    { imageUrl: `${DIR}/bolu-telur-adonan.jpg`, caption: "Telur dan gula, dikocok lama" },
+  ],
+} as const;

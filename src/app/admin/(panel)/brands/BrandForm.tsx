@@ -1,7 +1,7 @@
 import type { Brand } from "@prisma/client";
 import ActionForm from "@/components/admin/ActionForm";
 import ImageField from "@/components/admin/ImageField";
-import { Checkbox, ColorField, TextField } from "@/components/admin/fields";
+import { Checkbox, ColorField, Select, TextField } from "@/components/admin/fields";
 import type { ActionState } from "@/lib/validation";
 
 type Props = {
@@ -34,6 +34,17 @@ export default function BrandForm({ action, brand, submitLabel }: Props) {
       ) : (
         <p className="text-sm text-gray-500">Logo & favicon bisa diunggah setelah brand dibuat.</p>
       )}
+
+      <Select
+        label="Template tampilan"
+        name="template"
+        defaultValue={brand?.template ?? "BOLD"}
+        options={[
+          { value: "BOLD", label: "Bold — tipografi tebal, foto besar, animasi ramai" },
+          { value: "EDITORIAL", label: "Editorial — sinematik, lega, daftar harga tanpa foto" },
+        ]}
+        hint="Data & admin sama; hanya tampilan situs publik yang berbeda. Editorial memakai warna secondary sebagai latar terang."
+      />
 
       <div className="flex flex-wrap gap-6">
         <ColorField label="Warna primary" name="colorPrimary" defaultValue={brand?.colorPrimary ?? "#000000"} />

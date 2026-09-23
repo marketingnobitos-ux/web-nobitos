@@ -22,6 +22,7 @@ model Brand {
   colorAccent    String?
   fontHeading    String?                 // nama font
   fontBody       String?
+  template       BrandTemplate @default(BOLD) // gaya tampilan situs publik
   // Meta
   isPublished Boolean  @default(false)
   createdAt   DateTime @default(now())
@@ -47,6 +48,12 @@ model Domain {
   status     DomainStatus @default(PENDING) // PENDING | VERIFIED | ACTIVE | ERROR
   sslIssued  Boolean  @default(false)
   createdAt  DateTime @default(now())
+}
+
+// Gaya tampilan situs publik per brand (data & admin tetap sama).
+enum BrandTemplate {
+  BOLD
+  EDITORIAL
 }
 
 enum DomainStatus {

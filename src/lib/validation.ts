@@ -66,6 +66,7 @@ export const brandSchema = z.object({
   colorAccent: z.preprocess(emptyToNull, z.string().regex(/^#[0-9a-fA-F]{6}$/, "Warna accent harus format #RRGGBB.").nullable()),
   fontHeading: nullableText("Font judul", 100),
   fontBody: nullableText("Font isi", 100),
+  template: z.enum(["BOLD", "EDITORIAL"], { message: "Template tampilan tidak dikenal." }),
   isPublished: checkbox,
 });
 
@@ -130,6 +131,7 @@ export const sectionSchema = z.object({
   subtitle: nullableText("Subjudul", 300),
   body: nullableText("Isi", 5000),
   imageUrl,
+  videoUrl: imageUrl,
   items: z.preprocess(
     (v) =>
       typeof v === "string"
@@ -138,7 +140,7 @@ export const sectionSchema = z.object({
             .map((s) => s.trim())
             .filter(Boolean)
         : [],
-    z.array(z.string().max(200)).max(20),
+    z.array(z.string().max(600, "Tiap baris maksimal 600 karakter.")).max(20),
   ),
   isVisible: checkbox,
 });

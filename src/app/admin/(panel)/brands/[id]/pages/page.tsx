@@ -1,5 +1,6 @@
 import ActionForm from "@/components/admin/ActionForm";
 import ImageField from "@/components/admin/ImageField";
+import VideoField from "@/components/admin/VideoField";
 import { Card, Checkbox, TextArea, TextField } from "@/components/admin/fields";
 import { getBrandForAdmin } from "@/lib/admin";
 import { PAGE_SECTIONS, type SectionData } from "@/lib/content";
@@ -38,6 +39,15 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
                 />
               )}
               {has("imageUrl") && <ImageField name="imageUrl" label={def.imageLabel ?? "Gambar"} brandId={brand.id} defaultValue={data.imageUrl} />}
+              {has("videoUrl") && (
+                <VideoField
+                  name="videoUrl"
+                  label="Video hero (MP4, opsional — dipakai template Editorial)"
+                  brandId={brand.id}
+                  defaultValue={data.videoUrl}
+                  hint="Diputar otomatis tanpa suara. Kompres dulu: 1080p, < 15 MB. Foto hero tetap dipakai sebagai gambar awal."
+                />
+              )}
               <Checkbox label="Tampilkan section ini" name="isVisible" defaultChecked={row?.isVisible ?? true} />
             </ActionForm>
           </Card>

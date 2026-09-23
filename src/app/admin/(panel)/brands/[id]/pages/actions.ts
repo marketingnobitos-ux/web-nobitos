@@ -42,6 +42,7 @@ export async function saveSection(
 
     const oldImage = (old?.data as SectionData | null)?.imageUrl;
     await deleteReplacedImage(oldImage, data.imageUrl);
+    await deleteReplacedImage((old?.data as SectionData | null)?.videoUrl, data.videoUrl);
 
     revalidatePath(`/admin/brands/${brandId}/pages`);
     return { ok: true, message: "Section disimpan." };

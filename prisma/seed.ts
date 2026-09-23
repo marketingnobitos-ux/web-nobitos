@@ -27,12 +27,17 @@ type SeedStory = {
   processBody: string;
 };
 type SeedPromo = { title: string; description: string };
+/** Konten tambahan untuk template Editorial. */
+type SeedEditorial = { intro: string; chapters: string[] };
 type SeedBrand = {
   slug: string;
   name: string;
   tagline: string;
   colorPrimary: string;
   colorSecondary: string;
+  colorAccent?: string;
+  template?: "BOLD" | "EDITORIAL";
+  editorial?: SeedEditorial;
   branches: SeedBranch[];
   menu: SeedCategory[];
   story: SeedStory;
@@ -120,8 +125,22 @@ const brands: SeedBrand[] = [
     slug: "bolu-sunyaragi",
     name: "Bolu Sunyaragi",
     tagline: "Bolu lembut, oleh-oleh wajib kalau mampir Cirebon.",
-    colorPrimary: "#b45309",
-    colorSecondary: "#fff7ed",
+    // Template Editorial: maroon + cream, aksen emas redup.
+    colorPrimary: "#6b1e2a",
+    colorSecondary: "#f3e9dc",
+    colorAccent: "#b38b59",
+    template: "EDITORIAL",
+    editorial: {
+      intro:
+        "Sejak dapur kecil di Sunyaragi, kami memanggang bolu dengan cara yang sama setiap pagi: *pelan, sabar,* dan tanpa jalan pintas.",
+      chapters: [
+        "Dapur kecil di Sunyaragi | Semuanya dimulai dari satu oven di rumah, resep keluarga, dan pesanan tetangga untuk arisan.",
+        "Telur, gula, sabar | Telur dan gula dikocok lama sampai pucat dan mengembang. Bagian ini tidak bisa dipercepat.",
+        "Diayak dua kali | Tepung diayak dua kali lalu dilipat perlahan, supaya bolu tetap ringan dan tidak bantat.",
+        "Masuk oven pagi-pagi | Dipanggang sebelum toko buka, lalu didinginkan pelan-pelan di rak kayu.",
+        "Sampai di tangan kamu | Diiris, dikemas rapi, dan siap jadi oleh-oleh khas Cirebon.",
+      ],
+    },
     branches: [
       { name: "Kartini", address: "Jl. Kartini, Cirebon", openHours: "08.00 - 21.00 setiap hari" },
       { name: "Pabrik", address: "Sunyaragi, Cirebon", openHours: "08.00 - 17.00 Senin - Sabtu" },
@@ -133,11 +152,25 @@ const brands: SeedBrand[] = [
           { name: "Bolu Pandan", price: 45000, portion: "1 loyang", description: "Wangi pandan asli, lembutnya kebangetan.", featured: true },
           { name: "Bolu Cokelat", price: 45000, portion: "1 loyang", description: "Cokelatnya pekat, teksturnya moist.", featured: true },
           { name: "Bolu Keju", price: 55000, portion: "1 loyang", description: "Kejunya nggak pelit, parutannya numpuk.", featured: true },
+          { name: "Bolu Marmer", price: 48000, portion: "1 loyang", description: "Motif cokelat-vanila, lembut dan tidak terlalu manis.", featured: true },
+          { name: "Bolu Gulung Srikaya", price: 42000, portion: "1 gulung", description: "Isian srikaya pandan, digulung tipis." },
+          { name: "Bolu Tape", price: 50000, portion: "1 loyang", description: "Tape singkong asli, aromanya khas." },
         ],
       },
       {
         name: "Kue Lainnya",
-        items: [{ name: "Lapis Legit", price: 40000, portion: "1/2 loyang", description: "Lapisannya rapet, rempahnya kerasa." }],
+        items: [
+          { name: "Lapis Legit", price: 40000, portion: "1/2 loyang", description: "Lapisannya rapet, rempahnya kerasa." },
+          { name: "Brownies Panggang", price: 38000, portion: "1 loyang", description: "Pinggirnya renyah, tengahnya lembap." },
+          { name: "Kue Sus Vla", price: 5000, portion: "1 pcs", description: "Kulit tipis, vla vanila." },
+        ],
+      },
+      {
+        name: "Paket Oleh-oleh",
+        items: [
+          { name: "Paket Duo Bolu", price: 85000, portion: "2 loyang", description: "Pilih dua varian, dikemas dalam satu dus." },
+          { name: "Paket Keluarga", price: 160000, portion: "4 loyang", description: "Empat varian favorit untuk dibawa pulang." },
+        ],
       },
     ],
     story: {
@@ -273,6 +306,12 @@ function pageSections(b: SeedBrand): { pageKey: string; sectionKey: string; data
   return [
     { pageKey: "home", sectionKey: "hero", data: { title: b.name, subtitle: b.tagline } },
     { pageKey: "home", sectionKey: "process", data: { items: b.story.process, body: b.story.processBody } },
+    ...(b.editorial
+      ? [
+          { pageKey: "home", sectionKey: "intro", data: { body: b.editorial.intro } },
+          { pageKey: "home", sectionKey: "chapters", data: { items: b.editorial.chapters } },
+        ]
+      : []),
     { pageKey: "story", sectionKey: "profile", data: { title: `Tentang ${b.name}`, body: b.story.profile } },
     { pageKey: "story", sectionKey: "history", data: { title: "Awal mulanya", body: b.story.history } },
     { pageKey: "story", sectionKey: "values", data: { title: "Yang kita jaga", items: b.story.values } },
@@ -409,11 +448,11 @@ async function refreshOldCopy(brandId: string, b: SeedBrand) {
 
 async function main() {
   for (const b of brands) {
-    const { slug, name, tagline, colorPrimary, colorSecondary } = b;
+    const { slug, name, tagline, colorPrimary, colorSecondary, colorAccent, template } = b;
     let brand = await prisma.brand.upsert({
       where: { slug },
       update: {},
-      create: { slug, name, tagline, colorPrimary, colorSecondary },
+      create: { slug, name, tagline, colorPrimary, colorSecondary, colorAccent, template },
     });
     if (!brand.tagline) {
       brand = await prisma.brand.update({ where: { id: brand.id }, data: { tagline } });

@@ -8,6 +8,7 @@ import Marquee from "@/components/public/home/Marquee";
 import MenuPicker from "@/components/public/home/MenuPicker";
 import PromoPoster from "@/components/public/home/PromoPoster";
 import StoryPinned from "@/components/public/home/StoryPinned";
+import EditorialHome from "@/components/templates/editorial/EditorialHome";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
 import { greetingFor, wibHour } from "@/lib/greeting";
@@ -16,9 +17,11 @@ import { prisma } from "@/lib/prisma";
 
 const DEFAULT_PROCESS = ["Diulek.", "Digoreng.", "Disajikan hangat."];
 
-// Halaman Utama: hero, marquee, menu andalan, picker, cerita, promo, galeri, cabang.
+// Halaman Utama. Template Editorial punya susunan sendiri; selebihnya template Bold:
+// hero, marquee, menu andalan, picker, cerita, promo, galeri, cabang.
 export default async function HomePage() {
   const brand = await requireActiveBrand();
+  if (brand.template === "EDITORIAL") return <EditorialHome brand={brand} />;
 
   const [homeSections, storySections, menu, promos, photos, branches] = await Promise.all([
     getSections(brand.id, "home"),

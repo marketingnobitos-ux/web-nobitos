@@ -1,4 +1,5 @@
 import MenuFilter from "@/components/public/MenuFilter";
+import EditorialMenu from "@/components/templates/editorial/EditorialMenu";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { prisma } from "@/lib/prisma";
 
@@ -28,6 +29,8 @@ export default async function MenuPage() {
       },
     },
   });
+
+  if (brand.template === "EDITORIAL") return <EditorialMenu brandName={brand.name} categories={categories} />;
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:py-14">

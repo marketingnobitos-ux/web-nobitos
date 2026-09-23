@@ -7,6 +7,7 @@ export type SectionData = {
   subtitle?: string;
   body?: string;
   imageUrl?: string;
+  videoUrl?: string;
   items?: string[];
 };
 
@@ -21,6 +22,7 @@ function toSectionData(raw: unknown): SectionData {
     subtitle: str(r.subtitle),
     body: str(r.body),
     imageUrl: str(r.imageUrl),
+    videoUrl: str(r.videoUrl),
     items: Array.isArray(r.items) ? r.items.filter((i): i is string => typeof i === "string") : undefined,
   };
 }
@@ -50,7 +52,7 @@ export function getActivePromos(brandId: string) {
   });
 }
 
-type SectionField = "title" | "subtitle" | "body" | "imageUrl" | "items";
+type SectionField = "title" | "subtitle" | "body" | "imageUrl" | "videoUrl" | "items";
 
 /** Section yang bisa diedit dari admin, per halaman publik. */
 export const PAGE_SECTIONS: {
@@ -65,8 +67,21 @@ export const PAGE_SECTIONS: {
     pageKey: "home",
     sectionKey: "hero",
     label: "Beranda — Hero sambutan",
-    fields: ["title", "subtitle", "imageUrl"],
+    fields: ["title", "subtitle", "imageUrl", "videoUrl"],
     imageLabel: "Foto hero (layar penuh, sebaiknya foto makanan landscape)",
+  },
+  {
+    pageKey: "home",
+    sectionKey: "intro",
+    label: "Beranda — Pernyataan pembuka (template Editorial)",
+    fields: ["body"],
+  },
+  {
+    pageKey: "home",
+    sectionKey: "chapters",
+    label: "Beranda — Babak cerita & proses (template Editorial)",
+    fields: ["items"],
+    itemsHint: "Satu babak per baris: Judul | isi singkat. Contoh: Diaduk subuh | Telur, gula, dan tepung diaduk sebelum matahari naik.",
   },
   {
     pageKey: "home",
