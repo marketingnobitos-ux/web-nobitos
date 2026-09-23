@@ -23,7 +23,7 @@ export default function EdOutlets({ outlets }: { outlets: Outlet[] }) {
       <div className="mx-auto mb-12 flex max-w-[1440px] flex-wrap items-end justify-between gap-6 px-5 sm:px-8 md:mb-16 md:px-12">
         <Reveal>
           <h2 id="ed-outlets" className="ed-title max-w-lg text-[clamp(32px,4.2vw,60px)]">
-            Mampir ke <em>toko</em> kami
+            Mampir ke <em>outlet</em> kami
           </h2>
         </Reveal>
         {outlets.length > 1 && (
