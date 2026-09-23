@@ -53,13 +53,14 @@ export async function requireBrandAdmin(brandId: string): Promise<AdminIdentity>
   return admin;
 }
 
-export function listAccessibleBrands(admin: AdminIdentity) {
-  return prisma.brand.findMany({
+/** Brand yang boleh dikelola admin ini. Di-cache per request (layout & halaman berbagi hasil). */
+export const listAccessibleBrands = cache((admin: AdminIdentity) =>
+  prisma.brand.findMany({
     where: admin.role === "SUPER_ADMIN" ? {} : { admins: { some: { adminId: admin.id } } },
     orderBy: { name: "asc" },
     select: { id: true, name: true, slug: true },
-  });
-}
+  }),
+);
 
 /** Brand untuk halaman admin: 404 kalau tidak ada / tidak punya akses. */
 export const getBrandForAdmin = cache(async (brandId: string) => {

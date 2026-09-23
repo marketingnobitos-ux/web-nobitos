@@ -74,7 +74,21 @@ export async function isKnownBrandSlug(slug: string): Promise<boolean> {
   return slugs.has(slug);
 }
 
-/** Paksa muat ulang pemetaan domain -> brand pada request berikutnya. */
+// Cache baris Brand per slug untuk situs publik (hindari query brand di setiap request).
+const ROW_TTL_MS = 60 * 1000;
+type BrandRow = Awaited<ReturnType<typeof prisma.brand.findUnique>>;
+const rows = ((globalThis as { __brandRows?: Map<string, { brand: BrandRow; at: number }> }).__brandRows ??= new Map());
+
+export async function getBrandBySlugCached(slug: string): Promise<BrandRow> {
+  const hit = rows.get(slug);
+  if (hit && Date.now() - hit.at < ROW_TTL_MS) return hit.brand;
+  const brand = await prisma.brand.findUnique({ where: { slug } });
+  rows.set(slug, { brand, at: Date.now() });
+  return brand;
+}
+
+/** Paksa muat ulang pemetaan domain -> brand & data brand pada request berikutnya. */
 export function invalidateBrandCache(): void {
   state.current = null;
+  rows.clear();
 }

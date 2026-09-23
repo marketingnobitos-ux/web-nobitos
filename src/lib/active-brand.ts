@@ -2,14 +2,13 @@
 import { cache } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { BRAND_HEADER } from "@/lib/brand";
+import { BRAND_HEADER, getBrandBySlugCached } from "@/lib/brand";
 
-/** Brand aktif untuk request ini, atau null. Di-cache per request. */
+/** Brand aktif untuk request ini, atau null. Di-cache per request & 60 detik antar request. */
 export const getActiveBrand = cache(async () => {
   const slug = (await headers()).get(BRAND_HEADER);
   if (!slug) return null;
-  return prisma.brand.findUnique({ where: { slug } });
+  return getBrandBySlugCached(slug);
 });
 
 /** Seperti getActiveBrand, tapi redirect ke /brand-not-found kalau tidak ada. */
