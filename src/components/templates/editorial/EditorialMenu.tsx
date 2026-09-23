@@ -24,7 +24,7 @@ export default function EditorialMenu({ brandName, categories }: { brandName: st
         </Reveal>
         <Reveal delay={0.16}>
           <p className="mt-6 max-w-md text-lg text-ink/65">
-            Dipanggang tiap pagi. Harga bisa berubah sewaktu-waktu; tanyakan ketersediaan di toko.
+            Dioven tiap pagi. Harga bisa berubah sewaktu-waktu; tanyakan ketersediaan di toko.
           </p>
         </Reveal>
       </header>

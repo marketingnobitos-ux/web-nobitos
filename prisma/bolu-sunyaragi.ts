@@ -3,17 +3,17 @@
 //   --replace  ganti seluruh menu,
 //   --story    tulis ulang tagline + semua teks cerita (Beranda & halaman Cerita),
 //   --branches ganti seluruh cabang + tulis ulang link sosial media,
-//   --gallery  ganti album galeri + video utama Galeri (foto asli toko di public/brand/galeri),
+//   --gallery  ganti album galeri dengan foto asli toko (public/brand/galeri),
 //   --logo     pasang logo transparan dari public/brand.
 import { PrismaClient, type Prisma } from "@prisma/client";
 
-export const BOLU_TAGLINE = "Oleh-oleh lembut dari Cirebon, dipanggang dengan sabar.";
+export const BOLU_TAGLINE = "Dari Cirebon, pulang membawa rasa";
 
 /** Cerita brand: dari asal nama Sunyaragi sampai hari ini. Ditulis tanpa tahun & nama pendiri (belum ada data resmi). */
 export const BOLU_STORY = {
   hero: {
     title: "Bolu Sunyaragi",
-    subtitle: "Lembutnya Cirebon, dipanggang dengan sabar dan digulung selagi hangat.",
+    subtitle: "Lembutnya Cirebon, dioven dengan sabar dan digulung selagi hangat.",
     /** Rekaman asli proses Bolen Crispy (hanya tangan), diperlambat & dihaluskan. Poster = frame pertama. */
     videoUrl: "/video/bolu-sunyaragi-proses.mp4",
     imageUrl: "/brand/bolu-sunyaragi-proses.jpg",
@@ -24,7 +24,7 @@ export const BOLU_STORY = {
   /** Babak cerita di Beranda, format "Judul | isi". */
   chapters: [
     "Nama yang kami pinjam | Sunyaragi berasal dari kata sunya dan raga: tempat menenangkan diri. Di Cirebon, nama itu melekat pada taman gua karang peninggalan keraton, tempat para bangsawan dulu bertapa dan mencari hening.",
-    "Satu resep, satu keyakinan | Kami memulai dari satu resep bolu gulung dan keyakinan sederhana: kue yang enak lahir dari tangan yang sabar. Telur dikocok sampai mengembang, adonan dipanggang tipis, lalu digulung selagi hangat.",
+    "Satu resep, satu keyakinan | Kami memulai dari satu resep bolu gulung dan keyakinan sederhana: kue yang enak lahir dari tangan yang sabar. Telur dikocok sampai mengembang, adonan dioven tipis, lalu digulung selagi hangat.",
     "Isian yang tumbuh bersama kota | Dari coklat dan buttercream, isiannya bertambah mengikuti selera orang yang mampir: blueberry, pandan, keju, mangga, sampai abon sapi yang gurih.",
     "Keluarga yang makin besar | Lalu lahir Spikoe Sunyaragi dengan selai blueberry, Chiffon Cheese yang ringan, Roti Bluder Plat E yang membawa kode kendaraan Cirebon di namanya, dan Bolen Crispy yang renyah untuk teman ngopi.",
     "Hari ini, dan seterusnya | Sekarang Bolu Sunyaragi ikut pulang di bagasi, dibagi di meja keluarga, dan jadi alasan untuk kembali ke Cirebon. Resepnya tetap sama. Yang bertambah hanya orang yang ingin membawanya pulang.",
@@ -32,7 +32,7 @@ export const BOLU_STORY = {
   profile: {
     title: "Tentang Bolu Sunyaragi",
     subtitle: "Oleh-oleh lembut dari Cirebon",
-    body: "Bolu Sunyaragi adalah toko kue khas Cirebon yang dikenal lewat bolu gulungnya. Kami memanggang setiap loyang dengan sabar, memilih bahan dengan teliti, dan mengemasnya rapi supaya sampai di tangan kamu dalam keadaan terbaik.",
+    body: "Bolu Sunyaragi adalah toko kue khas Cirebon yang dikenal lewat bolu gulungnya. Kami mengoven setiap loyang dengan sabar, memilih bahan dengan teliti, dan mengemasnya rapi supaya sampai di tangan kamu dalam keadaan terbaik.",
   },
   history: {
     title: "Awal mulanya",
@@ -40,14 +40,14 @@ export const BOLU_STORY = {
   },
   values: {
     title: "Yang kami jaga",
-    items: ["Dipanggang dengan sabar", "Bahan pilihan, rasa yang jujur", "Resep yang tidak berubah", "Dikemas rapi untuk oleh-oleh"],
+    items: ["Dioven dengan sabar", "Bahan pilihan, rasa yang jujur", "Resep yang tidak berubah", "Dikemas rapi untuk oleh-oleh"],
   },
   atmosphere: {
     title: "Suasana toko",
     body: "Pintu terbuka, wangi mentega dan pandan langsung menyambut. Etalase berisi gulungan bolu yang baru dipotong. Tinggal pilih, kami kemas rapi untuk dibawa pulang.",
   },
   /** Teks berganti saat scroll (dipakai template BOLD). */
-  process: { items: ["Dikocok.", "Dipanggang.", "Digulung hangat."], body: "Adonan dikocok sampai mengembang, dipanggang tipis, lalu digulung selagi hangat. Tidak ada yang diburu-buru." },
+  process: { items: ["Dikocok.", "Dioven.", "Digulung hangat."], body: "Adonan dikocok sampai mengembang, dioven tipis, lalu digulung selagi hangat. Tidak ada yang diburu-buru." },
 };
 
 export type MenuCategoryData = {
@@ -182,7 +182,7 @@ async function replaceBoluBranches() {
   }
 }
 
-/** Galeri: foto asli toko (warna diseragamkan) dan video etalase yang diperhalus. */
+/** Galeri: foto asli toko, warna diseragamkan. */
 export const BOLU_GALLERY = {
   album: "Toko kami",
   photos: [
@@ -190,10 +190,9 @@ export const BOLU_GALLERY = {
     { imageUrl: "/brand/galeri/toko-dalam.jpg", caption: "Di dalam toko" },
     { imageUrl: "/brand/galeri/toko-etalase.jpg", caption: "Etalase dan kasir" },
   ],
-  feature: { title: "Sore di etalase", videoUrl: "/brand/galeri/etalase.mp4", imageUrl: "/brand/galeri/etalase.jpg" },
 };
 
-/** Ganti semua album galeri Bolu Sunyaragi dengan BOLU_GALLERY dan pasang video utama Galeri. */
+/** Ganti semua album galeri Bolu Sunyaragi dengan BOLU_GALLERY (tanpa video/foto utama). */
 async function replaceBoluGallery() {
   const prisma = new PrismaClient();
   try {
@@ -203,13 +202,9 @@ async function replaceBoluGallery() {
       prisma.galleryAlbum.create({
         data: { brandId: brand.id, title: BOLU_GALLERY.album, photos: { create: BOLU_GALLERY.photos.map((p, i) => ({ ...p, order: i })) } },
       }),
-      prisma.pageContent.upsert({
-        where: { brandId_pageKey_sectionKey: { brandId: brand.id, pageKey: "gallery", sectionKey: "feature" } },
-        update: { data: BOLU_GALLERY.feature },
-        create: { brandId: brand.id, pageKey: "gallery", sectionKey: "feature", data: BOLU_GALLERY.feature },
-      }),
+      prisma.pageContent.deleteMany({ where: { brandId: brand.id, pageKey: "gallery", sectionKey: "feature" } }),
     ]);
-    console.log(`Galeri Bolu Sunyaragi diganti: ${BOLU_GALLERY.photos.length} foto + video utama.`);
+    console.log(`Galeri Bolu Sunyaragi diganti: ${BOLU_GALLERY.photos.length} foto.`);
   } finally {
     await prisma.$disconnect();
   }

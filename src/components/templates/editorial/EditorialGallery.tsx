@@ -17,16 +17,10 @@ const PHOTO_MASK: React.CSSProperties = {
   WebkitMaskImage: "linear-gradient(to bottom, transparent, #000 14%, #000 82%, transparent)",
 };
 
-// Pola letak foto berulang tiap 3 foto: kiri tinggi, kanan turun, tengah.
-const LAYOUT = [
-  { cell: "md:col-span-5", ratio: "aspect-[3/4]" },
-  { cell: "md:col-span-6 md:col-start-7 md:mt-40", ratio: "aspect-[4/5]" },
-  { cell: "md:col-span-6 md:col-start-3 md:-mt-10", ratio: "aspect-[3/4]" },
-];
 
 /**
  * Galeri template Editorial: latar maroon gelap, satu video/foto utama lebar yang memudar halus
- * ke latar, lalu foto-foto besar tersusun asimetris dengan gradasi lembut dan keterangan di atasnya.
+ * ke latar (opsional), lalu foto sejajar 3 kolom dengan gradasi lembut dan keterangan di atasnya.
  */
 export default function EditorialGallery({ brandName, photos, feature }: { brandName: string; photos: Photo[]; feature: Feature }) {
   const featureMedia = feature?.videoUrl || feature?.imageUrl;
@@ -68,15 +62,15 @@ export default function EditorialGallery({ brandName, photos, feature }: { brand
         {photos.length === 0 ? (
           <p className="text-paper/60">Foto belum tersedia.</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-12 md:gap-x-10 md:gap-y-16">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-8 lg:gap-10">
             {photos.map((p, i) => (
-              <Reveal key={p.id} y={40} delay={(i % 2) * 0.08} className={LAYOUT[i % LAYOUT.length].cell}>
-                <figure className={`group relative overflow-hidden ${LAYOUT[i % LAYOUT.length].ratio}`} style={PHOTO_MASK}>
+              <Reveal key={p.id} y={40} delay={(i % 3) * 0.08}>
+                <figure className="group relative aspect-[3/4] overflow-hidden" style={PHOTO_MASK}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={p.imageUrl}
                     srcSet={imageSrcSet(p.imageUrl)}
-                    sizes="(min-width: 768px) 50vw, 100vw"
+                    sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
                     alt={p.caption ?? `Foto ${brandName}`}
                     loading="lazy"
                     decoding="async"
