@@ -1,17 +1,30 @@
-import Link from "next/link";
+import { requireActiveBrand } from "@/lib/active-brand";
 
-// Halaman Utama brand. Dibangun di Milestone 3.
-export default function HomePage() {
+// Halaman Utama brand. Konten lengkap dibangun di Milestone 3.
+export default async function HomePage() {
+  const brand = await requireActiveBrand();
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold">Nobitos Kuliner</h1>
-      <p className="mt-2">Placeholder Halaman Utama (Milestone 3).</p>
-      <p className="mt-4">
-        Cek koneksi database:{" "}
-        <Link href="/db-check" className="underline">
-          /db-check
-        </Link>
-      </p>
+    <section className="bg-secondary px-4 py-16">
+      <div className="mx-auto max-w-5xl">
+        <h1 className="text-4xl font-bold text-primary">{brand.name}</h1>
+        {brand.tagline && <p className="mt-2 text-lg text-primary">{brand.tagline}</p>}
+
+        <div className="mt-8 flex flex-wrap gap-4 text-sm">
+          <Swatch label="Primary" value={brand.colorPrimary} className="bg-primary" />
+          <Swatch label="Secondary" value={brand.colorSecondary} className="bg-secondary" />
+          <Swatch label="Accent" value={brand.colorAccent ?? brand.colorPrimary} className="bg-accent" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Swatch({ label, value, className }: { label: string; value: string; className: string }) {
+  return (
+    <div className="flex items-center gap-2 rounded bg-white px-3 py-2 text-gray-900 shadow">
+      <span className={`h-6 w-6 rounded border border-gray-300 ${className}`} />
+      {label}: {value}
     </div>
   );
 }
