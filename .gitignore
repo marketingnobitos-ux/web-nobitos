@@ -9,7 +9,8 @@ next-env.d.ts
 
 # env (jangan commit kredensial)
 .env
-.env*.local
+.env*
+!.env.example
 
 # uploads lokal
 /uploads/

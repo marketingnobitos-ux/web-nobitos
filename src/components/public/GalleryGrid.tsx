@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { imageVariant } from "@/lib/image";
 
 export type GalleryPhotoItem = { id: string; imageUrl: string; caption: string | null };
 
@@ -46,7 +47,7 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhotoItem[] }) 
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={p.imageUrl}
+              src={imageVariant(p.imageUrl, 1000)}
               alt={p.caption ?? ""}
               loading="lazy"
               className="h-full w-full object-cover transition duration-300 group-hover:scale-105"

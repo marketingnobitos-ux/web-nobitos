@@ -40,3 +40,18 @@ export function mapsLink(target: MapTarget): string {
 export function mapsEmbedUrl(target: MapTarget): string {
   return `https://www.google.com/maps?q=${encodeURIComponent(mapQuery(target))}&output=embed`;
 }
+
+// Semua tanggal ditampilkan dalam zona WIB, tidak tergantung zona waktu server.
+const TIME_ZONE = "Asia/Jakarta";
+const dateFormatter = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: TIME_ZONE });
+
+/** Date -> "23 September 2026" (WIB) */
+export function formatDate(date: Date): string {
+  return dateFormatter.format(date);
+}
+
+/** Date -> "2026-09-23" (WIB) untuk <input type="date">. */
+export function toDateInput(date: Date | null | undefined): string {
+  if (!date) return "";
+  return new Intl.DateTimeFormat("en-CA", { timeZone: TIME_ZONE }).format(date);
+}

@@ -17,8 +17,10 @@ type BrandMap = {
   loadedAt: number;
 };
 
-let current: BrandMap | null = null;
-let loading: Promise<BrandMap> | null = null;
+// Disimpan di globalThis supaya middleware & server action (bundle berbeda, proses sama)
+// berbagi cache yang sama, sehingga invalidateBrandCache() dari admin langsung berlaku.
+type CacheState = { current: BrandMap | null; loading: Promise<BrandMap> | null };
+const state = ((globalThis as { __brandCache?: CacheState }).__brandCache ??= { current: null, loading: null });
 
 /** "WWW.Contoh.com:3000" -> "www.contoh.com" */
 export function normalizeHost(host: string): string {
@@ -27,7 +29,11 @@ export function normalizeHost(host: string): string {
 
 async function load(): Promise<BrandMap> {
   const [domains, brands] = await Promise.all([
-    prisma.domain.findMany({ select: { hostname: true, brand: { select: { slug: true } } } }),
+    // Domain produksi hanya untuk brand yang sudah dipublikasikan.
+    prisma.domain.findMany({
+      where: { brand: { isPublished: true } },
+      select: { hostname: true, brand: { select: { slug: true } } },
+    }),
     prisma.brand.findMany({ select: { slug: true } }),
   ]);
   return {
@@ -38,15 +44,16 @@ async function load(): Promise<BrandMap> {
 }
 
 function refresh(): Promise<BrandMap> {
-  loading ??= load()
-    .then((map) => (current = map))
+  state.loading ??= load()
+    .then((map) => (state.current = map))
     .finally(() => {
-      loading = null;
+      state.loading = null;
     });
-  return loading;
+  return state.loading;
 }
 
 async function getBrandMap(): Promise<BrandMap> {
+  const { current } = state;
   if (!current) return refresh();
   if (Date.now() - current.loadedAt > TTL_MS) {
     // Stale-while-revalidate: pakai data lama, refresh di belakang.
@@ -65,4 +72,9 @@ export async function resolveBrandSlugByHost(host: string): Promise<string | nul
 export async function isKnownBrandSlug(slug: string): Promise<boolean> {
   const { slugs } = await getBrandMap();
   return slugs.has(slug);
+}
+
+/** Paksa muat ulang pemetaan domain -> brand pada request berikutnya. */
+export function invalidateBrandCache(): void {
+  state.current = null;
 }

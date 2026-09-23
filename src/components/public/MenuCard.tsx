@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatRupiah } from "@/lib/format";
+import { imageVariant } from "@/lib/image";
 
 export type MenuCardItem = {
   id: string;
@@ -21,7 +22,7 @@ export default function MenuCard({ item }: { item: MenuCardItem }) {
       <div className="relative aspect-[4/3] bg-primary/10">
         {item.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.imageUrl} alt={item.name} loading="lazy" className="h-full w-full object-cover" />
+          <img src={imageVariant(item.imageUrl, 1000)} alt={item.name} loading="lazy" className="h-full w-full object-cover" />
         ) : (
           <span className="flex h-full items-center justify-center text-4xl font-bold text-primary/40">
             {item.name.charAt(0)}

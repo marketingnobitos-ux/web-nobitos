@@ -49,3 +49,14 @@ export function getActivePromos(brandId: string) {
     orderBy: { order: "asc" },
   });
 }
+
+type SectionField = "title" | "subtitle" | "body" | "imageUrl" | "items";
+
+/** Section yang bisa diedit dari admin, per halaman publik. */
+export const PAGE_SECTIONS: { pageKey: string; sectionKey: string; label: string; fields: SectionField[] }[] = [
+  { pageKey: "home", sectionKey: "hero", label: "Beranda — Hero sambutan", fields: ["title", "subtitle", "imageUrl"] },
+  { pageKey: "story", sectionKey: "profile", label: "Cerita — Profil", fields: ["title", "subtitle", "body", "imageUrl"] },
+  { pageKey: "story", sectionKey: "history", label: "Cerita — Sejarah", fields: ["title", "body", "imageUrl"] },
+  { pageKey: "story", sectionKey: "values", label: "Cerita — Nilai", fields: ["title", "body", "items"] },
+  { pageKey: "story", sectionKey: "atmosphere", label: "Cerita — Suasana outlet", fields: ["title", "body", "imageUrl"] },
+];

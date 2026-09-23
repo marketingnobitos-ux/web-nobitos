@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 import {
   BRAND_HEADER,
   PREVIEW_COOKIE,
@@ -7,16 +8,17 @@ import {
   resolveBrandSlugByHost,
 } from "@/lib/brand";
 
-// Resolusi brand dari hostname (PRD Bagian 5). Proteksi /admin menyusul di Milestone 4.
+// Resolusi brand dari hostname (PRD Bagian 5) + proteksi /admin (PRD Bagian 10.1).
 export const config = {
   runtime: "nodejs", // agar bisa pakai Prisma + cache in-memory
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // /api/upload dikecualikan agar body upload besar tidak di-buffer middleware (route cek auth sendiri).
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/upload).*)"],
 };
 
 const PREVIEW_ENABLED = process.env.NODE_ENV !== "production";
 
 // Path yang tidak butuh brand.
-const BYPASS_PREFIXES = ["/admin", "/api", "/brand-not-found", "/db-check", "/_next"];
+const BYPASS_PREFIXES = ["/api", "/brand-not-found", "/db-check", "/_next", "/uploads"];
 
 function isBypassed(pathname: string): boolean {
   return (
@@ -25,7 +27,11 @@ function isBypassed(pathname: string): boolean {
   );
 }
 
-export async function middleware(req: NextRequest) {
+function isAdminPath(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
+export const middleware = auth(async (req) => {
   const { pathname, searchParams } = req.nextUrl;
 
   // Jangan percaya header brand kiriman klien.
@@ -34,10 +40,22 @@ export async function middleware(req: NextRequest) {
 
   const host = req.headers.get("host") ?? req.nextUrl.host;
   const adminHost = process.env.ADMIN_HOST;
+  const onAdminHost = !!adminHost && normalizeHost(host) === normalizeHost(adminHost);
 
-  if (isBypassed(pathname) || (adminHost && normalizeHost(host) === normalizeHost(adminHost))) {
+  if (isBypassed(pathname)) return NextResponse.next({ request: { headers } });
+
+  // --- Panel admin ---
+  if (isAdminPath(pathname)) {
+    const isLogin = pathname === "/admin/login";
+    if (!req.auth && !isLogin) {
+      const url = new URL("/admin/login", req.nextUrl);
+      url.searchParams.set("callbackUrl", pathname + req.nextUrl.search);
+      return NextResponse.redirect(url);
+    }
+    if (req.auth && isLogin) return NextResponse.redirect(new URL("/admin", req.nextUrl));
     return NextResponse.next({ request: { headers } });
   }
+  if (onAdminHost) return NextResponse.redirect(new URL("/admin", req.nextUrl));
 
   // --- Mode dev: ?brand=slug, /preview/slug/..., atau cookie preview ---
   if (PREVIEW_ENABLED) {
@@ -74,7 +92,7 @@ export async function middleware(req: NextRequest) {
 
   headers.set(BRAND_HEADER, slug);
   return NextResponse.next({ request: { headers } });
-}
+});
 
 function notFound(req: NextRequest, headers: Headers, clearPreview: boolean) {
   const url = req.nextUrl.clone();
