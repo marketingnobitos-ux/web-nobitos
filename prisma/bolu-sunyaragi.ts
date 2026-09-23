@@ -3,6 +3,7 @@
 //   --replace  ganti seluruh menu,
 //   --story    tulis ulang tagline + semua teks cerita (Beranda & halaman Cerita),
 //   --branches ganti seluruh cabang + tulis ulang link sosial media,
+//   --gallery  ganti album galeri + video utama Galeri (foto asli toko di public/brand/galeri),
 //   --logo     pasang logo transparan dari public/brand.
 import { PrismaClient, type Prisma } from "@prisma/client";
 
@@ -181,6 +182,39 @@ async function replaceBoluBranches() {
   }
 }
 
+/** Galeri: foto asli toko (warna diseragamkan) dan video etalase yang diperhalus. */
+export const BOLU_GALLERY = {
+  album: "Toko kami",
+  photos: [
+    { imageUrl: "/brand/galeri/toko-depan.jpg", caption: "Tampak depan toko" },
+    { imageUrl: "/brand/galeri/toko-dalam.jpg", caption: "Di dalam toko" },
+    { imageUrl: "/brand/galeri/toko-etalase.jpg", caption: "Etalase dan kasir" },
+  ],
+  feature: { title: "Sore di etalase", videoUrl: "/brand/galeri/etalase.mp4", imageUrl: "/brand/galeri/etalase.jpg" },
+};
+
+/** Ganti semua album galeri Bolu Sunyaragi dengan BOLU_GALLERY dan pasang video utama Galeri. */
+async function replaceBoluGallery() {
+  const prisma = new PrismaClient();
+  try {
+    const brand = await prisma.brand.findUniqueOrThrow({ where: { slug: "bolu-sunyaragi" } });
+    await prisma.$transaction([
+      prisma.galleryAlbum.deleteMany({ where: { brandId: brand.id } }), // foto ikut terhapus (cascade)
+      prisma.galleryAlbum.create({
+        data: { brandId: brand.id, title: BOLU_GALLERY.album, photos: { create: BOLU_GALLERY.photos.map((p, i) => ({ ...p, order: i })) } },
+      }),
+      prisma.pageContent.upsert({
+        where: { brandId_pageKey_sectionKey: { brandId: brand.id, pageKey: "gallery", sectionKey: "feature" } },
+        update: { data: BOLU_GALLERY.feature },
+        create: { brandId: brand.id, pageKey: "gallery", sectionKey: "feature", data: BOLU_GALLERY.feature },
+      }),
+    ]);
+    console.log(`Galeri Bolu Sunyaragi diganti: ${BOLU_GALLERY.photos.length} foto + video utama.`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export const BOLU_LOGO = "/brand/bolu-sunyaragi-logo.webp";
 
 /** Pasang logo transparan (tanpa latar putih) yang disimpan di public/brand. */
@@ -238,6 +272,7 @@ async function main() {
   if (process.argv.includes("--replace")) await replaceBoluMenu();
   if (process.argv.includes("--story")) await writeBoluStory();
   if (process.argv.includes("--branches")) await replaceBoluBranches();
+  if (process.argv.includes("--gallery")) await replaceBoluGallery();
   if (process.argv.includes("--logo")) await setBoluLogo();
 }
 

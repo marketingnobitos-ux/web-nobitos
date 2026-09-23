@@ -98,6 +98,13 @@ export const PAGE_SECTIONS: {
     fields: ["items"],
     itemsHint: "Satu akun per baris: Nama | link. Contoh: Instagram | https://instagram.com/namaakun",
   },
+  {
+    pageKey: "gallery",
+    sectionKey: "feature",
+    label: "Galeri — Video/foto utama (template Editorial)",
+    fields: ["title", "imageUrl", "videoUrl"],
+    imageLabel: "Foto utama / poster video (landscape)",
+  },
   { pageKey: "story", sectionKey: "profile", label: "Cerita — Profil", fields: ["title", "subtitle", "body", "imageUrl"] },
   { pageKey: "story", sectionKey: "history", label: "Cerita — Sejarah", fields: ["title", "body", "imageUrl"] },
   { pageKey: "story", sectionKey: "values", label: "Cerita — Nilai", fields: ["title", "body", "items"] },

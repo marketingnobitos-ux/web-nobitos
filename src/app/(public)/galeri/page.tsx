@@ -1,5 +1,7 @@
 import GalleryGrid from "@/components/public/GalleryGrid";
+import EditorialGallery from "@/components/templates/editorial/EditorialGallery";
 import { requireActiveBrand } from "@/lib/active-brand";
+import { getSections } from "@/lib/content";
 import { prisma } from "@/lib/prisma";
 
 export const metadata = { title: "Galeri" };
@@ -18,6 +20,17 @@ export default async function GaleriPage() {
     },
   });
   const filled = albums.filter((a) => a.photos.length > 0);
+
+  if (brand.template === "EDITORIAL") {
+    const feature = (await getSections(brand.id, "gallery")).find((s) => s.key === "feature")?.data;
+    return (
+      <EditorialGallery
+        brandName={brand.name}
+        photos={filled.flatMap((a) => a.photos)}
+        feature={feature && { title: feature.title, imageUrl: feature.imageUrl, videoUrl: feature.videoUrl }}
+      />
+    );
+  }
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
