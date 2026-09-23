@@ -1,15 +1,42 @@
+import GalleryGrid from "@/components/public/GalleryGrid";
 import { requireActiveBrand } from "@/lib/active-brand";
+import { prisma } from "@/lib/prisma";
 
 export const metadata = { title: "Galeri" };
 
-// Halaman Galeri. Konten lengkap dibangun di Milestone 3.
+// Album foto per brand, klik foto untuk lightbox.
 export default async function GaleriPage() {
   const brand = await requireActiveBrand();
 
+  const albums = await prisma.galleryAlbum.findMany({
+    where: { brandId: brand.id },
+    orderBy: { order: "asc" },
+    select: {
+      id: true,
+      title: true,
+      photos: { orderBy: { order: "asc" }, select: { id: true, imageUrl: true, caption: true } },
+    },
+  });
+  const filled = albums.filter((a) => a.photos.length > 0);
+
   return (
-    <section className="mx-auto max-w-5xl px-4 py-12">
-      <h1 className="text-3xl font-bold text-primary">Galeri — {brand.name}</h1>
-      <p className="mt-2 text-gray-600">Placeholder (Milestone 3).</p>
+    <section className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+      <h1 className="text-3xl font-bold sm:text-4xl">Galeri {brand.name}</h1>
+
+      {filled.length ? (
+        <div className="mt-8 space-y-12">
+          {filled.map((album) => (
+            <section key={album.id}>
+              <h2 className="mb-4 text-xl font-bold">
+                {album.title} <span className="text-sm font-normal text-gray-500">· {album.photos.length} foto</span>
+              </h2>
+              <GalleryGrid photos={album.photos} />
+            </section>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-6 text-gray-500">Foto belum tersedia.</p>
+      )}
     </section>
   );
 }

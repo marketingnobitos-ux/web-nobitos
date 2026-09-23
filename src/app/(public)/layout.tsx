@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import BrandFooter from "@/components/public/BrandFooter";
 import BrandHeader from "@/components/public/BrandHeader";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 
@@ -24,9 +25,10 @@ export default async function PublicLayout({ children }: { children: React.React
   } as CSSProperties;
 
   return (
-    <div style={brandVars} className="min-h-screen">
+    <div style={brandVars} className="flex min-h-screen flex-col bg-white text-gray-900">
       <BrandHeader brand={brand} />
-      <main>{children}</main>
+      <main className="flex-1">{children}</main>
+      <BrandFooter brand={brand} />
     </div>
   );
 }
