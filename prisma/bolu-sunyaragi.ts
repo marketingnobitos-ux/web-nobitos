@@ -10,7 +10,13 @@ export const BOLU_TAGLINE = "Oleh-oleh lembut dari Cirebon, dipanggang dengan sa
 
 /** Cerita brand: dari asal nama Sunyaragi sampai hari ini. Ditulis tanpa tahun & nama pendiri (belum ada data resmi). */
 export const BOLU_STORY = {
-  hero: { title: "Bolu Sunyaragi", subtitle: "Lembutnya Cirebon, dipanggang dengan sabar dan digulung selagi hangat." },
+  hero: {
+    title: "Bolu Sunyaragi",
+    subtitle: "Lembutnya Cirebon, dipanggang dengan sabar dan digulung selagi hangat.",
+    /** Video proses (hanya tangan) dari stok Pexels, lihat public/video/CREDITS.txt. Poster = frame pertama. */
+    videoUrl: "/video/bolu-sunyaragi-hero.mp4",
+    imageUrl: "/brand/bolu-sunyaragi-hero.jpg",
+  },
   /** Pernyataan pembuka Beranda. Kata di antara *bintang* tampil miring. */
   intro:
     "Namanya kami ambil dari Sunyaragi, tempat orang Cirebon dulu datang untuk *menyepi.* Dari situ kami belajar satu hal: yang baik tidak bisa *diburu-buru.*",
