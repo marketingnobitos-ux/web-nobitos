@@ -50,13 +50,12 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
   const wa = branches.find((b) => b.whatsapp);
   const waHref = wa?.whatsapp ? whatsappUrl(wa.whatsapp, `Halo ${brand.name}, saya mau pesan.`) : null;
 
-  const outlets = branches.map((b, i) => ({
+  const outlets = branches.map((b) => ({
     id: b.id,
     name: branchLabel(b.name),
     address: b.address,
     hours: shortHours(b.openHours),
     mapsUrl: mapsLink(b),
-    photo: EDITORIAL_PLACEHOLDER.outlets[i % EDITORIAL_PLACEHOLDER.outlets.length],
   }));
 
   return (
@@ -76,7 +75,7 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
 
       {chapters.length > 0 && <EdChapters heading="Cerita & proses" chapters={chapters} />}
 
-      {outlets.length > 0 && <EdOutlets outlets={outlets} />}
+      {outlets.length > 0 && <EdOutlets brandName={brand.name} outlets={outlets} />}
 
       <EdClosing
         href={waHref ?? "/cabang"}
