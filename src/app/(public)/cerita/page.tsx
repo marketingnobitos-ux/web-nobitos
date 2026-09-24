@@ -1,4 +1,5 @@
 import Link from "next/link";
+import EditorialStory from "@/components/templates/editorial/EditorialStory";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
 
@@ -8,6 +9,10 @@ export const metadata = { title: "Cerita" };
 export default async function CeritaPage() {
   const brand = await requireActiveBrand();
   const sections = await getSections(brand.id, "story");
+
+  if (brand.template === "EDITORIAL") {
+    return <EditorialStory brandName={brand.name} tagline={brand.tagline} sections={sections} />;
+  }
 
   return (
     <>

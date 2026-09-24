@@ -36,6 +36,8 @@ export const BOLU_STORY = {
   },
   history: {
     title: "Awal mulanya",
+    /** Gua Sunyaragi, Cirebon: asal nama brand. */
+    imageUrl: "/brand/cerita/gua-sunyaragi.jpg",
     body: "Nama Sunyaragi datang dari sebuah tempat di Cirebon yang dibangun untuk menyepi. Semangat itu yang kami bawa ke dapur: tidak terburu-buru, tidak mengambil jalan pintas. Berawal dari satu resep bolu gulung, kini keluarga kue kami tumbuh menjadi spikoe, chiffon, roti bluder, dan bolen crispy, tanpa mengubah cara kami membuatnya.",
   },
   values: {
@@ -44,6 +46,7 @@ export const BOLU_STORY = {
   },
   atmosphere: {
     title: "Suasana toko",
+    imageUrl: "/brand/galeri/toko-dalam.jpg",
     body: "Pintu terbuka, wangi mentega dan pandan langsung menyambut. Etalase berisi gulungan bolu yang baru dipotong. Tinggal pilih, kami kemas rapi untuk dibawa pulang.",
   },
   /** Teks berganti saat scroll (dipakai template BOLD). */
@@ -248,9 +251,9 @@ async function writeBoluStory() {
     for (const [i, sec] of sections.entries()) {
       const where = { brandId_pageKey_sectionKey: { brandId: brand.id, pageKey: sec.pageKey, sectionKey: sec.sectionKey } };
       const old = await prisma.pageContent.findUnique({ where });
-      // Foto yang sudah di-upload admin di section cerita tetap dipakai.
+      // Foto upload admin tetap dipakai, kecuali section ini punya foto bawaan di BOLU_STORY.
       const image = pick((old?.data ?? {}) as Record<string, unknown>, ["imageUrl"]);
-      const data = sec.sectionKey === "hero" ? sec.data : { ...(sec.data as object), ...image };
+      const data = sec.sectionKey === "hero" ? sec.data : { ...image, ...(sec.data as object) };
       await prisma.pageContent.upsert({ where, update: { data }, create: { brandId: brand.id, pageKey: sec.pageKey, sectionKey: sec.sectionKey, data, order: i } });
     }
     console.log(`Cerita Bolu Sunyaragi ditulis ulang: ${sections.length} section.`);
