@@ -269,6 +269,25 @@ html.lenis body {
 }
 
 /* ---------- Template Anglo (Bakmi Jowo Anglo Pak Joko): kertas krem, spidol, mesin ketik, label stiker ---------- */
+/* Caveat Brush (Google Fonts, SIL OFL), subset latin, di-self-host supaya bisa di-preload hanya di halaman Anglo. */
+@font-face {
+  font-family: "Anglo Marker";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/brands/bakmi-pak-joko/fonts/caveat-brush-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Fallback bermetrik mirip (angka dari next/font) supaya pergantian font tidak menggeser layout. */
+@font-face {
+  font-family: "Anglo Marker Fallback";
+  src: local("Arial");
+  ascent-override: 120.9%;
+  descent-override: 37.78%;
+  line-gap-override: 0%;
+  size-adjust: 79.41%;
+}
 .tpl-anglo {
   /* Blok pastel, satu warna per section (brief 6.2). */
   --kunyit: #e8b64a;
@@ -277,7 +296,7 @@ html.lenis body {
   --wood: #8a5a34; /* rak kayu papan pengumuman */
   --nav: #2b2926; /* bar navigasi abu gelap */
   --sheet: #fbf6ea; /* kertas tempel / poster */
-  --font-display: var(--font-caveat-brush), "Comic Sans MS", cursive;
+  --font-display: "Anglo Marker", "Anglo Marker Fallback", cursive;
   --font-mono: var(--font-space-mono), ui-monospace, monospace;
   font-family: var(--font-courier-prime), ui-monospace, monospace;
 }
@@ -294,9 +313,10 @@ html.lenis body {
     letter-spacing: 0.01em;
     text-wrap: balance;
   }
-  /* Tekstur kertas: noise halus di atas warna latar apa pun. */
+  /* Tekstur kertas: noise halus di atas warna latar apa pun. Tile PNG kecil (bukan filter SVG) supaya ringan di HP. */
   .ag-noise {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .09 0 0 0 0 .08 0 0 0 0 .07 .6 0 0 0 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("/brands/bakmi-pak-joko/tekstur-kertas.png");
+    background-size: 128px 128px;
   }
   /* Label stiker: kotak mono kapital, sedikit miring (atur putaran dengan utility rotate-*). */
   .ag-sticker {
@@ -335,6 +355,11 @@ html.lenis body {
   }
   .ag-pill:hover {
     transform: translateY(-2px);
+  }
+  /* Foto asli sebagai potongan stiker: tepi putih tebal mengikuti bentuk (PNG/WebP transparan) + bayangan tipis. */
+  .ag-photo-sticker {
+    filter: drop-shadow(5px 0 0 #fff) drop-shadow(-5px 0 0 #fff) drop-shadow(0 5px 0 #fff) drop-shadow(0 -5px 0 #fff)
+      drop-shadow(2px 6px 6px rgb(22 20 18 / 0.3));
   }
   /* Kertas tempel / poster: garis tinta + bayangan keras. */
   .ag-paper {
@@ -409,6 +434,13 @@ html.lenis body {
     .tpl-anglo [data-stick]:not([data-stuck]) {
       opacity: 0;
     }
+    /*
+     * Pengaman: selama StickObserver belum aktif (html belum punya [data-ag-stick], mis. hydrate gagal
+     * atau JS error), semua stiker tetap muncul sendiri setelah 2 detik.
+     */
+    html:not([data-ag-stick]) .tpl-anglo [data-stick]:not([data-stuck]) {
+      animation: ag-failsafe 0.3s ease-out 2s forwards;
+    }
     .tpl-anglo [data-stick][data-stuck] {
       animation: ag-stick 0.7s cubic-bezier(0.3, 1.35, 0.5, 1) both;
       animation-delay: var(--stick-delay, 0ms);
@@ -454,6 +486,11 @@ html.lenis body {
   100% {
     opacity: 1;
     transform: none;
+  }
+}
+@keyframes ag-failsafe {
+  to {
+    opacity: 1;
   }
 }
 @keyframes ag-stick-lite {

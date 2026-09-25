@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Caveat_Brush, Courier_Prime, DM_Sans, Instrument_Sans, Space_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Courier_Prime, DM_Sans, Instrument_Sans, Space_Mono } from "next/font/google";
+import { preload } from "react-dom";
 import MotionProvider from "@/components/animations/MotionProvider";
 import { NoScriptReveal } from "@/components/animations/Reveal";
 import SmoothScroll from "@/components/animations/SmoothScroll";
@@ -32,9 +33,9 @@ const instrumentSans = Instrument_Sans({
   display: "swap",
   variable: "--font-instrument-sans",
 });
-// Template Anglo (kertas & zine): judul spidol, label/harga mesin ketik, paragraf Courier.
-// Tidak di-preload supaya brand lain tidak ikut mengunduh.
-const caveatBrush = Caveat_Brush({ subsets: ["latin"], weight: "400", display: "swap", preload: false, variable: "--font-caveat-brush" });
+// Template Anglo (kertas & zine): label/harga mesin ketik, paragraf Courier. Tidak di-preload supaya brand lain
+// tidak ikut mengunduh. Font judul spidol (Caveat Brush) di-self-host di globals.css & di-preload hanya untuk Anglo.
+const ANGLO_MARKER_FONT = "/brands/bakmi-pak-joko/fonts/caveat-brush-latin.woff2";
 const spaceMono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], display: "swap", preload: false, variable: "--font-space-mono" });
 const courierPrime = Courier_Prime({
   subsets: ["latin"],
@@ -61,6 +62,8 @@ export default async function PublicLayout({ children }: { children: React.React
 
   const editorial = brand.template === "EDITORIAL";
   const anglo = brand.template === "ANGLO";
+  // Font judul = elemen LCP Beranda Anglo: unduh sedini mungkin supaya judul langsung tampil dengan font akhirnya.
+  if (anglo) preload(ANGLO_MARKER_FONT, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
 
   // Warna gelap dominan (--ink) diturunkan dari warna brand, jadi tiap brand punya nuansa sendiri.
   // Editorial: gelapnya sedikit lebih terang (maroon, bukan hampir hitam) & latar terang dari warna secondary.
@@ -77,7 +80,7 @@ export default async function PublicLayout({ children }: { children: React.React
   const fonts = editorial
     ? `${instrumentSans.variable} tpl-editorial`
     : anglo
-      ? `${caveatBrush.variable} ${spaceMono.variable} ${courierPrime.variable} tpl-anglo`
+      ? `${spaceMono.variable} ${courierPrime.variable} tpl-anglo`
       : `${bricolage.variable} ${dmSans.variable}`;
 
   return (

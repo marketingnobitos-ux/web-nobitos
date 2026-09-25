@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PhotoArt from "@/components/templates/anglo/PhotoArt";
 import StickObserver from "@/components/templates/anglo/StickObserver";
 import { AngloStove, WokFlame } from "@/components/templates/anglo/illustrations";
 import { Emph, StickerLabels, WRAP } from "@/components/templates/anglo/shared";
@@ -16,10 +17,14 @@ export default function AngloStory() {
         </div>
         <div className="flex items-end justify-center gap-0">
           <div data-stick className="w-[48%] max-w-[220px] -rotate-6">
-            <AngloStove sticker />
+            <PhotoArt slot="anglo" sticker>
+              <AngloStove sticker />
+            </PhotoArt>
           </div>
           <div data-stick className="-ml-4 mb-10 w-[44%] max-w-[200px] rotate-6">
-            <WokFlame sticker />
+            <PhotoArt slot="wajan" sticker>
+              <WokFlame sticker />
+            </PhotoArt>
           </div>
         </div>
       </section>

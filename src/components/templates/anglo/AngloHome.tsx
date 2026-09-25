@@ -1,14 +1,20 @@
 import Link from "next/link";
 import BuJokoNotice from "@/components/templates/anglo/BuJokoNotice";
+import PhotoArt from "@/components/templates/anglo/PhotoArt";
 import StickObserver from "@/components/templates/anglo/StickObserver";
 import { AngloStove, IcedTea, MenuIllustration, NoodleBowl, WokFlame } from "@/components/templates/anglo/illustrations";
 import { Emph, Smoke, StickerLabels, SwipeHint, WRAP, formatHarga } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { menuPhotoSlot, type AngloPhotoSlot } from "@/lib/anglo-photos";
 
 type FeaturedItem = { id: string; name: string; description: string | null; price: number };
 
 // Ilustrasi kartu "Kenapa Anglo" & putaran kertas tempel (pengganti foto sampai foto asli masuk).
-const WHY_ART = [AngloStove, WokFlame, NoodleBowl];
+const WHY_ART = [
+  { slot: "anglo", Art: AngloStove },
+  { slot: "wajan", Art: WokFlame },
+  { slot: "bakmi-nyemek", Art: NoodleBowl },
+] satisfies { slot: AngloPhotoSlot; Art: typeof AngloStove }[];
 const TILT = ["md:-rotate-2", "md:rotate-1", "md:-rotate-1"];
 
 /**
@@ -55,16 +61,24 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
       <section aria-labelledby="hero-title" className="ag-noise relative overflow-hidden bg-paper text-ink">
         <div className={`${WRAP} relative flex flex-col items-center py-14 text-center md:py-20 lg:min-h-[calc(100svh-4rem)] lg:justify-center`}>
           <Cutout className="absolute left-10 top-16 hidden w-[190px] -rotate-6 lg:block xl:left-16" sticker={stickerAnglo}>
-            <WokFlame sticker />
+            <PhotoArt slot="wajan" sticker>
+              <WokFlame sticker />
+            </PhotoArt>
           </Cutout>
           <Cutout className="absolute right-10 top-20 hidden w-[200px] rotate-6 lg:block xl:right-16">
-            <NoodleBowl sticker />
+            <PhotoArt slot="bakmi-nyemek" sticker>
+              <NoodleBowl sticker />
+            </PhotoArt>
           </Cutout>
           <Cutout className="absolute bottom-20 left-16 hidden w-[170px] rotate-3 lg:block xl:left-28" sticker={stickerHours} smoke>
-            <AngloStove sticker />
+            <PhotoArt slot="anglo" sticker>
+              <AngloStove sticker />
+            </PhotoArt>
           </Cutout>
           <Cutout className="absolute bottom-24 right-20 hidden w-[140px] -rotate-6 lg:block xl:right-28">
-            <IcedTea sticker />
+            <PhotoArt slot="es-teh" sticker>
+              <IcedTea sticker />
+            </PhotoArt>
           </Cutout>
 
           <StickerLabels text={hero.label} className="justify-center" />
@@ -87,13 +101,19 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
           {/* Kolase di HP & tablet: potongan ditumpuk di bawah teks. */}
           <div className="mt-14 flex w-full max-w-md items-end justify-center lg:hidden">
             <Cutout className="relative w-[34%] max-w-[170px] -rotate-6" sticker={stickerAnglo} stickerAlign="start" stickerTop>
-              <WokFlame sticker />
+              <PhotoArt slot="wajan" sticker>
+                <WokFlame sticker />
+              </PhotoArt>
             </Cutout>
             <Cutout className="relative z-10 -mx-3 mb-6 w-[36%] max-w-[180px] rotate-3">
-              <NoodleBowl sticker />
+              <PhotoArt slot="bakmi-nyemek" sticker>
+                <NoodleBowl sticker />
+              </PhotoArt>
             </Cutout>
             <Cutout className="relative w-[30%] max-w-[150px] rotate-6" sticker={stickerHours} stickerAlign="end" smoke>
-              <AngloStove sticker />
+              <PhotoArt slot="anglo" sticker>
+                <AngloStove sticker />
+              </PhotoArt>
             </Cutout>
           </div>
         </div>
@@ -108,12 +128,14 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
         </div>
         <ul aria-label={whyAnglo.title} className="ag-rail mt-8 md:mx-auto md:mt-14 md:grid md:max-w-[1320px] md:grid-cols-3 md:gap-8 md:overflow-visible md:px-10">
           {whyAnglo.cards.map((card, i) => {
-            const Art = WHY_ART[i % WHY_ART.length];
+            const { slot, Art } = WHY_ART[i % WHY_ART.length];
             return (
               <li key={card.title} data-stick className={`ag-paper ag-tape relative flex flex-col p-6 pt-9 ${TILT[i % TILT.length]}`}>
                 <div className="flex items-start justify-between gap-4">
                   <span className="ag-sticker rotate-2">0{i + 1}</span>
-                  <Art className="h-24 w-24 shrink-0" />
+                  <PhotoArt slot={slot} sticker className="h-24 w-24 shrink-0" photoClassName="h-28 w-28 shrink-0">
+                    <Art className="h-24 w-24 shrink-0" />
+                  </PhotoArt>
                 </div>
                 <h3 className="ag-marker mt-4 text-[2.6rem]">{card.title}</h3>
                 <p className="mt-3 leading-relaxed">{card.body}</p>
@@ -148,7 +170,9 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
                     {/* Poster: goyang tipis saat hover (desktop), berporos di paku. */}
                     <div className="ag-poster relative w-full border-2 border-ink bg-white p-6 pt-10 text-center">
                       <span aria-hidden className="absolute left-1/2 top-3 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-ink bg-accent" />
-                      <MenuIllustration name={item.name} className="mx-auto h-28 w-28" />
+                      <PhotoArt slot={menuPhotoSlot(item.name)} sticker className="mx-auto h-28 w-28" photoClassName="mx-auto h-44 w-full">
+                        <MenuIllustration name={item.name} className="mx-auto h-28 w-28" />
+                      </PhotoArt>
                       <h3 className="ag-marker mt-4 text-[clamp(2.4rem,4vw,3.4rem)]">{item.name}</h3>
                       <p className="ag-sticker mt-4 text-sm">{formatHarga(item.price)}</p>
                       {item.description && <p className="mx-auto mt-4 max-w-xs leading-relaxed">{item.description}</p>}
