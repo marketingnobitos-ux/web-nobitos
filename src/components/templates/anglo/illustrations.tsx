@@ -1,10 +1,18 @@
 // Ilustrasi garis sederhana pengganti foto (brief 6.5), sampai foto asli dari tim konten masuk.
-// Semua memakai currentColor, jadi warnanya mengikuti teks induk.
+// Semua memakai currentColor, jadi warnanya mengikuti teks induk. Badan utama diisi putih (BODY)
+// supaya siluetnya penuh saat dipakai sebagai stiker potongan.
 import type { SVGProps } from "react";
 
-type Props = SVGProps<SVGSVGElement> & { title?: string };
+type Props = SVGProps<SVGSVGElement> & {
+  title?: string;
+  /** Efek stiker potongan: garis tepi putih tebal mengikuti bentuk + bayangan tipis. */
+  sticker?: boolean;
+};
 
-function Svg({ title, children, viewBox = "0 0 120 120", ...rest }: Props & { children: React.ReactNode }) {
+const BODY = { fill: "#fff" };
+const STICKER_FILTER = "ag-sticker-outline";
+
+function Svg({ title, sticker, children, viewBox = "0 0 120 120", ...rest }: Props & { children: React.ReactNode }) {
   return (
     <svg
       viewBox={viewBox}
@@ -14,28 +22,55 @@ function Svg({ title, children, viewBox = "0 0 120 120", ...rest }: Props & { ch
       strokeWidth={3}
       strokeLinecap="round"
       strokeLinejoin="round"
+      overflow="visible"
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
       {...rest}
     >
       {title && <title>{title}</title>}
-      {children}
+      {sticker ? <g filter={`url(#${STICKER_FILTER})`}>{children}</g> : children}
     </svg>
   );
 }
 
-/** Tungku anglo tanah liat dengan arang membara. */
+/** Pasang sekali per halaman (layout Anglo): filter SVG untuk efek stiker potongan. */
+export function StickerDefs() {
+  return (
+    <svg aria-hidden width="0" height="0" className="absolute">
+      <defs>
+        <filter id={STICKER_FILTER} x="-30%" y="-30%" width="160%" height="160%" colorInterpolationFilters="sRGB">
+          {/* Silhouet ditebalkan jadi tepi putih, lalu bayangan tipis di bawahnya. */}
+          <feMorphology in="SourceAlpha" operator="dilate" radius="7" result="fat" />
+          <feFlood floodColor="#ffffff" />
+          <feComposite in2="fat" operator="in" result="outline" />
+          <feGaussianBlur in="fat" stdDeviation="3" />
+          <feOffset dx="2" dy="5" result="blur" />
+          <feFlood floodColor="#161412" floodOpacity="0.28" />
+          <feComposite in2="blur" operator="in" result="shadow" />
+          <feMerge>
+            <feMergeNode in="shadow" />
+            <feMergeNode in="outline" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+    </svg>
+  );
+}
+
+/** Tungku anglo tanah liat: bibir, badan meruncing, lubang angin berjeruji, arang & bara. */
 export function AngloStove(props: Props) {
   return (
     <Svg {...props}>
-      <path d="M22 50c1-4 75-5 76 0" />
-      <path d="M22 50c2 4 74 5 76 0" />
-      <path d="M24 53c3 18 9 35 18 47 11 3 25 3 36 0 9-12 15-29 18-47" />
-      <path d="M48 100c0-8 5-14 12-14s12 6 12 14" />
-      <path d="M36 101c-3 4-4 8-4 11M84 101c3 4 4 8 4 11" />
-      <path d="M31 47c3-5 8-6 11-3 3-5 9-6 12-2 3-4 9-4 12 0 3-4 9-3 11 1 3-3 8-2 10 2" />
-      <path d="M50 38c-4-6 2-10 0-16M62 36c-4-7 3-12 0-20M74 38c-3-5 2-9 0-14" strokeWidth={2.5} />
-      <path d="M40 66c4 2 8 2 12 0M66 66c4 2 8 2 12 0" strokeWidth={2.5} />
+      <path d="M24 50 33 100h54l9-50z" {...BODY} />
+      <path d="M22 48c0-6 76-6 76 0s-76 6-76 0z" {...BODY} />
+      <path d="M27 66h66" strokeWidth={2.5} />
+      <path d="M31 88h58" strokeWidth={2.5} />
+      <rect x="49" y="72" width="22" height="16" rx="2" strokeWidth={2.5} />
+      <path d="M56 72v16M64 72v16" strokeWidth={2} />
+      <path d="M30 100h60" />
+      <path d="M34 45c2-6 9-7 12-3 2-5 10-6 13-1 3-5 10-5 13 0 3-4 9-3 11 2" strokeWidth={2.5} />
+      <path d="M52 34c-2-4 2-7 0-11M62 32c-3-5 3-9 0-14M72 34c-2-4 2-7 0-11" strokeWidth={2.5} />
     </Svg>
   );
 }
@@ -44,7 +79,7 @@ export function AngloStove(props: Props) {
 export function WokFlame(props: Props) {
   return (
     <Svg {...props}>
-      <path d="M18 54c4 20 22 32 44 32s38-12 42-32" />
+      <path d="M18 54c4 20 22 32 44 32s38-12 42-32z" {...BODY} />
       <path d="M16 54c30-3 60-3 90 0" />
       <path d="M104 52c6-2 10-5 12-8" />
       <path d="M16 54c-4 0-8-3-9-6" />
@@ -56,18 +91,18 @@ export function WokFlame(props: Props) {
   );
 }
 
-/** Mangkok bakmi nyemek dengan sumpit & uap. */
+/** Mangkok bakmi nyemek: mie diangkat sumpit, kuah, kaki mangkok, uap. */
 export function NoodleBowl(props: Props) {
   return (
     <Svg {...props}>
-      <path d="M14 58h92" />
-      <path d="M16 58c2 24 20 40 44 40s42-16 44-40" />
-      <path d="M44 98c0 5 7 8 16 8s16-3 16-8" />
-      <path d="M26 56c4-7 8 3 12-4s8 3 12-4 8 3 12-4 8 3 12-4 8 3 12-4 7 3 8 0" strokeWidth={2.5} />
-      <circle cx="74" cy="47" r="6" strokeWidth={2.5} />
-      <circle cx="74" cy="47" r="2" fill="currentColor" stroke="none" />
-      <path d="M82 20 62 52M92 24 70 54" />
-      <path d="M36 40c-4-5 3-8 0-14M48 36c-4-6 3-10 0-17" strokeWidth={2.5} />
+      <path d="M12 62c3 24 22 38 48 38s45-14 48-38z" {...BODY} />
+      <path d="M44 99l-2 9h36l-2-9" {...BODY} />
+      <path d="M12 62c0-5 96-5 96 0" />
+      <path d="M22 80c14 5 62 5 76 0" strokeWidth={2} />
+      <path d="M22 60c6-3 10 1 16-1s10 1 16-1 10 1 16-1 10 1 16-1 8 1 12 0" strokeWidth={2} />
+      <path d="M100 12 70 56M110 18 76 58" />
+      <path d="M72 55c-4-7 4-11 0-18s4-11 1-16M79 57c-4-7 4-11 0-18s3-10 1-14" strokeWidth={2.5} />
+      <path d="M32 50c-4-5 3-9 0-15M44 46c-4-6 3-10 0-17" strokeWidth={2.5} />
     </Svg>
   );
 }
@@ -76,7 +111,7 @@ export function NoodleBowl(props: Props) {
 export function IcedTea(props: Props) {
   return (
     <Svg {...props}>
-      <path d="M34 28h52l-7 80H41z" />
+      <path d="M34 28h52l-7 80H41z" {...BODY} />
       <path d="M36 46h48" strokeWidth={2.5} />
       <rect x="44" y="54" width="12" height="12" rx="2" strokeWidth={2.5} transform="rotate(-10 50 60)" />
       <rect x="62" y="64" width="12" height="12" rx="2" strokeWidth={2.5} transform="rotate(12 68 70)" />

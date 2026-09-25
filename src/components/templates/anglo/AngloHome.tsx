@@ -1,7 +1,8 @@
 import Link from "next/link";
 import BuJokoNotice from "@/components/templates/anglo/BuJokoNotice";
+import StickObserver from "@/components/templates/anglo/StickObserver";
 import { AngloStove, IcedTea, MenuIllustration, NoodleBowl, WokFlame } from "@/components/templates/anglo/illustrations";
-import { Emph, SwipeHint, WRAP, formatHarga } from "@/components/templates/anglo/shared";
+import { Emph, Smoke, StickerLabels, SwipeHint, WRAP, formatHarga } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 
 type FeaturedItem = { id: string; name: string; description: string | null; price: number };
@@ -10,12 +11,35 @@ type FeaturedItem = { id: string; name: string; description: string | null; pric
 const WHY_ART = [AngloStove, WokFlame, NoodleBowl];
 const TILT = ["md:-rotate-2", "md:rotate-1", "md:-rotate-1"];
 
-/** Potongan ala stiker berisi ilustrasi, opsional dengan label stiker menempel. `className` wajib memuat posisi (relative/absolute). */
-function Cutout({ children, className = "", sticker }: { children: React.ReactNode; className?: string; sticker?: string }) {
+/**
+ * Potongan stiker bebas (ilustrasi dengan tepi putih mengikuti bentuk), opsional dengan label stiker
+ * dan asap. `className` wajib memuat posisi (relative/absolute).
+ */
+function Cutout({
+  children,
+  className = "",
+  sticker,
+  stickerAlign = "center",
+  stickerTop = false,
+  smoke = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  sticker?: string;
+  /** Rata label: "start"/"end" untuk potongan di tepi layar supaya label tidak terpotong. */
+  stickerAlign?: "center" | "start" | "end";
+  /** Label di atas potongan (bukan di bawah), supaya tidak bertabrakan dengan label tetangga. */
+  stickerTop?: boolean;
+  smoke?: boolean;
+}) {
+  const align = { center: "left-1/2 -translate-x-1/2", start: "left-0", end: "right-0" }[stickerAlign];
   return (
-    <div className={className}>
-      <div className="ag-cutout text-ink">{children}</div>
-      {sticker && <span className="ag-sticker absolute -bottom-4 left-1/2 -translate-x-1/2 -rotate-3 whitespace-nowrap">{sticker}</span>}
+    <div data-stick className={className}>
+      <div className="relative text-ink">
+        {children}
+        {smoke && <Smoke />}
+      </div>
+      {sticker && <span className={`ag-sticker absolute -rotate-3 ${stickerTop ? "-top-4" : "-bottom-3"} ${align}`}>{sticker}</span>}
     </div>
   );
 }
@@ -31,19 +55,19 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
       <section aria-labelledby="hero-title" className="ag-noise relative overflow-hidden bg-paper text-ink">
         <div className={`${WRAP} relative flex flex-col items-center py-14 text-center md:py-20 lg:min-h-[calc(100svh-4rem)] lg:justify-center`}>
           <Cutout className="absolute left-10 top-16 hidden w-[190px] -rotate-6 lg:block xl:left-16" sticker={stickerAnglo}>
-            <WokFlame />
+            <WokFlame sticker />
           </Cutout>
           <Cutout className="absolute right-10 top-20 hidden w-[200px] rotate-6 lg:block xl:right-16">
-            <NoodleBowl />
+            <NoodleBowl sticker />
           </Cutout>
-          <Cutout className="absolute bottom-20 left-16 hidden w-[170px] rotate-3 lg:block xl:left-28" sticker={stickerHours}>
-            <AngloStove />
+          <Cutout className="absolute bottom-20 left-16 hidden w-[170px] rotate-3 lg:block xl:left-28" sticker={stickerHours} smoke>
+            <AngloStove sticker />
           </Cutout>
           <Cutout className="absolute bottom-24 right-20 hidden w-[140px] -rotate-6 lg:block xl:right-28">
-            <IcedTea />
+            <IcedTea sticker />
           </Cutout>
 
-          <p className="ag-sticker -rotate-2">{hero.label}</p>
+          <StickerLabels text={hero.label} className="justify-center" />
           <h1 id="hero-title" className="ag-marker mt-8 max-w-[11ch] text-[clamp(64px,10vw,150px)]">
             <Emph text={hero.title} />
           </h1>
@@ -62,14 +86,14 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
 
           {/* Kolase di HP & tablet: potongan ditumpuk di bawah teks. */}
           <div className="mt-14 flex w-full max-w-md items-end justify-center lg:hidden">
-            <Cutout className="relative w-[34%] max-w-[170px] -rotate-6" sticker={stickerAnglo}>
-              <WokFlame />
+            <Cutout className="relative w-[34%] max-w-[170px] -rotate-6" sticker={stickerAnglo} stickerAlign="start" stickerTop>
+              <WokFlame sticker />
             </Cutout>
             <Cutout className="relative z-10 -mx-3 mb-6 w-[36%] max-w-[180px] rotate-3">
-              <NoodleBowl />
+              <NoodleBowl sticker />
             </Cutout>
-            <Cutout className="relative w-[30%] max-w-[150px] rotate-6" sticker={stickerHours}>
-              <AngloStove />
+            <Cutout className="relative w-[30%] max-w-[150px] rotate-6" sticker={stickerHours} stickerAlign="end" smoke>
+              <AngloStove sticker />
             </Cutout>
           </div>
         </div>
@@ -86,7 +110,7 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
           {whyAnglo.cards.map((card, i) => {
             const Art = WHY_ART[i % WHY_ART.length];
             return (
-              <li key={card.title} className={`ag-paper ag-tape relative flex flex-col p-6 pt-9 ${TILT[i % TILT.length]}`}>
+              <li key={card.title} data-stick className={`ag-paper ag-tape relative flex flex-col p-6 pt-9 ${TILT[i % TILT.length]}`}>
                 <div className="flex items-start justify-between gap-4">
                   <span className="ag-sticker rotate-2">0{i + 1}</span>
                   <Art className="h-24 w-24 shrink-0" />
@@ -105,7 +129,7 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
         <section aria-labelledby="featured-title" className="ag-noise bg-enamel py-20 text-ink md:py-28">
           <div className={`${WRAP} flex flex-col gap-6 md:flex-row md:items-end md:justify-between`}>
             <div>
-              <p className="ag-sticker ag-sticker-light -rotate-2">{ui.featuredSticker}</p>
+              <p data-stick className="ag-sticker ag-sticker-light -rotate-2">{ui.featuredSticker}</p>
               <h2 id="featured-title" className="ag-marker mt-5 max-w-[16ch] text-[clamp(48px,6.5vw,96px)]">
                 {featuredCopy.title}
               </h2>
@@ -120,12 +144,15 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
             <div className="ag-noise relative border-2 border-ink bg-paper px-0 py-6 md:px-12 md:py-14">
               <ul aria-label={featuredCopy.title} className="ag-rail md:mx-auto md:grid md:max-w-4xl md:grid-cols-2 md:gap-12 md:overflow-visible md:p-0">
                 {featured.map((item, i) => (
-                  <li key={item.id} className={`relative border-2 border-ink bg-white p-6 pt-10 text-center ${i % 2 ? "rotate-1" : "-rotate-1"}`}>
-                    <span aria-hidden className="absolute left-1/2 top-3 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-ink bg-accent" />
-                    <MenuIllustration name={item.name} className="mx-auto h-28 w-28" />
-                    <h3 className="ag-marker mt-4 text-[clamp(2.4rem,4vw,3.4rem)]">{item.name}</h3>
-                    <p className="ag-sticker mt-4 text-sm">{formatHarga(item.price)}</p>
-                    {item.description && <p className="mx-auto mt-4 max-w-xs leading-relaxed">{item.description}</p>}
+                  <li key={item.id} data-stick className={`flex ${i % 2 ? "rotate-1" : "-rotate-1"}`}>
+                    {/* Poster: goyang tipis saat hover (desktop), berporos di paku. */}
+                    <div className="ag-poster relative w-full border-2 border-ink bg-white p-6 pt-10 text-center">
+                      <span aria-hidden className="absolute left-1/2 top-3 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-ink bg-accent" />
+                      <MenuIllustration name={item.name} className="mx-auto h-28 w-28" />
+                      <h3 className="ag-marker mt-4 text-[clamp(2.4rem,4vw,3.4rem)]">{item.name}</h3>
+                      <p className="ag-sticker mt-4 text-sm">{formatHarga(item.price)}</p>
+                      {item.description && <p className="mx-auto mt-4 max-w-xs leading-relaxed">{item.description}</p>}
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -146,6 +173,8 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
           <BuJokoNotice track="ig-bujoko-beranda" />
         </div>
       </section>
+
+      <StickObserver />
     </>
   );
 }

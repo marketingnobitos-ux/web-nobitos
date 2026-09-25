@@ -308,6 +308,7 @@ html.lenis body {
     line-height: 1.25;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    white-space: nowrap; /* label tidak patah di tengah frasa; frasa panjang dipecah jadi beberapa label */
     background: var(--ink);
     color: var(--sheet);
   }
@@ -334,13 +335,6 @@ html.lenis body {
   }
   .ag-pill:hover {
     transform: translateY(-2px);
-  }
-  /* Potongan ala stiker: ilustrasi di atas kertas putih bertepi tebal. */
-  .ag-cutout {
-    background: #fff;
-    border-radius: 28px;
-    padding: 0.9rem;
-    box-shadow: 0 0 0 5px #fff, 0 10px 24px -8px rgb(22 20 18 / 0.35);
   }
   /* Kertas tempel / poster: garis tinta + bayangan keras. */
   .ag-paper {
@@ -385,5 +379,115 @@ html.lenis body {
     border-bottom: 2px dotted currentColor;
     opacity: 0.45;
     transform: translateY(-0.3em);
+  }
+}
+
+/* ---------- Animasi Anglo (brief 6.4): gaya "tempel", bukan "reveal" ---------- */
+
+/* Asap tipis dari anglo (ilustrasi hero). Tidak tampil tanpa animasi. */
+.ag-smoke {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: rgb(22 20 18 / 0.2);
+  filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ag-smoke {
+    animation: ag-smoke 4.2s ease-out infinite;
+    animation-delay: calc(var(--i, 0) * 1.4s);
+  }
+
+  /* Stiker & potongan: tersembunyi sampai masuk layar, lalu "ditempel" (putar + mantul kecil). */
+  @media (scripting: enabled) {
+    .tpl-anglo [data-stick]:not([data-stuck]) {
+      opacity: 0;
+    }
+    .tpl-anglo [data-stick][data-stuck] {
+      animation: ag-stick 0.7s cubic-bezier(0.3, 1.35, 0.5, 1) both;
+      animation-delay: var(--stick-delay, 0ms);
+    }
+  }
+
+  /* Poster papan pengumuman bergoyang tipis saat hover (hanya perangkat dengan hover/desktop). */
+  @media (hover: hover) and (min-width: 768px) {
+    .ag-poster {
+      transform-origin: 50% 14px; /* poros di paku */
+    }
+    .ag-poster:hover {
+      animation: ag-sway 1.6s ease-in-out infinite;
+    }
+  }
+}
+
+/* HP: tempel lebih sederhana (tanpa putar & mantul), asap cukup dua gumpal. */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) and (max-width: 767px) {
+  .tpl-anglo [data-stick][data-stuck] {
+    animation: ag-stick-lite 0.45s ease-out both;
+    animation-delay: var(--stick-delay, 0ms);
+  }
+}
+@media (max-width: 767px) {
+  .ag-smoke:nth-child(n + 3) {
+    display: none;
+  }
+}
+
+@keyframes ag-stick {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--stick-from, -8deg)) scale(1.16) translateY(-8px);
+  }
+  55% {
+    opacity: 1;
+    transform: rotate(calc(var(--stick-from, -8deg) * -0.25)) scale(0.97);
+  }
+  78% {
+    transform: rotate(calc(var(--stick-from, -8deg) * 0.08)) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ag-stick-lite {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ag-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-1.6deg);
+  }
+  75% {
+    transform: rotate(1.6deg);
+  }
+}
+@keyframes ag-smoke {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.6);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--drift, 10px)), -260%) scale(2.4);
   }
 }

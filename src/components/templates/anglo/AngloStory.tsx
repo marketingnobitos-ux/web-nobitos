@@ -1,6 +1,7 @@
 import Link from "next/link";
+import StickObserver from "@/components/templates/anglo/StickObserver";
 import { AngloStove, WokFlame } from "@/components/templates/anglo/illustrations";
-import { Emph, WRAP } from "@/components/templates/anglo/shared";
+import { Emph, StickerLabels, WRAP } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 
 /** Cerita Anglo (brief 4.4): judul spidol di kertas krem, paragraf mesin ketik di kertas tempel. */
@@ -10,22 +11,22 @@ export default function AngloStory() {
     <div className="ag-noise bg-paper text-ink">
       <section className={`${WRAP} grid items-center gap-12 py-14 md:py-24 lg:grid-cols-[1.2fr_1fr]`}>
         <div>
-          <p className="ag-sticker -rotate-2">{hero.label}</p>
+          <StickerLabels text={hero.label} />
           <h1 className="ag-marker mt-7 max-w-[12ch] text-[clamp(60px,9vw,136px)]">{story.title}</h1>
         </div>
         <div className="flex items-end justify-center gap-0">
-          <div className="ag-cutout w-[48%] max-w-[220px] -rotate-6">
-            <AngloStove />
+          <div data-stick className="w-[48%] max-w-[220px] -rotate-6">
+            <AngloStove sticker />
           </div>
-          <div className="ag-cutout -ml-4 mb-10 w-[44%] max-w-[200px] rotate-6">
-            <WokFlame />
+          <div data-stick className="-ml-4 mb-10 w-[44%] max-w-[200px] rotate-6">
+            <WokFlame sticker />
           </div>
         </div>
       </section>
 
       <section className="ag-noise border-y-2 border-ink bg-kunyit py-16 md:py-24">
         <div className={WRAP}>
-          <div className="ag-paper ag-tape relative mx-auto max-w-3xl space-y-6 p-6 pt-10 text-lg leading-relaxed sm:p-10 md:text-xl">
+          <div data-stick className="ag-paper ag-tape relative mx-auto max-w-3xl space-y-6 p-6 pt-10 text-lg leading-relaxed sm:p-10 md:text-xl">
             {story.paragraphs.map((p) => (
               <p key={p}>
                 <Emph text={p} />
@@ -42,6 +43,7 @@ export default function AngloStory() {
           </div>
         </div>
       </section>
+      <StickObserver />
     </div>
   );
 }

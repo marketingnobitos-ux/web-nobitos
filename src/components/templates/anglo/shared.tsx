@@ -23,6 +23,34 @@ export function Emph({ text }: { text: string }) {
   );
 }
 
+/**
+ * Label stiker yang tidak patah di tengah frasa: teks dipecah setelah koma/titik dua jadi beberapa label
+ * ("Rasa Asli Temanggung, Hadir di Kota Udang" -> "RASA ASLI TEMANGGUNG" + "HADIR DI KOTA UDANG").
+ */
+export function StickerLabels({ text, className = "" }: { text: string; className?: string }) {
+  const parts = text.split(/(?<=[,:])\s+/).map((p) => p.replace(/,$/, ""));
+  return (
+    <span className={`flex flex-wrap gap-x-2 gap-y-2.5 ${className}`}>
+      {parts.map((part, i) => (
+        <span key={part} data-stick className={`ag-sticker ${i % 2 ? "rotate-1" : "-rotate-2"}`}>
+          {part}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/** Asap tipis naik dari anglo (CSS, mati saat reduced-motion; di HP cukup dua gumpal). */
+export function Smoke() {
+  return (
+    <span aria-hidden>
+      {[0, 1, 2].map((i) => (
+        <span key={i} className="ag-smoke" style={{ "--i": i, "--drift": `${i % 2 ? -12 : 12}px` } as React.CSSProperties} />
+      ))}
+    </span>
+  );
+}
+
 /** Petunjuk carousel, hanya di HP (mulai md kartu tampil berjajar). */
 export function SwipeHint({ className = "" }: { className?: string }) {
   return (
@@ -36,7 +64,7 @@ export function SwipeHint({ className = "" }: { className?: string }) {
 export function LocationCard({ branch, track, className = "" }: { branch: AngloBranch; track: string; className?: string }) {
   const { ui } = BAKMI_PAK_JOKO;
   return (
-    <div className={`ag-paper ag-tape relative flex flex-col p-6 pt-8 text-ink ${className}`}>
+    <div data-stick className={`ag-paper ag-tape relative flex flex-col p-6 pt-8 text-ink ${className}`}>
       <h3 className="ag-marker text-[2.6rem]">{branch.name}</h3>
       <p className="mt-3 leading-relaxed">{branch.address}</p>
       {branch.hours && <p className="mt-3 font-mono text-sm font-bold uppercase">{branch.hours}</p>}

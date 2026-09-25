@@ -1,3 +1,4 @@
+import { StickerLabels } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 
 /**
@@ -13,7 +14,7 @@ export default function BuJokoNotice({ track, boxed = false }: { track: string; 
       }`}
     >
       <div className="max-w-2xl">
-        <p className="ag-sticker -rotate-1 text-[0.8rem] sm:text-sm">{title}</p>
+        <StickerLabels text={title} />
         <p className="mt-4 leading-relaxed">{body}</p>
       </div>
       <a

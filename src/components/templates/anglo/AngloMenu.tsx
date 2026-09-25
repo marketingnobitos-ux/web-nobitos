@@ -1,3 +1,4 @@
+import StickObserver from "@/components/templates/anglo/StickObserver";
 import { IcedTea, NoodleBowl } from "@/components/templates/anglo/illustrations";
 import { WRAP, formatHarga } from "@/components/templates/anglo/shared";
 
@@ -19,7 +20,7 @@ export default function AngloMenu({ brandName, categories }: { brandName: string
           <NoodleBowl className="absolute right-5 top-6 hidden h-24 w-24 -rotate-6 sm:block md:right-12 md:top-10 md:h-28 md:w-28" />
 
           <header>
-            <p className="ag-sticker -rotate-2">{brandName}</p>
+            <p data-stick className="ag-sticker -rotate-2">{brandName}</p>
             <h1 className="ag-marker mt-6 text-[clamp(72px,12vw,150px)]">Menu</h1>
           </header>
 
@@ -63,6 +64,7 @@ export default function AngloMenu({ brandName, categories }: { brandName: string
           <IcedTea className="absolute bottom-6 right-6 hidden h-20 w-20 rotate-6 md:block" />
         </article>
       </div>
+      <StickObserver />
     </div>
   );
 }

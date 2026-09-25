@@ -9,6 +9,7 @@ import BrandFooter from "@/components/public/BrandFooter";
 import BrandHeader from "@/components/public/BrandHeader";
 import AngloFooter from "@/components/templates/anglo/AngloFooter";
 import AngloHeader from "@/components/templates/anglo/AngloHeader";
+import { StickerDefs } from "@/components/templates/anglo/illustrations";
 import EditorialFooter from "@/components/templates/editorial/EditorialFooter";
 import EditorialHeader from "@/components/templates/editorial/EditorialHeader";
 import Tracker from "@/components/public/Tracker";
@@ -86,6 +87,7 @@ export default async function PublicLayout({ children }: { children: React.React
       className={`brand-scope ${fonts} flex min-h-screen flex-col bg-paper font-sans text-ink`}
     >
       <NoScriptReveal />
+      {anglo && <StickerDefs />}
       <MotionProvider>
         {editorial ? (
           <EditorialHeader brandName={brand.name} logoUrl={brand.logoUrl} />

@@ -1,4 +1,5 @@
 import BuJokoNotice from "@/components/templates/anglo/BuJokoNotice";
+import StickObserver from "@/components/templates/anglo/StickObserver";
 import { LocationCard, WRAP } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 
@@ -18,6 +19,7 @@ export default function AngloBranches() {
           ))}
         </ul>
       </section>
+      <StickObserver />
     </div>
   );
 }
