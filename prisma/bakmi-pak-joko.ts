@@ -1,8 +1,7 @@
 // Data awal Bakmi Jowo Anglo Pak Joko (BRIEF-Bakmi-Pak-Joko.md Bagian 5 & 6): brand + menu resmi.
 // Konten halaman (hero, cerita, cabang, notice Bu Joko) ada di src/data/brands/bakmi-pak-joko.ts.
-// Idempoten: brand & menu hanya dibuat kalau belum ada, jadi tidak menimpa isian admin.
-//   npm run bakmi-pak-joko:seed            buat brand + menu kalau belum ada
-//   npm run bakmi-pak-joko:seed -- --replace  ganti seluruh menu dengan BAKMI_PAK_JOKO_MENU
+// Upsert per baris: yang sudah ada tidak ditimpa, jadi aman diulang & tidak menimpa isian admin.
+//   npm run bakmi-pak-joko:seed   brand + menu + domain produksi + isPublished=true (prisma/seed-bakmi-pak-joko.ts)
 import { PrismaClient } from "@prisma/client";
 
 export const BAKMI_PAK_JOKO_SLUG = "bakmi-pak-joko";
@@ -66,26 +65,40 @@ export const BAKMI_PAK_JOKO_MENU: MenuCategoryData[] = [
   },
 ];
 
-/** Buat brand kalau belum ada, lalu isi menu kalau brand belum punya kategori (atau `replace`). */
-export async function seedBakmiPakJoko(prisma: PrismaClient, { replace = false } = {}) {
+/** Domain produksi brand ini (brief Bagian 8 no. 7). */
+export const BAKMI_PAK_JOKO_DOMAIN = "bakmijowopakjoko.web.id";
+
+type SeedOptions = {
+  /** Set isPublished=true & pasang domain produksi (dipakai prisma/seed-bakmi-pak-joko.ts). */
+  publish?: boolean;
+};
+
+/**
+ * Upsert brand + menu Bakmi Jowo Anglo Pak Joko. Aman dijalankan berkali-kali:
+ * - brand/kategori/item yang sudah ada TIDAK ditimpa (harga, urutan, deskripsi dari Admin tetap),
+ * - yang belum ada dibuat; tidak ada yang dihapus,
+ * - hanya menyentuh baris milik brand ini.
+ */
+export async function seedBakmiPakJoko(prisma: PrismaClient, { publish = false }: SeedOptions = {}) {
   const brand = await prisma.brand.upsert({
     where: { slug: BAKMI_PAK_JOKO_SLUG },
-    update: {},
-    create: BAKMI_PAK_JOKO_BRAND,
+    update: publish ? { isPublished: true } : {},
+    create: { ...BAKMI_PAK_JOKO_BRAND, isPublished: publish },
   });
 
-  const hasMenu = (await prisma.menuCategory.count({ where: { brandId: brand.id } })) > 0;
-  if (hasMenu && !replace) {
-    console.log(`• ${brand.name} — menu sudah ada, tidak diubah`);
-    return;
-  }
-
-  await prisma.$transaction(async (tx) => {
-    await tx.menuCategory.deleteMany({ where: { brandId: brand.id } }); // item ikut terhapus (cascade)
-    for (const [ci, cat] of BAKMI_PAK_JOKO_MENU.entries()) {
-      const category = await tx.menuCategory.create({ data: { brandId: brand.id, name: cat.name, order: ci } });
-      await tx.menuItem.createMany({
-        data: cat.items.map((item, ii) => ({
+  let createdCategories = 0;
+  let createdItems = 0;
+  for (const [ci, cat] of BAKMI_PAK_JOKO_MENU.entries()) {
+    let category = await prisma.menuCategory.findFirst({ where: { brandId: brand.id, name: cat.name } });
+    if (!category) {
+      category = await prisma.menuCategory.create({ data: { brandId: brand.id, name: cat.name, order: ci } });
+      createdCategories++;
+    }
+    for (const [ii, item] of cat.items.entries()) {
+      const exists = await prisma.menuItem.findFirst({ where: { brandId: brand.id, name: item.name }, select: { id: true } });
+      if (exists) continue;
+      await prisma.menuItem.create({
+        data: {
           brandId: brand.id,
           categoryId: category.id,
           name: item.name,
@@ -93,21 +106,35 @@ export async function seedBakmiPakJoko(prisma: PrismaClient, { replace = false }
           description: item.description,
           isFeatured: item.featured ?? false,
           order: ii,
-        })),
+        },
       });
+      createdItems++;
     }
-  });
-  const count = BAKMI_PAK_JOKO_MENU.reduce((n, c) => n + c.items.length, 0);
-  console.log(`✔ ${brand.name} — menu dibuat: ${BAKMI_PAK_JOKO_MENU.length} kategori, ${count} item`);
-}
+  }
 
-// Jalan langsung (bukan di-import oleh seed.ts).
-if (process.argv[1]?.replace(/\\/g, "/").endsWith("prisma/bakmi-pak-joko.ts")) {
-  const prisma = new PrismaClient();
-  seedBakmiPakJoko(prisma, { replace: process.argv.includes("--replace") })
-    .catch((e) => {
-      console.error(e);
-      process.exit(1);
-    })
-    .finally(() => prisma.$disconnect());
+  let domainNote = "";
+  if (publish) {
+    const hostname = BAKMI_PAK_JOKO_DOMAIN;
+    const existing = await prisma.domain.findUnique({ where: { hostname } });
+    if (existing && existing.brandId !== brand.id) {
+      // Jangan pernah memindahkan domain milik brand lain.
+      throw new Error(`Domain ${hostname} sudah dipakai brand lain (brandId ${existing.brandId}). Tidak diubah.`);
+    }
+    await prisma.domain.upsert({
+      where: { hostname },
+      update: {},
+      create: { hostname, brandId: brand.id, isPrimary: true },
+    });
+    domainNote = `, domain ${hostname}${existing ? " (sudah ada)" : " (baru)"}`;
+  }
+
+  const [categories, items] = await Promise.all([
+    prisma.menuCategory.count({ where: { brandId: brand.id } }),
+    prisma.menuItem.count({ where: { brandId: brand.id } }),
+  ]);
+  const fresh = await prisma.brand.findUniqueOrThrow({ where: { id: brand.id }, select: { isPublished: true, template: true } });
+  console.log(
+    `✔ ${brand.name}: ${categories} kategori, ${items} item (baru: ${createdCategories} kategori, ${createdItems} item)` +
+      `, template ${fresh.template}, isPublished=${fresh.isPublished}${domainNote}`,
+  );
 }

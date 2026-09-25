@@ -12,7 +12,7 @@
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "bolu:sync": "tsx --env-file=.env prisma/bolu-sunyaragi.ts --replace --story --branches --gallery --logo",
-    "bakmi-pak-joko:seed": "tsx --env-file=.env prisma/bakmi-pak-joko.ts",
+    "bakmi-pak-joko:seed": "tsx --env-file=.env prisma/seed-bakmi-pak-joko.ts",
     "admin:set-password": "tsx --env-file=.env prisma/admin-user.ts",
     "postinstall": "prisma generate"
   },
