@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AngloStory from "@/components/templates/anglo/AngloStory";
 import EditorialStory from "@/components/templates/editorial/EditorialStory";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
@@ -8,6 +9,7 @@ export const metadata = { title: "Cerita" };
 // Cerita brand: profil, sejarah, nilai, suasana outlet (dari PageContent pageKey "story").
 export default async function CeritaPage() {
   const brand = await requireActiveBrand();
+  if (brand.template === "ANGLO") return <AngloStory />;
   const sections = await getSections(brand.id, "story");
 
   if (brand.template === "EDITORIAL") {

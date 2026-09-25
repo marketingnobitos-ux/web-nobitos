@@ -66,7 +66,7 @@ export const brandSchema = z.object({
   colorAccent: z.preprocess(emptyToNull, z.string().regex(/^#[0-9a-fA-F]{6}$/, "Warna accent harus format #RRGGBB.").nullable()),
   fontHeading: nullableText("Font judul", 100),
   fontBody: nullableText("Font isi", 100),
-  template: z.enum(["BOLD", "EDITORIAL"], { message: "Template tampilan tidak dikenal." }),
+  template: z.enum(["BOLD", "EDITORIAL", "ANGLO"], { message: "Template tampilan tidak dikenal." }),
   isPublished: checkbox,
 });
 

@@ -6,6 +6,7 @@
 //   copy baru HANYA kalau isinya masih persis sama dengan versi seed lama.
 import { PrismaClient, type Prisma } from "@prisma/client";
 import { BOLU_BRANCHES, BOLU_MENU, BOLU_STORY, BOLU_TAGLINE } from "./bolu-sunyaragi";
+import { seedBakmiPakJoko } from "./bakmi-pak-joko";
 
 const prisma = new PrismaClient();
 
@@ -450,6 +451,9 @@ async function main() {
     }
     await ensureSections(brand.id, b);
   }
+
+  // Brand dengan konten halaman di kode (src/data/brands): dari DB hanya brand + menu.
+  await seedBakmiPakJoko(prisma);
 
   const [brandCount, branchCount, itemCount] = await Promise.all([
     prisma.brand.count(),

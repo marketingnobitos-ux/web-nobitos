@@ -54,6 +54,7 @@ model Domain {
 enum BrandTemplate {
   BOLD
   EDITORIAL
+  ANGLO // khusus Bakmi Jowo Anglo Pak Joko: konten halaman dari src/data/brands
 }
 
 enum DomainStatus {

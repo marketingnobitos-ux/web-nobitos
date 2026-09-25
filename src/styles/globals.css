@@ -34,6 +34,13 @@
   --color-brand-on-ink: var(--brand-on-ink);
   --color-brand-deep: var(--brand-deep);
   --color-accent: var(--accent);
+  /* Warna template Anglo (hanya didefinisikan di .tpl-anglo). */
+  --color-kunyit: var(--kunyit);
+  --color-daun: var(--daun);
+  --color-enamel: var(--enamel);
+  --color-wood: var(--wood);
+  --color-nav: var(--nav);
+  --color-sheet: var(--sheet);
 
   /* Nama lama (halaman Menu/Galeri/Cerita/Cabang versi sebelumnya) tetap jalan. */
   --color-primary: var(--brand);
@@ -258,5 +265,125 @@ html.lenis body {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ---------- Template Anglo (Bakmi Jowo Anglo Pak Joko): kertas krem, spidol, mesin ketik, label stiker ---------- */
+.tpl-anglo {
+  /* Blok pastel, satu warna per section (brief 6.2). */
+  --kunyit: #e8b64a;
+  --daun: #9db86b;
+  --enamel: #6e8fa8;
+  --wood: #8a5a34; /* rak kayu papan pengumuman */
+  --nav: #2b2926; /* bar navigasi abu gelap */
+  --sheet: #fbf6ea; /* kertas tempel / poster */
+  --font-display: var(--font-caveat-brush), "Comic Sans MS", cursive;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  font-family: var(--font-courier-prime), ui-monospace, monospace;
+}
+.tpl-anglo .font-sans {
+  font-family: var(--font-courier-prime), ui-monospace, monospace;
+}
+@layer components {
+  /* Judul spidol: kapital, rapat. */
+  .ag-marker {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  /* Tekstur kertas: noise halus di atas warna latar apa pun. */
+  .ag-noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .09 0 0 0 0 .08 0 0 0 0 .07 .6 0 0 0 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* Label stiker: kotak mono kapital, sedikit miring (atur putaran dengan utility rotate-*). */
+  .ag-sticker {
+    display: inline-block;
+    padding: 0.35em 0.7em;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--sheet);
+  }
+  .ag-sticker-light {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  /* Tombol pil. */
+  .ag-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.8em 1.6em;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .ag-pill:hover {
+    transform: translateY(-2px);
+  }
+  /* Potongan ala stiker: ilustrasi di atas kertas putih bertepi tebal. */
+  .ag-cutout {
+    background: #fff;
+    border-radius: 28px;
+    padding: 0.9rem;
+    box-shadow: 0 0 0 5px #fff, 0 10px 24px -8px rgb(22 20 18 / 0.35);
+  }
+  /* Kertas tempel / poster: garis tinta + bayangan keras. */
+  .ag-paper {
+    background: var(--sheet);
+    border: 2px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  /* Selotip di atas kertas tempel. */
+  .ag-tape::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 84px;
+    height: 24px;
+    transform: translateX(-50%) rotate(-3deg);
+    background: rgb(255 255 255 / 0.55);
+    border: 1px solid rgb(22 20 18 / 0.15);
+  }
+  /* Carousel geser: snap per kartu. Mulai md tampil berjajar (atur dengan utility md:grid). */
+  .ag-rail {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1rem;
+    padding: 1.25rem 1rem 1.75rem;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .ag-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .ag-rail > * {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+  }
+  /* Baris menu cetak: nama ........ harga. */
+  .ag-leader {
+    flex: 1 1 1.5rem;
+    min-width: 1.5rem;
+    border-bottom: 2px dotted currentColor;
+    opacity: 0.45;
+    transform: translateY(-0.3em);
   }
 }

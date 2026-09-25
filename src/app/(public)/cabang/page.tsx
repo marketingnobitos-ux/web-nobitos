@@ -1,3 +1,4 @@
+import AngloBranches from "@/components/templates/anglo/AngloBranches";
 import BranchCard from "@/components/public/BranchCard";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { prisma } from "@/lib/prisma";
@@ -7,6 +8,7 @@ export const metadata = { title: "Cabang & Kontak" };
 // Daftar cabang: alamat, jam buka, peta, WhatsApp/telepon.
 export default async function CabangPage() {
   const brand = await requireActiveBrand();
+  if (brand.template === "ANGLO") return <AngloBranches />; // cabang dari src/data/brands, bukan DB
   const branches = await prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" } });
 
   return (

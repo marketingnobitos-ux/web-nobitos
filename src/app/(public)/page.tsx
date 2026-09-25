@@ -8,6 +8,7 @@ import Marquee from "@/components/public/home/Marquee";
 import MenuPicker from "@/components/public/home/MenuPicker";
 import PromoPoster from "@/components/public/home/PromoPoster";
 import StoryPinned from "@/components/public/home/StoryPinned";
+import AngloHome from "@/components/templates/anglo/AngloHome";
 import EditorialHome from "@/components/templates/editorial/EditorialHome";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
@@ -22,6 +23,14 @@ const DEFAULT_PROCESS = ["Diulek.", "Digoreng.", "Disajikan hangat."];
 export default async function HomePage() {
   const brand = await requireActiveBrand();
   if (brand.template === "EDITORIAL") return <EditorialHome brand={brand} />;
+  if (brand.template === "ANGLO") {
+    const featured = await prisma.menuItem.findMany({
+      where: { brandId: brand.id, isFeatured: true, isAvailable: true },
+      orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
+      select: { id: true, name: true, description: true, price: true },
+    });
+    return <AngloHome featured={featured} />;
+  }
 
   const [homeSections, storySections, menu, promos, photos, branches] = await Promise.all([
     getSections(brand.id, "home"),

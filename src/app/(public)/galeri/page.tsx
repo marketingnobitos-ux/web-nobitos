@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import GalleryGrid from "@/components/public/GalleryGrid";
 import EditorialGallery from "@/components/templates/editorial/EditorialGallery";
 import { requireActiveBrand } from "@/lib/active-brand";
@@ -9,6 +10,7 @@ export const metadata = { title: "Galeri" };
 // Album foto per brand, klik foto untuk lightbox.
 export default async function GaleriPage() {
   const brand = await requireActiveBrand();
+  if (brand.template === "ANGLO") redirect("/"); // belum ada foto asli, halaman galeri tidak dipakai
 
   const albums = await prisma.galleryAlbum.findMany({
     where: { brandId: brand.id },

@@ -1,4 +1,5 @@
 import MenuFilter from "@/components/public/MenuFilter";
+import AngloMenu from "@/components/templates/anglo/AngloMenu";
 import EditorialMenu from "@/components/templates/editorial/EditorialMenu";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { prisma } from "@/lib/prisma";
@@ -25,12 +26,19 @@ export default async function MenuPage() {
           portion: true,
           imageUrl: true,
           isAvailable: true,
+          isFeatured: true,
         },
       },
     },
   });
 
   if (brand.template === "EDITORIAL") return <EditorialMenu brandName={brand.name} categories={categories} />;
+  if (brand.template === "ANGLO") {
+    const available = categories
+      .map((c) => ({ ...c, items: c.items.filter((i) => i.isAvailable) }))
+      .filter((c) => c.items.length > 0);
+    return <AngloMenu brandName={brand.name} categories={available} />;
+  }
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:py-14">

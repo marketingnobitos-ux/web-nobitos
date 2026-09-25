@@ -1,12 +1,14 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, DM_Sans, Instrument_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Caveat_Brush, Courier_Prime, DM_Sans, Instrument_Sans, Space_Mono } from "next/font/google";
 import MotionProvider from "@/components/animations/MotionProvider";
 import { NoScriptReveal } from "@/components/animations/Reveal";
 import SmoothScroll from "@/components/animations/SmoothScroll";
 import BackToTop from "@/components/public/BackToTop";
 import BrandFooter from "@/components/public/BrandFooter";
 import BrandHeader from "@/components/public/BrandHeader";
+import AngloFooter from "@/components/templates/anglo/AngloFooter";
+import AngloHeader from "@/components/templates/anglo/AngloHeader";
 import EditorialFooter from "@/components/templates/editorial/EditorialFooter";
 import EditorialHeader from "@/components/templates/editorial/EditorialHeader";
 import Tracker from "@/components/public/Tracker";
@@ -29,6 +31,18 @@ const instrumentSans = Instrument_Sans({
   display: "swap",
   variable: "--font-instrument-sans",
 });
+// Template Anglo (kertas & zine): judul spidol, label/harga mesin ketik, paragraf Courier.
+// Tidak di-preload supaya brand lain tidak ikut mengunduh.
+const caveatBrush = Caveat_Brush({ subsets: ["latin"], weight: "400", display: "swap", preload: false, variable: "--font-caveat-brush" });
+const spaceMono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], display: "swap", preload: false, variable: "--font-space-mono" });
+const courierPrime = Courier_Prime({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  preload: false,
+  variable: "--font-courier-prime",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getActiveBrand();
@@ -45,17 +59,25 @@ export default async function PublicLayout({ children }: { children: React.React
   const brand = await requireActiveBrand();
 
   const editorial = brand.template === "EDITORIAL";
+  const anglo = brand.template === "ANGLO";
 
   // Warna gelap dominan (--ink) diturunkan dari warna brand, jadi tiap brand punya nuansa sendiri.
   // Editorial: gelapnya sedikit lebih terang (maroon, bukan hampir hitam) & latar terang dari warna secondary.
-  const tones = darkTones(brand.colorPrimary, editorial ? { ink: 0.18, inkDeep: 0.13 } : undefined);
+  // Anglo: warna brief dipakai apa adanya (primary = tinta hitam, secondary = kertas krem).
+  const tones = anglo
+    ? { ink: brand.colorPrimary, inkDeep: brand.colorPrimary }
+    : darkTones(brand.colorPrimary, editorial ? { ink: 0.18, inkDeep: 0.13 } : undefined);
   const brandVars = {
     "--brand": brand.colorPrimary,
     ...(tones ? { "--ink": tones.ink, "--ink-deep": tones.inkDeep } : {}),
     ...(brand.colorAccent ? { "--accent": brand.colorAccent } : {}),
-    ...(editorial ? { "--paper": brand.colorSecondary } : {}),
+    ...(editorial || anglo ? { "--paper": brand.colorSecondary } : {}),
   } as CSSProperties;
-  const fonts = editorial ? `${instrumentSans.variable} tpl-editorial` : `${bricolage.variable} ${dmSans.variable}`;
+  const fonts = editorial
+    ? `${instrumentSans.variable} tpl-editorial`
+    : anglo
+      ? `${caveatBrush.variable} ${spaceMono.variable} ${courierPrime.variable} tpl-anglo`
+      : `${bricolage.variable} ${dmSans.variable}`;
 
   return (
     <div
@@ -67,11 +89,13 @@ export default async function PublicLayout({ children }: { children: React.React
       <MotionProvider>
         {editorial ? (
           <EditorialHeader brandName={brand.name} logoUrl={brand.logoUrl} />
+        ) : anglo ? (
+          <AngloHeader brandName={brand.name} />
         ) : (
           <BrandHeader brandName={brand.name} logoUrl={brand.logoUrl} />
         )}
         <main className="flex-1">{children}</main>
-        {editorial ? <EditorialFooter brand={brand} /> : <BrandFooter brand={brand} />}
+        {editorial ? <EditorialFooter brand={brand} /> : anglo ? <AngloFooter brand={brand} /> : <BrandFooter brand={brand} />}
         <BackToTop />
       </MotionProvider>
       <SmoothScroll />

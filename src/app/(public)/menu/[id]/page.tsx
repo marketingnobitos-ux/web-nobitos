@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 import { formatRupiah } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // Detail menu: foto besar, harga, porsi. Tanpa tombol pesan.
 export default async function MenuDetailPage({ params }: Props) {
   const brand = await requireActiveBrand();
+  if (brand.template === "ANGLO") redirect("/menu"); // menu Anglo cukup daftar, tanpa halaman detail
   const item = await getItem(brand.id, (await params).id);
   if (!item) notFound();
 
