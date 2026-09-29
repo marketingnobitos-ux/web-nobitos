@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
 import { greetingFor } from "@/lib/greeting";
 import { imageSrcSet } from "@/lib/image";
+import { altText } from "@/lib/site";
 
 type Props = {
   title: string;
@@ -65,7 +66,7 @@ export default function HeroSection({ title, subtitle, imageUrl, greeting: initi
           src={imageUrl}
           srcSet={imageSrcSet(imageUrl)}
           sizes="100vw"
-          alt=""
+          alt={altText(subtitle, title)}
           fetchPriority="high"
           decoding="async"
           className="h-[115%] w-full object-cover object-center"

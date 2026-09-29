@@ -5,7 +5,7 @@ import EdLink from "@/components/templates/editorial/EdLink";
 import { getSections } from "@/lib/content";
 import { mapsLink, slugify, telUrl, whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
-import { branchLabel, parseSocial, shortHours } from "@/lib/site";
+import { branchLabel, brandSocial, shortHours, waMessage } from "@/lib/site";
 
 /** Footer Editorial terstruktur: navigasi, kontak per toko, sosial, copyright. */
 export default async function EditorialFooter({ brand }: { brand: Brand }) {
@@ -18,7 +18,7 @@ export default async function EditorialFooter({ brand }: { brand: Brand }) {
     }),
     getSections(brand.id, "site"),
   ]);
-  const social = parseSocial(site.find((s) => s.key === "social")?.data.items);
+  const social = brandSocial(brand, site.find((s) => s.key === "social")?.data.items);
   const label = "mb-6 text-sm leading-none text-paper/50";
 
   return (
@@ -64,7 +64,7 @@ export default async function EditorialFooter({ brand }: { brand: Brand }) {
                     </EdLink>
                     {b.whatsapp && (
                       <EdLink
-                        href={whatsappUrl(b.whatsapp, `Halo ${brand.name} ${b.name}, mau pesan.`)}
+                        href={whatsappUrl(b.whatsapp, waMessage(brand.name, b.name))}
                         external
                         track={`footer-wa-${slugify(b.name)}`}
                       >

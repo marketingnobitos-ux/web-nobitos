@@ -52,7 +52,7 @@ export default async function GaleriPage() {
               <h2 className="mb-4 text-xl font-bold">
                 {album.title} <span className="text-sm font-normal text-gray-500">· {album.photos.length} foto</span>
               </h2>
-              <GalleryGrid photos={album.photos} />
+              <GalleryGrid photos={album.photos} altFallback={`Foto ${album.title}`} />
             </section>
           ))}
         </div>

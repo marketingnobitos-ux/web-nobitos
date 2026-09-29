@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { imageSrcSet } from "@/lib/image";
+import { altText } from "@/lib/site";
 
 type Props = {
   title: string;
@@ -57,7 +58,7 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} srcSet={imageSrcSet(imageUrl)} sizes="100vw" alt="" fetchPriority="high" className="h-full w-full object-cover" />
+          <img src={imageUrl} srcSet={imageSrcSet(imageUrl)} sizes="100vw" alt={altText(subtitle, title)} fetchPriority="high" className="h-full w-full object-cover" />
         )}
         {/* Overlay tipis: video tetap jelas, teks di bawah tetap terbaca. */}
         <div className="absolute inset-0 bg-ink/15" />

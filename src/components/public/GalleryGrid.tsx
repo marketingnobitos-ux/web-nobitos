@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { imageVariant } from "@/lib/image";
+import { altText } from "@/lib/site";
 
 export type GalleryPhotoItem = { id: string; imageUrl: string; caption: string | null };
 
 // Grid foto + lightbox (Esc untuk tutup, panah kiri/kanan & swipe untuk navigasi).
-export default function GalleryGrid({ photos }: { photos: GalleryPhotoItem[] }) {
+/** `altFallback`: alt untuk foto tanpa keterangan (mis. nama album). */
+export default function GalleryGrid({ photos, altFallback = "Foto galeri" }: { photos: GalleryPhotoItem[]; altFallback?: string }) {
   const [index, setIndex] = useState<number | null>(null);
   const touchX = useRef<number | null>(null);
 
@@ -48,7 +50,7 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhotoItem[] }) 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageVariant(p.imageUrl, 1000)}
-              alt={p.caption ?? ""}
+              alt={altText(p.caption, altFallback)}
               loading="lazy"
               className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
             />
@@ -88,7 +90,7 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhotoItem[] }) 
           </div>
           <div className="relative flex flex-1 items-center justify-center px-4" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.imageUrl} alt={current.caption ?? ""} className="max-h-[75vh] max-w-full rounded object-contain" />
+            <img src={current.imageUrl} alt={altText(current.caption, altFallback)} className="max-h-[75vh] max-w-full rounded object-contain" />
             {photos.length > 1 && (
               <>
                 <button

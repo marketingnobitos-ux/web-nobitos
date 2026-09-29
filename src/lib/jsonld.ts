@@ -3,7 +3,7 @@
 import type { Brand } from "@prisma/client";
 import { BAKMI_PAK_JOKO, type AngloBranch } from "@/data/brands/bakmi-pak-joko";
 import { formatRupiah, slugify, toIntlPhone } from "@/lib/format";
-import { SCHEMA_DAYS, type DayHours } from "@/lib/hours";
+import { SCHEMA_DAYS, isCompleteWeek, type DayHours } from "@/lib/hours";
 import { prisma } from "@/lib/prisma";
 import { ogImage, siteOrigin } from "@/lib/seo";
 
@@ -43,19 +43,15 @@ async function branchSources(brand: Brand): Promise<BranchSource[]> {
   return rows.map((b) => ({ ...b, key: slugify(b.name) }));
 }
 
-const TIME = /^\d{2}:\d{2}$/;
-
 /**
  * Jam buka -> OpeningHoursSpecification, hari berjam sama digabung. Hanya dirender kalau ketujuh hari sudah diisi:
  * schema.org menganggap hari yang tidak disebut = tutup, jadi jam yang belum lengkap tidak boleh ikut.
  */
 function openingHoursSpec(hours: DayHours[]): JsonLd[] | undefined {
-  const days = new Set(hours.map((h) => h.dayOfWeek));
-  if (![1, 2, 3, 4, 5, 6, 7].every((d) => days.has(d))) return undefined;
+  if (!isCompleteWeek(hours)) return undefined;
   const groups = new Map<string, string[]>();
   for (const h of hours) {
     if (h.isClosed) continue; // hari libur: tidak disebut
-    if (!h.opens || !h.closes || !TIME.test(h.opens) || !TIME.test(h.closes)) return undefined;
     const slot = `${h.opens}-${h.closes}`;
     groups.set(slot, [...(groups.get(slot) ?? []), SCHEMA_DAYS[h.dayOfWeek - 1]]);
   }

@@ -71,7 +71,7 @@ export default function EdChapters({ heading, chapters }: { heading: string; cha
                 src={c.image}
                 srcSet={imageSrcSet(c.image)}
                 sizes="(min-width: 768px) 50vw, 100vw"
-                alt=""
+                alt={c.title}
                 loading="lazy"
                 decoding="async"
                 className="absolute inset-0 h-full w-full object-cover motion-safe:[&:not(:first-child)]:opacity-0"

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
 import Headline from "@/components/public/home/Headline";
 import { imageSrcSet } from "@/lib/image";
+import { altText } from "@/lib/site";
 
 type Photo = { id: string; imageUrl: string; caption: string | null };
 
@@ -57,7 +58,7 @@ export default function GalleryCollage({ photos }: { photos: Photo[] }) {
                 src={p.imageUrl}
                 srcSet={imageSrcSet(p.imageUrl)}
                 sizes="(min-width: 768px) 40vw, 50vw"
-                alt={p.caption ?? "Foto galeri"}
+                alt={altText(p.caption, "Foto galeri")}
                 loading="lazy"
                 decoding="async"
                 className="h-full w-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-105"

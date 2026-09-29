@@ -5,6 +5,7 @@ import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 import { brandPageMetadata } from "@/lib/seo";
+import { altText } from "@/lib/site";
 
 export function generateMetadata() {
   return brandPageMetadata(async (brand) => {
@@ -44,7 +45,7 @@ export default async function CeritaPage() {
       {sections.length ? (
         <div className="mx-auto max-w-6xl divide-y divide-gray-200 px-4">
           {sections.map((section, i) => (
-            <StorySection key={section.key} section={section} reverse={i % 2 === 1} />
+            <StorySection key={section.key} section={section} reverse={i % 2 === 1} brandName={brand.name} />
           ))}
         </div>
       ) : (
@@ -60,7 +61,7 @@ export default async function CeritaPage() {
   );
 }
 
-function StorySection({ section, reverse }: { section: Section; reverse: boolean }) {
+function StorySection({ section, reverse, brandName }: { section: Section; reverse: boolean; brandName: string }) {
   const { title, subtitle, body, imageUrl, items } = section.data;
 
   return (
@@ -82,7 +83,7 @@ function StorySection({ section, reverse }: { section: Section; reverse: boolean
       </div>
       {imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt={title ?? ""} loading="lazy" className="aspect-[4/3] w-full rounded-2xl object-cover" />
+        <img src={imageUrl} alt={altText(title, `Foto ${brandName}`)} loading="lazy" className="aspect-[4/3] w-full rounded-2xl object-cover" />
       )}
     </section>
   );

@@ -1,7 +1,9 @@
 // Bagian kecil yang dipakai bersama oleh halaman template Anglo.
+import OpenBadge from "@/components/public/OpenBadge";
 import { NAV_ITEMS } from "@/components/public/nav";
 import { BAKMI_PAK_JOKO, type AngloBranch } from "@/data/brands/bakmi-pak-joko";
 import { whatsappUrl } from "@/lib/format";
+import { waMessage } from "@/lib/site";
 
 /** Navigasi Anglo (brief 6.3): MENU · CERITA · CABANG. Beranda lewat nama brand. */
 export const ANGLO_NAV = NAV_ITEMS.filter((item) => ["/menu", "/cerita", "/cabang"].includes(item.href));
@@ -61,13 +63,25 @@ export function SwipeHint({ className = "" }: { className?: string }) {
 }
 
 /** Kartu lokasi cabang: alamat, jam, "Petunjuk arah" (Google Maps) & WhatsApp. */
-export function LocationCard({ branch, track, className = "" }: { branch: AngloBranch; track: string; className?: string }) {
+export function LocationCard({
+  branch,
+  brandName,
+  track,
+  className = "",
+}: {
+  branch: AngloBranch;
+  /** Untuk pesan awal WhatsApp. */
+  brandName: string;
+  track: string;
+  className?: string;
+}) {
   const { ui } = BAKMI_PAK_JOKO;
   return (
     <div data-stick className={`ag-paper ag-tape relative flex flex-col p-6 pt-8 text-ink ${className}`}>
       <h3 className="ag-marker text-[2.6rem]">{branch.name}</h3>
       <p className="mt-3 leading-relaxed">{branch.address}</p>
       {branch.hours && <p className="mt-3 font-mono text-sm font-bold uppercase">{branch.hours}</p>}
+      {branch.openingHours && <OpenBadge hours={branch.openingHours} className="mt-2 font-mono text-sm uppercase" />}
       <div className="mt-6 flex flex-wrap gap-3">
         <a
           href={branch.mapsUrl}
@@ -79,7 +93,7 @@ export function LocationCard({ branch, track, className = "" }: { branch: AngloB
           {ui.directions}
         </a>
         <a
-          href={whatsappUrl(branch.whatsapp)}
+          href={whatsappUrl(branch.whatsapp, waMessage(brandName, branch.name))}
           target="_blank"
           rel="noopener noreferrer"
           data-track={`${track}-wa-${branch.slug}`}

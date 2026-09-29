@@ -17,6 +17,41 @@ export function parseSocial(items: string[] | undefined): Social[] {
   });
 }
 
+/**
+ * Instagram & TikTok dari kolom Brand (kosong = tidak dirender), lalu link lain dari konten Admin (mis. Threads).
+ * Baris Instagram/TikTok di konten Admin diabaikan supaya sumbernya satu.
+ */
+export function brandSocial(
+  brand: { instagramUrl: string | null; tiktokUrl: string | null },
+  items: string[] | undefined,
+): Social[] {
+  const own: Social[] = [
+    ...(brand.instagramUrl ? [{ label: "Instagram", url: brand.instagramUrl }] : []),
+    ...(brand.tiktokUrl ? [{ label: "TikTok", url: brand.tiktokUrl }] : []),
+  ];
+  const others = parseSocial(items).filter((s) => !/(^|\.)(instagram|tiktok)\.com$/i.test(new URL(s.url).hostname));
+  return [...own, ...others];
+}
+
+/** "https://www.instagram.com/bakmi.pakjoko" -> "@bakmi.pakjoko"; TikTok sudah memakai "@". */
+export function socialHandle(url: string): string {
+  const last = new URL(url).pathname.split("/").filter(Boolean).at(-1) ?? "";
+  return last.startsWith("@") ? last : `@${last}`;
+}
+
+/** Pesan awal WhatsApp bawaan (etalase, bukan pemesanan). Tanpa cabang = tombol level brand. */
+export function waMessage(brandName: string, branchName?: string): string {
+  return branchName ? `Halo ${brandName} cabang ${branchName}, mau tanya dong.` : `Halo ${brandName}, mau tanya dong.`;
+}
+
+const FILE_NAME = /\.(jpe?g|png|webp|gif|avif|svg|heic)$/i;
+
+/** Alt gambar: pakai `text` kalau berisi dan bukan nama/path file, selain itu `fallback`. Tidak pernah kosong. */
+export function altText(text: string | null | undefined, fallback: string): string {
+  const t = text?.trim();
+  return t && !FILE_NAME.test(t) && !t.includes("/") ? t : fallback;
+}
+
 /** "16.00 - 23.00 setiap hari" -> "16.00–23.00" (jam saja untuk baris ringkas). */
 export function shortHours(openHours: string | null): string | null {
   const m = openHours?.match(/(\d{1,2}[.:]\d{2})\s*[-–]\s*(\d{1,2}[.:]\d{2})/);

@@ -9,7 +9,7 @@ import { getSections } from "@/lib/content";
 import { mapsLink, whatsappUrl } from "@/lib/format";
 import { EDITORIAL_PLACEHOLDER, realPhoto } from "@/lib/placeholder";
 import { prisma } from "@/lib/prisma";
-import { branchLabel, parseChapters, shortHours } from "@/lib/site";
+import { branchLabel, parseChapters, shortHours, waMessage } from "@/lib/site";
 
 /**
  * Beranda template Editorial (mis. Bolu Sunyaragi): sinematik, lega, gerak kalem.
@@ -25,7 +25,7 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
       take: 6,
       select: { id: true, name: true, price: true, category: { select: { name: true } } },
     }),
-    prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" } }),
+    prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, include: { hours: true } }),
   ]);
 
   const section = (list: typeof homeSections, key: string) => list.find((s) => s.key === key)?.data;
@@ -48,13 +48,14 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
   }));
 
   const wa = branches.find((b) => b.whatsapp);
-  const waHref = wa?.whatsapp ? whatsappUrl(wa.whatsapp, `Halo ${brand.name}, saya mau pesan.`) : null;
+  const waHref = wa?.whatsapp ? whatsappUrl(wa.whatsapp, waMessage(brand.name)) : null;
 
   const outlets = branches.map((b) => ({
     id: b.id,
     name: branchLabel(b.name),
     address: b.address,
     hours: shortHours(b.openHours),
+    week: b.hours,
     mapsUrl: mapsLink(b),
   }));
 

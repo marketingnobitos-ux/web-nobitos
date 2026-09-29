@@ -1,6 +1,9 @@
 import Link from "next/link";
 import Headline from "@/components/public/home/Headline";
+import OpenBadge from "@/components/public/OpenBadge";
 import { mapsLink, slugify, whatsappUrl } from "@/lib/format";
+import type { DayHours } from "@/lib/hours";
+import { waMessage } from "@/lib/site";
 
 type Branch = {
   id: string;
@@ -11,6 +14,7 @@ type Branch = {
   lng: number | null;
   openHours: string | null;
   whatsapp: string | null;
+  hours: DayHours[];
 };
 
 /** "16.00 - 23.00 setiap hari" -> "16.00–23.00" (jam saja untuk baris ringkas). */
@@ -56,6 +60,7 @@ export default function BranchList({ brandName, branches }: { brandName: string;
                       </Link>
                     </h3>
                     <p className="mt-1 text-sm text-paper/60 md:group-hover:text-paper/85">{b.address}</p>
+                    <OpenBadge hours={b.hours} className="mt-2 text-sm text-paper/80" />
                   </div>
                   {hours && (
                     <p className="col-start-2 text-sm tabular-nums text-paper/80 transition-opacity md:col-start-auto md:text-lg md:group-hover:opacity-0">{hours}</p>
@@ -79,7 +84,7 @@ export default function BranchList({ brandName, branches }: { brandName: string;
                     </a>
                     {b.whatsapp && (
                       <a
-                        href={whatsappUrl(b.whatsapp, `Halo ${brandName} ${b.name}, mau tanya dong.`)}
+                        href={whatsappUrl(b.whatsapp, waMessage(brandName, b.name))}
                         target="_blank"
                         rel="noopener noreferrer"
                         data-track={`wa-${track}`}

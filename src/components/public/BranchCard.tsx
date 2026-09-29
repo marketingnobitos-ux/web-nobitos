@@ -1,7 +1,10 @@
 import type { Branch } from "@prisma/client";
+import OpenBadge from "@/components/public/OpenBadge";
 import { mapsEmbedUrl, mapsLink, slugify, telUrl, whatsappUrl } from "@/lib/format";
+import type { DayHours } from "@/lib/hours";
+import { waMessage } from "@/lib/site";
 
-export default function BranchCard({ branch, brandName }: { branch: Branch; brandName: string }) {
+export default function BranchCard({ branch, brandName }: { branch: Branch & { hours: DayHours[] }; brandName: string }) {
   const key = slugify(branch.name);
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -14,6 +17,7 @@ export default function BranchCard({ branch, brandName }: { branch: Branch; bran
       />
       <div className="flex flex-1 flex-col gap-2 p-5">
         <h2 className="text-lg font-bold text-gray-900">{branch.name}</h2>
+        <OpenBadge hours={branch.hours} className="text-sm text-gray-700" />
         <p className="text-sm text-gray-700">{branch.address}</p>
         {branch.openHours && (
           <p className="text-sm text-gray-600">
@@ -32,7 +36,7 @@ export default function BranchCard({ branch, brandName }: { branch: Branch; bran
           </a>
           {branch.whatsapp && (
             <a
-              href={whatsappUrl(branch.whatsapp, `Halo ${brandName} cabang ${branch.name}`)}
+              href={whatsappUrl(branch.whatsapp, waMessage(brandName, branch.name))}
               target="_blank"
               rel="noopener noreferrer"
               data-track={`wa-cabang-${key}`}

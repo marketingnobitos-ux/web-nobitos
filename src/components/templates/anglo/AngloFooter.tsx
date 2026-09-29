@@ -3,10 +3,11 @@ import type { Brand } from "@prisma/client";
 import { WarungFront } from "@/components/templates/anglo/illustrations";
 import { ANGLO_NAV, LocationCard, WRAP } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { socialHandle } from "@/lib/site";
 
-/** Footer Anglo (brief 6.3): ilustrasi garis warung, kartu lokasi per cabang, link Instagram. */
+/** Footer Anglo (brief 6.3): ilustrasi garis warung, kartu lokasi per cabang, link Instagram & TikTok (kolom Brand). */
 export default function AngloFooter({ brand }: { brand: Brand }) {
-  const { branches, instagram, hashtag } = BAKMI_PAK_JOKO;
+  const { branches, hashtag } = BAKMI_PAK_JOKO;
 
   return (
     <footer className="ag-noise border-t-2 border-ink bg-paper text-ink">
@@ -16,7 +17,7 @@ export default function AngloFooter({ brand }: { brand: Brand }) {
         <ul className="mt-14 grid gap-8 md:mt-20 md:grid-cols-2 md:gap-10">
           {branches.map((b, i) => (
             <li key={b.slug}>
-              <LocationCard branch={b} track="footer" className={i % 2 ? "md:rotate-1" : "md:-rotate-1"} />
+              <LocationCard branch={b} brandName={brand.name} track="footer" className={i % 2 ? "md:rotate-1" : "md:-rotate-1"} />
             </li>
           ))}
         </ul>
@@ -40,15 +41,32 @@ export default function AngloFooter({ brand }: { brand: Brand }) {
                 ))}
               </ul>
             </nav>
-            <a
-              href={instagram.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track="footer-instagram"
-              className="ag-sticker rotate-1 self-start md:self-end"
-            >
-              Instagram {instagram.handle}
-            </a>
+            {(brand.instagramUrl || brand.tiktokUrl) && (
+              <div className="flex flex-wrap gap-3 self-start md:self-end">
+                {brand.instagramUrl && (
+                  <a
+                    href={brand.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-track="footer-instagram"
+                    className="ag-sticker rotate-1"
+                  >
+                    Instagram {socialHandle(brand.instagramUrl)}
+                  </a>
+                )}
+                {brand.tiktokUrl && (
+                  <a
+                    href={brand.tiktokUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-track="footer-tiktok"
+                    className="ag-sticker -rotate-1"
+                  >
+                    TikTok {socialHandle(brand.tiktokUrl)}
+                  </a>
+                )}
+              </div>
+            )}
             <p className="font-mono text-xs">{hashtag}</p>
           </div>
         </div>

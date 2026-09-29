@@ -4,23 +4,7 @@ import { NAV_ITEMS } from "@/components/public/nav";
 import { getSections } from "@/lib/content";
 import { slugify, whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
-
-type Social = { label: string; url: string };
-
-/** Baris "Instagram | https://..." dari admin -> link; hanya URL http(s) yang dipakai. */
-function parseSocial(items: string[] | undefined): Social[] {
-  return (items ?? []).flatMap((line) => {
-    const [a, b] = line.split("|").map((s) => s.trim());
-    const url = b ?? a;
-    if (!/^https?:\/\//i.test(url)) return [];
-    try {
-      const label = b ? a : new URL(url).hostname.replace(/^www\./, "");
-      return [{ label, url }];
-    } catch {
-      return [];
-    }
-  });
-}
+import { brandSocial, waMessage } from "@/lib/site";
 
 /** "16.00 - 23.00 setiap hari" -> "16.00–23.00". */
 function shortHours(openHours: string | null): string | null {
@@ -39,7 +23,7 @@ export default async function BrandFooter({ brand }: { brand: Brand }) {
     }),
     getSections(brand.id, "site"),
   ]);
-  const social = parseSocial(site.find((s) => s.key === "social")?.data.items);
+  const social = brandSocial(brand, site.find((s) => s.key === "social")?.data.items);
   const heading = "mb-4 text-sm font-semibold text-paper/50";
 
   return (
@@ -80,7 +64,7 @@ export default async function BrandFooter({ brand }: { brand: Brand }) {
                       {b.openHours && <span className="tabular-nums">{shortHours(b.openHours)}</span>}
                       {b.whatsapp && (
                         <a
-                          href={whatsappUrl(b.whatsapp, `Halo ${brand.name} ${b.name}, mau tanya dong.`)}
+                          href={whatsappUrl(b.whatsapp, waMessage(brand.name, b.name))}
                           target="_blank"
                           rel="noopener noreferrer"
                           data-track={`footer-wa-${slugify(b.name)}`}

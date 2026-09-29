@@ -90,7 +90,17 @@ export default async function HomePage() {
     prisma.branch.findMany({
       where: { brandId: brand.id },
       orderBy: { order: "asc" },
-      select: { id: true, name: true, address: true, mapsUrl: true, lat: true, lng: true, openHours: true, whatsapp: true },
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        mapsUrl: true,
+        lat: true,
+        lng: true,
+        openHours: true,
+        whatsapp: true,
+        hours: { select: { dayOfWeek: true, isClosed: true, opens: true, closes: true } },
+      },
     }),
   ]);
 

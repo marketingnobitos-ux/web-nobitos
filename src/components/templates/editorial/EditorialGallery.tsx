@@ -1,6 +1,7 @@
 import Reveal from "@/components/animations/Reveal";
 import EdAmbientVideo from "@/components/templates/editorial/EdAmbientVideo";
 import { imageSrcSet } from "@/lib/image";
+import { altText } from "@/lib/site";
 
 type Photo = { id: string; imageUrl: string; caption: string | null };
 type Feature = { title?: string; imageUrl?: string; videoUrl?: string } | undefined;
@@ -48,7 +49,7 @@ export default function EditorialGallery({ brandName, photos, feature }: { brand
               <EdAmbientVideo src={feature.videoUrl} poster={feature.imageUrl} className="h-full w-full object-cover" />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={feature?.imageUrl} srcSet={imageSrcSet(feature?.imageUrl ?? "")} sizes="100vw" alt="" className="h-full w-full object-cover" />
+              <img src={feature?.imageUrl} srcSet={imageSrcSet(feature?.imageUrl ?? "")} sizes="100vw" alt={altText(feature?.title, `Foto ${brandName}`)} className="h-full w-full object-cover" />
             )}
             <div className="pointer-events-none absolute inset-0 bg-ink/15" />
           </div>
@@ -71,7 +72,7 @@ export default function EditorialGallery({ brandName, photos, feature }: { brand
                     src={p.imageUrl}
                     srcSet={imageSrcSet(p.imageUrl)}
                     sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    alt={p.caption ?? `Foto ${brandName}`}
+                    alt={altText(p.caption, `Foto ${brandName}`)}
                     loading="lazy"
                     decoding="async"
                     className="h-full w-full object-cover transition-transform duration-[1600ms] ease-[cubic-bezier(.16,.8,.2,1)] group-hover:scale-[1.04]"

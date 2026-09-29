@@ -25,10 +25,10 @@ export default async function CabangPage() {
     return (
       <>
         {jsonLd}
-        <AngloBranches />
+        <AngloBranches brandName={brand.name} />
       </>
     );
-  const branches = await prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" } });
+  const branches = await prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, include: { hours: true } });
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
