@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
 import EdLink from "@/components/templates/editorial/EdLink";
-import { imageSrcSet } from "@/lib/image";
+import { imageSrcSet, repoWebp } from "@/lib/image";
 import { altText } from "@/lib/site";
 
 type Props = {
@@ -48,7 +48,7 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
             ref={video}
             className="h-full w-full object-cover"
             src={videoUrl}
-            poster={imageUrl}
+            poster={repoWebp(imageUrl)}
             autoPlay
             muted
             loop

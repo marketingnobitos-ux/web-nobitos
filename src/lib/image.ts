@@ -13,12 +13,20 @@ export function imageVariant(url: string, width: (typeof IMAGE_WIDTHS)[number]):
 }
 
 /**
+ * Foto bawaan repo (/placeholder, /brand) punya salinan WebP di sebelah JPG-nya. URL di DB & seed tetap .jpg,
+ * yang dikirim ke browser versi WebP (lebih ringan). URL lain dikembalikan apa adanya.
+ */
+export function repoWebp(url: string): string {
+  return /^\/(placeholder|brand)\/.+\.jpg$/.test(url) ? url.replace(/\.jpg$/, ".webp") : url;
+}
+
+/**
  * srcSet responsif: gambar upload (400/1000/1920 WebP) atau foto bawaan repo di /placeholder
- * dan /brand/galeri (versi -800.jpg + 1600px). Undefined untuk URL lain.
+ * dan /brand/galeri (WebP 800px + 1600px). Undefined untuk URL lain.
  */
 export function imageSrcSet(url: string): string | undefined {
   if (/^\/(placeholder|brand\/galeri)\//.test(url) && url.endsWith(".jpg")) {
-    return `${url.replace(/\.jpg$/, "-800.jpg")} 800w, ${url} 1600w`;
+    return `${repoWebp(url.replace(/\.jpg$/, "-800.jpg"))} 800w, ${repoWebp(url)} 1600w`;
   }
   if (!url.startsWith("/uploads/")) return undefined;
   return IMAGE_WIDTHS.map((w) => `${imageVariant(url, w)} ${w}w`).join(", ");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { repoWebp } from "@/lib/image";
 
 /** Video latar tanpa suara yang berulang; berhenti untuk pengunjung yang memilih kurangi gerakan. */
 export default function EdAmbientVideo({ src, poster, className }: { src: string; poster?: string; className?: string }) {
@@ -11,6 +12,6 @@ export default function EdAmbientVideo({ src, poster, className }: { src: string
   }, []);
 
   return (
-    <video ref={ref} className={className} src={src} poster={poster} autoPlay muted loop playsInline preload="metadata" aria-hidden />
+    <video ref={ref} className={className} src={src} poster={poster && repoWebp(poster)} autoPlay muted loop playsInline preload="metadata" aria-hidden />
   );
 }
