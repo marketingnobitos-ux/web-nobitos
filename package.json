@@ -14,6 +14,7 @@
     "bolu:sync": "tsx --env-file=.env prisma/bolu-sunyaragi.ts --replace --story --branches --gallery --logo",
     "bolu:jsonld": "tsx --env-file=.env prisma/bolu-sunyaragi.ts --jsonld",
     "bakmi-pak-joko:seed": "tsx --env-file=.env prisma/seed-bakmi-pak-joko.ts",
+    "apw:seed": "tsx --env-file=.env prisma/seed-apw.ts",
     "admin:set-password": "tsx --env-file=.env prisma/admin-user.ts",
     "postinstall": "prisma generate"
   },

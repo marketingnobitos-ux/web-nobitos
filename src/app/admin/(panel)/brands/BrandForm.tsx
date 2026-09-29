@@ -50,6 +50,7 @@ export default function BrandForm({ action, brand, submitLabel }: Props) {
           { value: "BOLD", label: "Bold — tipografi tebal, foto besar, animasi ramai" },
           { value: "EDITORIAL", label: "Editorial — sinematik, lega, daftar harga tanpa foto" },
           { value: "ANGLO", label: "Anglo — khusus Bakmi Jowo Anglo Pak Joko (teks halaman dari kode)" },
+          { value: "TUNGKU", label: "Tungku — khusus Ayam Panggang Wicaksono: terang & lega (teks halaman dari kode)" },
         ]}
         hint="Data & admin sama; hanya tampilan situs publik yang berbeda. Editorial memakai warna secondary sebagai latar terang."
       />
