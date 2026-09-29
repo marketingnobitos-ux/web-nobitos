@@ -11,9 +11,15 @@ import { DAY, weeklyHours } from "@/lib/hours";
  * Ganti file di public/brands/apw/foto/ dengan nama yang sama (WebP), atau ubah path di sini.
  */
 export const APW_IMAGES = {
+  /** Hero terang: foto sajian di meja putih, sengaja dibuat sedikit buram & cerah supaya nama brand terbaca tanpa overlay. */
   hero: {
-    src: "/brands/apw/foto/hero-tungku-mengepul.webp",
-    alt: "Tungku gerabah mengepul, ayam berbumbu sedang dipanggang di dalamnya",
+    src: "/brands/apw/foto/hero-sajian-terang.webp",
+    alt: "Sepiring nasi, lalapan, sambal, dan ayam panggang di atas meja putih",
+  },
+  /** Foto lebar penuh section Cerita (Beranda). */
+  ceritaLebar: {
+    src: "/brands/apw/foto/cerita-lebar-tungku-gerabah.webp",
+    alt: "Tangan memegang potongan ayam berbumbu di atas tungku gerabah yang mengepul",
   },
   ceritaMasuk: {
     src: "/brands/apw/foto/cerita-ayam-masuk-tungku.webp",
@@ -60,7 +66,6 @@ export const APW = {
   slogan: "Smokie-nya bikin nagih.",
 
   hero: {
-    label: "Kesambi · Cirebon",
     /** Nama brand dipecah dua baris di hero & logo teks. */
     lines: ["Ayam Panggang", "Wicaksono"],
   },
@@ -68,7 +73,7 @@ export const APW = {
   // Section "Cerita" di Beranda.
   intro: {
     title: "Cerita",
-    body: "Ayam dibaluri bumbu rempah, lalu dipanggang di dalam tungku gerabah. Kalau warnanya sudah gelap mengilap, tandanya matang, dan wangi bakarannya sudah tercium dari jauh. Itu smokie yang bikin nagih.",
+    body: "Ayam dibaluri bumbu rempah, lalu dipanggang di dalam tungku gerabah sampai wangi bakarannya keluar. Itu smokie yang bikin nagih.",
     cta: "Cerita lengkap",
   },
 

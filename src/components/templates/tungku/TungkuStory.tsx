@@ -10,13 +10,13 @@ export default function TungkuStory() {
   const { story } = APW;
 
   return (
-    <div className="overflow-hidden pb-24 pt-16 md:pb-32 md:pt-24">
+    <div className="overflow-hidden pb-28 pt-20 md:pb-44 md:pt-32">
       <Reveal y={16} className={`${WRAP} text-center`}>
         <h1 className="tk-caps text-[clamp(34px,4vw,48px)] tracking-[0.12em]">{story.title}</h1>
         <p className="tk-display mt-5 text-xl text-brand md:text-[22px]">{APW.slogan}</p>
       </Reveal>
 
-      <div className={`${WRAP} mt-16 space-y-20 md:mt-24 md:space-y-32`}>
+      <div className={`${WRAP} mt-20 space-y-28 md:mt-32 md:space-y-44`}>
         {story.chapters.map((ch, i) => {
           const imageLeft = i % 2 === 0;
           return (

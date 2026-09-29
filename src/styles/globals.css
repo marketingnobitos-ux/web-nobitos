@@ -529,10 +529,11 @@ html.lenis body {
   }
 }
 
-/* ---------- Template Tungku (Ayam Panggang Wicaksono): terang, lega, judul kapital tipis ---------- */
+/* ---------- Template Tungku (Ayam Panggang Wicaksono): putih, lega, judul kapital tipis ---------- */
 .tpl-tungku {
   --font-display: var(--font-mplus-rounded), ui-rounded, system-ui, sans-serif;
-  --paper-deep: color-mix(in oklab, var(--paper) 88%, #c9a36b);
+  /* Krem (warna secondary brand) hanya untuk aksen kecil. */
+  --paper-deep: var(--cream, #fbf4e8);
   font-family: var(--font-nunito-sans), ui-sans-serif, system-ui, sans-serif;
   font-weight: 300;
 }
@@ -540,10 +541,10 @@ html.lenis body {
   font-family: var(--font-nunito-sans), ui-sans-serif, system-ui, sans-serif;
 }
 @layer components {
-  /* Huruf kapital tipis, letter-spacing lebar (judul, tombol, label). */
+  /* Huruf kapital tipis, letter-spacing lebar (judul, label). */
   .tk-caps {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 300;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     line-height: 1.15;
@@ -587,6 +588,12 @@ html.lenis body {
   }
   .bg-paper-deep {
     background-color: var(--paper-deep);
+  }
+  /* Nama brand di hero terang: tanpa overlay, hanya pendar putih tipis supaya terbaca di atas foto. */
+  .tk-hero-name {
+    text-shadow:
+      0 0 18px rgb(255 255 255 / 0.85),
+      0 0 42px rgb(255 255 255 / 0.6);
   }
 }
 

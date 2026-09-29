@@ -9,15 +9,25 @@ import { trackName } from "@/lib/track";
 
 type Props = {
   brandName: string;
+  logoUrl: string | null;
   instagramUrl: string | null;
   tiktokUrl: string | null;
 };
 
+/** Logo kecil di tengah header (logo bulat dari Brand.logoUrl, cadangan: nama brand teks). */
+function HeaderLogo({ logoUrl, brandName }: { logoUrl: string | null; brandName: string }) {
+  if (!logoUrl) return <Wordmark />;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={logoUrl} alt={`Logo ${brandName}`} width={36} height={36} className="h-9 w-9 rounded-full" />;
+}
+
+const BAR = `${WRAP} grid h-14 grid-cols-[44px_1fr_44px] items-center`;
+
 /**
- * Header menempel, marun solid: ikon Instagram di kiri, logo di tengah, hamburger di kanan.
+ * Header tipis menempel, marun solid: ikon Instagram di kiri, logo kecil di tengah, hamburger di kanan.
  * Hamburger membuka menu layar penuh (Beranda, Cerita, Menu, Cabang). Escape / tombol tutup / pindah halaman menutupnya.
  */
-export default function TungkuHeader({ brandName, instagramUrl, tiktokUrl }: Props) {
+export default function TungkuHeader({ brandName, logoUrl, instagramUrl, tiktokUrl }: Props) {
   const pathname = usePathname().replace(/^\/preview\/[^/]+/, "") || "/";
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -48,7 +58,7 @@ export default function TungkuHeader({ brandName, instagramUrl, tiktokUrl }: Pro
 
   return (
     <header className="sticky top-0 z-40 bg-brand text-paper">
-      <div className={`${WRAP} grid h-16 grid-cols-[48px_1fr_48px] items-center`}>
+      <div className={BAR}>
         {instagramUrl ? (
           <a
             href={instagramUrl}
@@ -56,15 +66,15 @@ export default function TungkuHeader({ brandName, instagramUrl, tiktokUrl }: Pro
             rel="noopener noreferrer"
             aria-label="Instagram"
             data-track={trackName("ig")}
-            className="-ml-3 flex h-12 w-12 items-center justify-center transition-opacity hover:opacity-70"
+            className="-ml-3 flex h-11 w-11 items-center justify-center transition-opacity hover:opacity-70"
           >
-            <InstagramIcon />
+            <InstagramIcon className="h-[18px] w-[18px]" />
           </a>
         ) : (
           <span />
         )}
         <Link href="/" aria-label={`${brandName}, ke Beranda`} className="justify-self-center">
-          <Wordmark />
+          <HeaderLogo logoUrl={logoUrl} brandName={brandName} />
         </Link>
         <button
           ref={toggleRef}
@@ -73,34 +83,36 @@ export default function TungkuHeader({ brandName, instagramUrl, tiktokUrl }: Pro
           aria-controls="tk-menu"
           aria-label="Buka menu navigasi"
           onClick={() => setOpen(true)}
-          className="-mr-3 flex h-12 w-12 flex-col items-center justify-center gap-[6px] justify-self-end transition-opacity hover:opacity-70"
+          className="-mr-3 flex h-11 w-11 flex-col items-center justify-center gap-[5px] justify-self-end transition-opacity hover:opacity-70"
         >
-          <span aria-hidden className="block h-px w-6 bg-current" />
-          <span aria-hidden className="block h-px w-6 bg-current" />
-          <span aria-hidden className="block h-px w-6 bg-current" />
+          <span aria-hidden className="block h-px w-[22px] bg-current" />
+          <span aria-hidden className="block h-px w-[22px] bg-current" />
+          <span aria-hidden className="block h-px w-[22px] bg-current" />
         </button>
       </div>
 
       {open && (
         <div id="tk-menu" role="dialog" aria-modal="true" aria-label="Menu navigasi" data-lenis-prevent className="tk-menu fixed inset-0 z-50 flex flex-col bg-paper text-ink">
           <div className="bg-brand text-paper">
-            <div className={`${WRAP} grid h-16 grid-cols-[48px_1fr_48px] items-center`}>
+            <div className={BAR}>
               <span />
-              <Wordmark className="justify-self-center" />
+              <span className="justify-self-center">
+                <HeaderLogo logoUrl={logoUrl} brandName={brandName} />
+              </span>
               <button
                 type="button"
                 aria-label="Tutup menu navigasi"
                 onClick={() => setOpen(false)}
-                className="relative -mr-3 h-12 w-12 justify-self-end transition-opacity hover:opacity-70"
+                className="relative -mr-3 h-11 w-11 justify-self-end transition-opacity hover:opacity-70"
               >
-                <span aria-hidden className="absolute left-3 top-1/2 block h-px w-6 rotate-45 bg-current" />
-                <span aria-hidden className="absolute left-3 top-1/2 block h-px w-6 -rotate-45 bg-current" />
+                <span aria-hidden className="absolute left-[11px] top-1/2 block h-px w-[22px] rotate-45 bg-current" />
+                <span aria-hidden className="absolute left-[11px] top-1/2 block h-px w-[22px] -rotate-45 bg-current" />
               </button>
             </div>
           </div>
 
           <nav aria-label="Navigasi utama" className="flex flex-1 items-center justify-center overflow-y-auto py-10">
-            <ul className="flex flex-col items-center gap-7 md:gap-9">
+            <ul className="flex flex-col items-center gap-8 md:gap-10">
               {TUNGKU_NAV.map((item, i) => (
                 <li key={item.href} className="tk-menu-item" style={{ "--i": i } as React.CSSProperties}>
                   <Link
@@ -108,7 +120,7 @@ export default function TungkuHeader({ brandName, instagramUrl, tiktokUrl }: Pro
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
                     onClick={() => setOpen(false)}
-                    className={`tk-caps text-[clamp(26px,5vw,44px)] transition-colors hover:text-brand ${isActive(item.href) ? "text-brand" : ""}`}
+                    className={`tk-caps text-[clamp(26px,5vw,44px)] tracking-[0.14em] transition-colors hover:text-brand ${isActive(item.href) ? "text-brand" : ""}`}
                   >
                     {item.label}
                   </Link>

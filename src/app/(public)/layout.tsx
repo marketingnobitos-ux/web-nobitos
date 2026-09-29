@@ -49,11 +49,11 @@ const courierPrime = Courier_Prime({
   variable: "--font-courier-prime",
 });
 
-// Template Tungku (APW): judul & tombol M PLUS Rounded 1c 400, isi Nunito Sans 300–400. Tidak di-preload supaya
+// Template Tungku (APW): judul M PLUS Rounded 1c 300 (tipis), tombol 400, isi Nunito Sans 300–400. Tidak di-preload supaya
 // brand lain tidak ikut mengunduh.
 const mplusRounded = M_PLUS_Rounded_1c({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["300", "400"],
   display: "swap",
   preload: false,
   variable: "--font-mplus-rounded",
@@ -88,7 +88,7 @@ export default async function PublicLayout({ children }: { children: React.React
   // Warna gelap dominan (--ink) diturunkan dari warna brand, jadi tiap brand punya nuansa sendiri.
   // Editorial: gelapnya sedikit lebih terang (maroon, bukan hampir hitam) & latar terang dari warna secondary.
   // Anglo: warna brief dipakai apa adanya (primary = tinta hitam, secondary = kertas krem).
-  // Tungku: teks gelap netral hangat (bukan turunan marun), latar krem dari warna secondary.
+  // Tungku: teks gelap netral hangat (bukan turunan marun), latar putih; krem (secondary) hanya aksen kecil.
   const tones = anglo
     ? { ink: brand.colorPrimary, inkDeep: brand.colorPrimary }
     : tungku
@@ -98,7 +98,8 @@ export default async function PublicLayout({ children }: { children: React.React
     "--brand": brand.colorPrimary,
     ...(tones ? { "--ink": tones.ink, "--ink-deep": tones.inkDeep } : {}),
     ...(brand.colorAccent ? { "--accent": brand.colorAccent } : {}),
-    ...(editorial || anglo || tungku ? { "--paper": brand.colorSecondary } : {}),
+    ...(editorial || anglo ? { "--paper": brand.colorSecondary } : {}),
+    ...(tungku ? { "--paper": "#ffffff", "--cream": brand.colorSecondary } : {}),
   } as CSSProperties;
   const fonts = editorial
     ? `${instrumentSans.variable} tpl-editorial`
@@ -122,7 +123,7 @@ export default async function PublicLayout({ children }: { children: React.React
         ) : anglo ? (
           <AngloHeader brandName={brand.name} />
         ) : tungku ? (
-          <TungkuHeader brandName={brand.name} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />
+          <TungkuHeader brandName={brand.name} logoUrl={brand.logoUrl} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />
         ) : (
           <BrandHeader brandName={brand.name} logoUrl={brand.logoUrl} />
         )}

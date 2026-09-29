@@ -30,7 +30,7 @@ export default function TungkuBranches({ brandName, branches, instagramUrl, tikt
   const label = "tk-caps text-xs tracking-[0.14em] text-ink/55";
 
   return (
-    <div className={`${WRAP} overflow-hidden pb-24 pt-16 md:pb-32 md:pt-24`}>
+    <div className={`${WRAP} overflow-hidden pb-28 pt-20 md:pb-44 md:pt-32`}>
       <Reveal y={16} className="text-center">
         <h1 className="tk-caps text-[clamp(34px,4vw,48px)] tracking-[0.12em]">{APW.branches.title}</h1>
         <p className="mt-5 text-lg text-ink/80">{APW.branches.lead}</p>

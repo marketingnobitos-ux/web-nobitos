@@ -8,7 +8,7 @@ type Category = { id: string; name: string; items: { id: string; name: string; p
 /** Halaman Menu: daftar teks per kategori, nama kiri, harga kanan, garis tipis di antaranya (seperti menu cetak). */
 export default function TungkuMenu({ tagline, categories }: { tagline: string | null; categories: Category[] }) {
   return (
-    <div className={`${WRAP} pb-24 pt-16 md:pb-32 md:pt-24`}>
+    <div className={`${WRAP} pb-28 pt-20 md:pb-44 md:pt-32`}>
       <Reveal y={16} className="text-center">
         <h1 className="tk-caps text-[clamp(34px,4vw,48px)] tracking-[0.12em]">{APW.menu.title}</h1>
         {tagline && <p className="mx-auto mt-5 max-w-xl text-lg text-ink/80">{tagline}</p>}

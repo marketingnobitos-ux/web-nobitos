@@ -20,7 +20,7 @@ export type FeaturedItem = {
 type Props = { items: FeaturedItem[]; moreLabel: string; menuLabel: string };
 
 /**
- * Tiga kartu gambar persegi. Tombol "+ Lihat deskripsi" membuka popup (<dialog> bawaan: fokus terkunci, Escape menutup).
+ * Tiga kartu gambar persegi besar, teks minimal (nama saja; harga di popup). Tombol "+ Lihat deskripsi" membuka popup (<dialog> bawaan: fokus terkunci, Escape menutup).
  * HP: kartu digeser ke samping (scroll-snap) dengan titik penanda; mulai md: tiga kolom.
  */
 export default function FeaturedCards({ items, moreLabel, menuLabel }: Props) {
@@ -60,7 +60,7 @@ export default function FeaturedCards({ items, moreLabel, menuLabel }: Props) {
         className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:-mx-6 sm:px-6 md:mx-0 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
       >
         {items.map((item) => (
-          <li key={item.id} className="w-[78%] shrink-0 snap-start md:w-auto">
+          <li key={item.id} className="w-[86%] shrink-0 snap-start md:w-auto">
             <button
               type="button"
               onClick={() => open(item)}
@@ -80,12 +80,11 @@ export default function FeaturedCards({ items, moreLabel, menuLabel }: Props) {
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                 />
               )}
-              <span className="absolute inset-x-0 bottom-0 flex h-14 items-center justify-center gap-2 bg-ink/70 text-[15px] text-paper transition-colors group-hover:bg-brand/90">
+              <span className="absolute inset-x-0 bottom-0 flex h-14 items-center justify-center gap-2 bg-ink/55 text-[15px] text-white transition-colors group-hover:bg-brand/90">
                 <span aria-hidden>+</span> {moreLabel}
               </span>
             </button>
-            <h3 className="tk-display mt-5 text-center text-xl md:text-[22px]">{item.name}</h3>
-            <p className="mt-1 text-center text-[15px] text-ink/60">Rp {formatHarga(item.price)}</p>
+            <h3 className="tk-display mt-6 text-center text-xl md:text-[22px]">{item.name}</h3>
           </li>
         ))}
       </ul>
