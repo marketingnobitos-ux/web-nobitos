@@ -72,7 +72,7 @@ Ini akar sebagian besar gap per brand. Diselesaikan sekali di F0.2–F0.7.
 - Pak Joko TikTok: https://www.tiktok.com/@bakmi.pakjoko (dipasang di F0.4/F0.5).
 - Jam buka Bolu (dikirim Fran 29 Sep, semua cabang di Kota/Kab. Cirebon): **Stasiun Kejaksan 06.00–21.00**, **Kartini 08.00–21.00**, **Kedawung 08.00–21.00**. Jam dikonfirmasi benar. Dimasukkan ke data lewat seed Bolu di F0.4.
 
-- Hari libur (dikirim Fran 29 Sep): **Bolu tidak ada libur**, **Aminoto tidak ada libur**, **Bakmi Pak Joko libur hari Rabu**.
+- Hari libur (dikirim Fran 29 Sep): **Bolu tidak ada libur**, **Aminoto tidak ada libur**, **Bakmi Pak Joko: Kartini libur Rabu, Ciperna libur Senin**. Jam Ciperna sama dengan Kartini: **16.00–23.00**.
 
 ## 4. Masukan untuk task F0 berikutnya
 
