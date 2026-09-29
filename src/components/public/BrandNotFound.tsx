@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { BrandTemplate } from "@prisma/client";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { WRAP } from "@/components/templates/anglo/shared";
+import { WRAP as TUNGKU_WRAP } from "@/components/templates/tungku/shared";
 import { trackName } from "@/lib/track";
 
 const TITLE = "Halaman tidak ditemukan";
@@ -26,6 +27,24 @@ export default function BrandNotFound({ template }: { template: BrandTemplate })
           </div>
         </section>
       </div>
+    );
+  }
+
+  if (template === "TUNGKU") {
+    return (
+      <section className={`${TUNGKU_WRAP} pb-24 pt-20 text-center text-ink md:pb-32 md:pt-28`}>
+        <p className="tk-caps text-sm tracking-[0.3em] text-brand">404</p>
+        <h1 className="tk-caps mt-5 text-[clamp(28px,4vw,44px)] tracking-[0.1em]">{TITLE}</h1>
+        <p className="mx-auto mt-6 max-w-md leading-[1.75] text-ink/80">{BODY}</p>
+        <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <Link href="/" data-track={trackName("beranda")} className="tk-btn">
+            Ke Beranda
+          </Link>
+          <Link href="/menu" data-track={trackName("menu")} className="tk-btn tk-btn-ghost">
+            Lihat Menu
+          </Link>
+        </div>
+      </section>
     );
   }
 

@@ -1,5 +1,6 @@
 import AngloBranches from "@/components/templates/anglo/AngloBranches";
 import BranchCard from "@/components/public/BranchCard";
+import TungkuBranches from "@/components/templates/tungku/TungkuBranches";
 import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { prisma } from "@/lib/prisma";
@@ -29,6 +30,14 @@ export default async function CabangPage() {
       </>
     );
   const branches = await prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, include: { hours: true } });
+
+  if (brand.template === "TUNGKU")
+    return (
+      <>
+        {jsonLd}
+        <TungkuBranches brandName={brand.name} branches={branches} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />
+      </>
+    );
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:py-14">

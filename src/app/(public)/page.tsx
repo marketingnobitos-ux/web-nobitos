@@ -11,6 +11,7 @@ import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
 import StoryPinned from "@/components/public/home/StoryPinned";
 import AngloHome from "@/components/templates/anglo/AngloHome";
 import EditorialHome from "@/components/templates/editorial/EditorialHome";
+import TungkuHome from "@/components/templates/tungku/TungkuHome";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
 import { greetingFor, wibHour } from "@/lib/greeting";
@@ -32,7 +33,8 @@ export function generateMetadata() {
     return {
       title: withTagline.length <= HOME_TITLE_MAX ? withTagline : brand.name,
       absoluteTitle: true,
-      description: `${brand.tagline ? `${brand.tagline}.` : brand.name}${branches} Lihat menu, harga, jam buka & lokasi.`,
+      // Tagline yang sudah diakhiri tanda baca (mis. "...segar!") tidak diberi titik lagi.
+      description: `${brand.tagline ? brand.tagline.replace(/([^.!?])$/, "$1.") : brand.name}${branches} Lihat menu, harga, jam buka & lokasi.`,
       path: "/",
     };
   });
@@ -60,6 +62,28 @@ export default async function HomePage() {
       <>
         {jsonLd}
         <AngloHome featured={featured} />
+      </>
+    );
+  }
+
+  if (brand.template === "TUNGKU") {
+    const [featured, branch] = await Promise.all([
+      prisma.menuItem.findMany({
+        where: { brandId: brand.id, isFeatured: true, isAvailable: true },
+        orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
+        take: 3,
+        select: { id: true, name: true, description: true, price: true, portion: true, imageUrl: true, category: { select: { name: true } } },
+      }),
+      prisma.branch.findFirst({
+        where: { brandId: brand.id },
+        orderBy: { order: "asc" },
+        select: { name: true, address: true, openHours: true, hours: { select: { dayOfWeek: true, isClosed: true, opens: true, closes: true } } },
+      }),
+    ]);
+    return (
+      <>
+        {jsonLd}
+        <TungkuHome brand={brand} featured={featured.map(({ category, ...f }) => ({ ...f, category: category.name }))} branch={branch} />
       </>
     );
   }

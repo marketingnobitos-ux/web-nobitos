@@ -36,6 +36,10 @@ const TEMPLATE_REDIRECTS: Partial<Record<BrandTemplate, [RegExp, string][]>> = {
     [/^\/galeri\/?$/, "/"],
     [/^\/menu\/[^/]+\/?$/, "/menu"],
   ],
+  TUNGKU: [
+    [/^\/galeri\/?$/, "/"],
+    [/^\/menu\/[^/]+\/?$/, "/menu"],
+  ],
 };
 
 async function templateRedirect(req: NextRequest, slug: string): Promise<NextResponse | null> {

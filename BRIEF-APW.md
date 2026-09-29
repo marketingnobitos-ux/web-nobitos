@@ -1,7 +1,8 @@
 # BRIEF — Ayam Panggang Wicaksono (APW)
 
 > ROADMAP F2.2 · 29 Sep 2026 · Slug `apw` · Template `TUNGKU` (baru, F2.4)
-> Sumber: menu cetak resmi & keterangan Fran di sesi 29 Sep 2026. Riset IG/TikTok belum bisa dibaca tanpa login, jadi **tidak ada fakta yang diambil dari sana**.
+> Sumber: menu cetak resmi & keterangan Fran (29 Sep 2026) + akun Instagram resmi @ayampanggangwicaksono (bio, caption, dan video 2 reel milik APW: 17 Jul & 28 Agu 2026). 2 reel lain di profil milik kreator lain (@kulinersimamank, @jajanisasi): tidak dipakai, termasuk klaim "pertama di Cirebon".
+> Desain: Figma https://www.figma.com/design/LkzvL90pPoUNbf3GnoagWl
 > Data ditulis di `src/data/brands/apw.ts` (teks halaman) dan `prisma/apw.ts` (brand, menu, cabang) → `npm run apw:seed`.
 
 ## 1. Fakta brand (terkonfirmasi)
@@ -10,7 +11,10 @@
 |---|---|
 | Nama | Ayam Panggang Wicaksono (APW) |
 | Tagline (dari menu cetak) | "Nikmati sajian lezat ayam panggang dan aneka pilihan menu segar!" |
-| Ciri khas | Dipanggang di dalam tungku gerabah (disampaikan Fran) |
+| Slogan (bio & logo IG) | "Smokie nya bikin nagih" |
+| Ciri khas | Dipanggang di dalam tungku gerabah (Fran + reel IG: "dipanggang pakai tungku grabah tradisional"). Dari video: ayam dibaluri bumbu rempah, dimasukkan ke tungku gerabah (api kompor di bawah tungku, bukan arang), diangkat saat warnanya gelap. |
+| Alamat (bio IG) | Jl. DR. Cipto Mangunkusumo No.142, Kesambi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45134 |
+| Jam (bio IG) | 16.00–00.00 WIB, Kamis libur |
 | Cabang | **Hanya Kesambi, Cirebon** (Cipto = data contoh, dihapus) |
 | Instagram | https://www.instagram.com/ayampanggangwicaksono/ |
 | TikTok | https://www.tiktok.com/@ayampanggang.wicaksono |
@@ -38,11 +42,11 @@ Dipilih Fran: https://www.couvee.co.id — terang, lega, header solid, hero foto
 
 ## 5. Daftar [CEK] untuk Fran
 
-- [CEK] Alamat lengkap cabang Kesambi.
-- [CEK] Jam buka + hari libur Kesambi (7 hari; dibutuhkan badge "Buka sekarang" & JSON-LD).
+- [CEK] Alamat & jam dari bio IG sudah dipakai (atas izin Fran). Konfirmasi tetap benar.
 - [CEK] Nomor WhatsApp Kesambi.
-- [CEK] Link Google Maps + koordinat Kesambi.
-- [CEK] Logo asli (sementara wordmark teks) & foto asli (sementara ilustrasi SVG di `public/brands/apw/`).
-- [CEK] Cerita asal-usul: tahun berdiri, siapa Wicaksono. Tidak ditulis sampai dikonfirmasi.
-- [CEK] Bebek juga dipanggang di tungku gerabah? (copy saat ini menyebut "ayam dan bebek dipanggang di dalam tungku gerabah").
+- [CEK] Link Google Maps resmi + koordinat Kesambi (sementara tombol Maps = pencarian alamat).
+- [CEK] Logo resolusi tinggi (sementara foto profil IG 150 px) & foto asli resolusi tinggi. Foto sekarang = potongan video reel IG 720 px di `public/brands/apw/foto/`.
+- [CEK] Foto khusus Ayam Panggang Kampung & Bebek Panggang (kartu sekarang memakai foto sajian umum dari reel).
+- [CEK] Cerita asal-usul: siapa Wicaksono; logo IG tertulis "Sejak 2024", tapi post pertama IG Juli 2026. Tidak ditulis sampai dikonfirmasi.
+- [CEK] Bebek juga dipanggang di tungku gerabah? (copy sekarang hanya menyebut ayam).
 - [CEK] Domain (F2.1).

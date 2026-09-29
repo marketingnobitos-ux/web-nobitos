@@ -1,4 +1,4 @@
-// Data Ayam Panggang Wicaksono (APW): brand + menu resmi + cabang Kesambi.
+// Data Ayam Panggang Wicaksono (APW): brand + menu resmi + cabang Kesambi (alamat & jam dari bio Instagram resmi).
 // Konten halaman (hero, cerita, teks antarmuka) ada di src/data/brands/apw.ts.
 //
 // BERBEDA dengan seed Pak Joko: seed ini MENIMPA data brand `apw` (data contoh dari prisma/seed.ts diganti data asli).
@@ -23,9 +23,9 @@ export const APW_BRAND = {
   fontHeading: "M PLUS Rounded 1c",
   fontBody: "Nunito Sans",
   template: "TUNGKU" as const,
-  // TODO: konfirmasi Fran — logo asli. Sementara wordmark teks di header (logoUrl kosong).
-  logoUrl: null,
-  faviconUrl: "/brands/apw/favicon.svg",
+  // Logo dari foto profil Instagram resmi (150 px). TODO: konfirmasi Fran — file logo resolusi tinggi.
+  logoUrl: "/brands/apw/foto/logo-apw.webp",
+  faviconUrl: "/brands/apw/favicon.png",
   instagramUrl: "https://www.instagram.com/ayampanggangwicaksono/",
   tiktokUrl: "https://www.tiktok.com/@ayampanggang.wicaksono",
   servesCuisine: ["Ayam Panggang"],
@@ -47,23 +47,25 @@ export const APW_MENU: MenuCategoryData[] = [
         portion: "1/4 ekor · dada / paha",
         price: 25000,
         featured: true,
-        imageUrl: "/brands/apw/menu-ayam-panggang-negeri.svg",
-        description: "Seperempat ekor ayam negeri, dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha, lalu lengkapi dengan nasi dan menu tambahan.",
+        imageUrl: "/brands/apw/foto/menu-ayam-panggang-negeri.webp",
+        description: "Seperempat ekor ayam negeri, dibaluri bumbu rempah lalu dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha.",
       },
       {
         name: "Ayam Panggang Kampung",
         portion: "1/4 ekor · dada / paha",
         price: 35000,
         featured: true,
-        imageUrl: "/brands/apw/menu-ayam-panggang-kampung.svg",
-        description: "Seperempat ekor ayam kampung, dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha, lalu lengkapi dengan nasi dan menu tambahan.",
+        // TODO: konfirmasi Fran — foto khusus ayam kampung (foto sekarang: sajian nasi, lalapan & ayam panggang dari reel IG).
+        imageUrl: "/brands/apw/foto/menu-ayam-panggang-kampung.webp",
+        description: "Seperempat ekor ayam kampung, dibaluri bumbu rempah lalu dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha.",
       },
       {
         name: "Bebek Panggang",
         portion: "paha / dada",
         price: 38000,
         featured: true,
-        imageUrl: "/brands/apw/menu-bebek-panggang.svg",
+        // TODO: konfirmasi Fran — foto bebek asli (foto sekarang: nasi & lauk panggang dari reel IG).
+        imageUrl: "/brands/apw/foto/menu-bebek-panggang.webp",
         description: "Buat yang mau selain ayam: bebek panggang, pilih bagian paha atau dada. Paling pas dengan nasi dan sate pilihan.",
       },
     ],
@@ -142,16 +144,15 @@ export async function seedApw(prisma: PrismaClient, { allowRemote = false } = {}
       });
     }
 
-    const { slug: _slug, area: _area, ...fields } = APW_BRANCH;
+    const { slug: _slug, area: _area, hours, ...fields } = APW_BRANCH;
     const branchData = { ...fields, phone: null, order: 0 };
-    const kesambi = await tx.branch.findFirst({ where: { ...where, name: APW_BRANCH.name } });
-    if (kesambi) {
-      await tx.branch.update({ where: { id: kesambi.id }, data: branchData });
-      // TODO: konfirmasi Fran — jam buka Kesambi; sampai ada, tabel jam dikosongkan (jam contoh tidak dipakai).
-      await tx.branchHours.deleteMany({ where: { branchId: kesambi.id } });
-    } else {
-      await tx.branch.create({ data: { brandId: brand.id, ...branchData } });
-    }
+    const existing = await tx.branch.findFirst({ where: { ...where, name: APW_BRANCH.name } });
+    const kesambi = existing
+      ? await tx.branch.update({ where: { id: existing.id }, data: branchData })
+      : await tx.branch.create({ data: { brandId: brand.id, ...branchData } });
+    // Jam terstruktur 7 hari (bio IG: 16.00–00.00, Kamis libur) ditulis ulang utuh.
+    await tx.branchHours.deleteMany({ where: { branchId: kesambi.id } });
+    await tx.branchHours.createMany({ data: hours.map((h) => ({ branchId: kesambi.id, ...h })) });
 
     return { branches: oldBranches.map((b) => b.name), items: items.count, pages: pages.count, promos: promos.count, albums: albums.count };
   });
