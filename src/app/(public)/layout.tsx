@@ -16,6 +16,7 @@ import EditorialHeader from "@/components/templates/editorial/EditorialHeader";
 import Tracker from "@/components/public/Tracker";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 import { darkTones } from "@/lib/color";
+import { ogImage, siteOrigin } from "@/lib/seo";
 
 // Judul: sans tebal yang bulat & ramah; teks: DM Sans.
 const bricolage = Bricolage_Grotesque({
@@ -49,10 +50,15 @@ const courierPrime = Courier_Prime({
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getActiveBrand();
   if (!brand) return {};
+  // Default untuk halaman tanpa metadata sendiri. Canonical sengaja tidak di sini (tiap halaman menulis miliknya, lib/seo).
+  const image = ogImage(brand);
   return {
+    metadataBase: await siteOrigin(brand.id),
     title: { default: brand.name, template: `%s · ${brand.name}` },
     description: brand.tagline ?? undefined,
     icons: brand.faviconUrl ? { icon: brand.faviconUrl } : undefined,
+    openGraph: { type: "website", locale: "id_ID", siteName: brand.name, images: [image] },
+    twitter: { card: "summary_large_image", images: [image.url] },
   };
 }
 

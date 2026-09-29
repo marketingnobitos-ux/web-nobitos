@@ -15,8 +15,26 @@ import { getActivePromos, getSections } from "@/lib/content";
 import { greetingFor, wibHour } from "@/lib/greeting";
 import { GALLERY_PLACEHOLDERS, PLACEHOLDER, menuPhoto, realPhoto } from "@/lib/placeholder";
 import { prisma } from "@/lib/prisma";
+import { branchNames, brandPageMetadata, joinNames } from "@/lib/seo";
 
 const DEFAULT_PROCESS = ["Diulek.", "Digoreng.", "Disajikan hangat."];
+
+/** Batas judul Beranda sebelum tagline tidak lagi ikut di judul (hasil pencarian memotong ±60 karakter). */
+const HOME_TITLE_MAX = 65;
+
+export function generateMetadata() {
+  return brandPageMetadata(async (brand) => {
+    const names = await branchNames(brand);
+    const withTagline = brand.tagline ? `${brand.name} — ${brand.tagline}` : brand.name;
+    const branches = names.length ? ` ${names.length} cabang: ${joinNames(names)}.` : "";
+    return {
+      title: withTagline.length <= HOME_TITLE_MAX ? withTagline : brand.name,
+      absoluteTitle: true,
+      description: `${brand.tagline ? `${brand.tagline}.` : brand.name}${branches} Lihat menu, harga, jam buka & lokasi.`,
+      path: "/",
+    };
+  });
+}
 
 // Halaman Utama. Template Editorial punya susunan sendiri; selebihnya template Bold:
 // hero, marquee, menu andalan, picker, cerita, promo, galeri, cabang.

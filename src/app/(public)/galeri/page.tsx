@@ -4,8 +4,15 @@ import EditorialGallery from "@/components/templates/editorial/EditorialGallery"
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections } from "@/lib/content";
 import { prisma } from "@/lib/prisma";
+import { brandPageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Galeri" };
+export function generateMetadata() {
+  return brandPageMetadata((brand) => ({
+    title: "Galeri",
+    description: `Galeri foto ${brand.name}: suasana tempat, menu, dan cerita di balik dapurnya.`,
+    path: "/galeri",
+  }));
+}
 
 // Album foto per brand, klik foto untuk lightbox.
 export default async function GaleriPage() {

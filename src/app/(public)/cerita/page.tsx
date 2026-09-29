@@ -3,8 +3,23 @@ import AngloStory from "@/components/templates/anglo/AngloStory";
 import EditorialStory from "@/components/templates/editorial/EditorialStory";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
+import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { brandPageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Cerita" };
+export function generateMetadata() {
+  return brandPageMetadata(async (brand) => {
+    // Paragraf pembuka cerita brand; tagline kalau cerita belum diisi.
+    const intro =
+      brand.template === "ANGLO"
+        ? BAKMI_PAK_JOKO.story.paragraphs[0]
+        : (await getSections(brand.id, "story")).find((s) => s.key === "profile")?.data.body;
+    return {
+      title: "Cerita",
+      description: intro ?? `Cerita di balik ${brand.name}. ${brand.tagline ?? ""}`,
+      path: "/cerita",
+    };
+  });
+}
 
 // Cerita brand: profil, sejarah, nilai, suasana outlet (dari PageContent pageKey "story").
 export default async function CeritaPage() {

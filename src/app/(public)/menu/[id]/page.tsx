@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 import { formatRupiah } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
+import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -16,7 +17,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const brand = await getActiveBrand();
   if (!brand) return {};
   const item = await getItem(brand.id, (await params).id);
-  return item ? { title: item.name, description: item.description ?? undefined } : {};
+  if (!item) return {};
+  const price = `${formatRupiah(item.price)}${item.portion ? ` / ${item.portion}` : ""}`;
+  return pageMetadata(brand, {
+    title: item.name,
+    description: `${item.name} di ${brand.name}, ${price}.${item.description ? ` ${item.description}` : ""}`,
+    path: `/menu/${item.id}`,
+  });
 }
 
 // Detail menu: foto besar, harga, porsi. Tanpa tombol pesan.

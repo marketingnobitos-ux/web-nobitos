@@ -2,9 +2,25 @@ import MenuFilter from "@/components/public/MenuFilter";
 import AngloMenu from "@/components/templates/anglo/AngloMenu";
 import EditorialMenu from "@/components/templates/editorial/EditorialMenu";
 import { requireActiveBrand } from "@/lib/active-brand";
+import { formatRupiah } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
+import { brandPageMetadata, joinNames } from "@/lib/seo";
 
-export const metadata = { title: "Menu" };
+export function generateMetadata() {
+  return brandPageMetadata(async (brand) => {
+    const items = await prisma.menuItem.findMany({
+      where: { brandId: brand.id, isAvailable: true },
+      orderBy: [{ isFeatured: "desc" }, { category: { order: "asc" } }, { order: "asc" }],
+      select: { name: true, price: true },
+    });
+    const prices = items.map((i) => i.price);
+    const range = items.length ? ` Harga ${formatRupiah(Math.min(...prices))} – ${formatRupiah(Math.max(...prices))}.` : "";
+    const sample = items.slice(0, 3).map((i) => i.name);
+    const more = items.length > sample.length;
+    const list = sample.length ? `: ${more ? `${sample.join(", ")}, dan lainnya` : joinNames(sample)}.` : ".";
+    return { title: "Menu & Harga", description: `Menu & harga ${brand.name}${list}${range}`, path: "/menu" };
+  });
+}
 
 // Daftar menu per kategori + filter. Katalog saja, tanpa tombol pesan.
 export default async function MenuPage() {

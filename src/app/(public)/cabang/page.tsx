@@ -2,8 +2,18 @@ import AngloBranches from "@/components/templates/anglo/AngloBranches";
 import BranchCard from "@/components/public/BranchCard";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { prisma } from "@/lib/prisma";
+import { branchNames, brandPageMetadata, joinNames } from "@/lib/seo";
 
-export const metadata = { title: "Cabang & Kontak" };
+export function generateMetadata() {
+  return brandPageMetadata(async (brand) => {
+    const names = await branchNames(brand);
+    return {
+      title: "Cabang & Kontak",
+      description: `Alamat, jam buka, WhatsApp & Google Maps ${names.length} cabang ${brand.name}: ${joinNames(names)}.`,
+      path: "/cabang",
+    };
+  });
+}
 
 // Daftar cabang: alamat, jam buka, peta, WhatsApp/telepon.
 export default async function CabangPage() {
