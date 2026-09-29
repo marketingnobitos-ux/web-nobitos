@@ -1,3 +1,4 @@
+import Reveal from "@/components/animations/Reveal";
 import OpenBadge from "@/components/public/OpenBadge";
 import { InstagramIcon, Photo, TikTokIcon, WRAP } from "@/components/templates/tungku/shared";
 import { APW, APW_IMAGES } from "@/data/brands/apw";
@@ -30,22 +31,22 @@ export default function TungkuBranches({ brandName, branches, instagramUrl, tikt
 
   return (
     <div className={`${WRAP} overflow-hidden pb-24 pt-16 md:pb-32 md:pt-24`}>
-      <header className="text-center">
+      <Reveal y={16} className="text-center">
         <h1 className="tk-caps text-[clamp(34px,4vw,48px)] tracking-[0.12em]">{APW.branches.title}</h1>
         <p className="mt-5 text-lg text-ink/80">{APW.branches.lead}</p>
-      </header>
+      </Reveal>
 
       <div className="mt-16 space-y-24 md:mt-24">
         {branches.map((b) => {
           const key = branchKey(b.name);
           return (
             <article key={b.id} id={key} aria-labelledby={`cabang-${key}`} className="grid items-center gap-12 md:grid-cols-[480px_1fr] md:gap-20">
-              <div className="relative ml-6 md:ml-10">
+              <Reveal y={16} className="relative ml-6 md:ml-10">
                 <div aria-hidden className="bg-paper-deep absolute -left-6 bottom-10 top-12 w-full md:-left-10" />
                 <Photo image={APW_IMAGES.cabang} className="relative aspect-[4/5] w-full" />
                 <div aria-hidden className="absolute -right-3 top-8 h-5 w-32 bg-accent md:-right-8 md:w-44" />
-              </div>
-              <div>
+              </Reveal>
+              <Reveal y={16} delay={0.1}>
                 <h2 id={`cabang-${key}`} className="tk-caps text-[clamp(28px,3vw,34px)]">
                   {b.name}
                 </h2>
@@ -102,7 +103,7 @@ export default function TungkuBranches({ brandName, branches, instagramUrl, tikt
                     </div>
                   </>
                 )}
-              </div>
+              </Reveal>
             </article>
           );
         })}

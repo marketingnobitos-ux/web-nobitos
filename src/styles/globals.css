@@ -589,3 +589,31 @@ html.lenis body {
     background-color: var(--paper-deep);
   }
 }
+
+/* Tungku: gerak ringan, hanya kalau pengguna tidak meminta reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .tpl-tungku .tk-menu {
+    animation: tk-fade 0.3s ease-out;
+  }
+  .tpl-tungku .tk-menu-item {
+    animation: tk-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 60ms + 80ms);
+  }
+  .tpl-tungku .tk-dialog[open] {
+    animation: tk-rise 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .tpl-tungku .tk-dialog[open]::backdrop {
+    animation: tk-fade 0.3s ease-out;
+  }
+}
+@keyframes tk-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes tk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
