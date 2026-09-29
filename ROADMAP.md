@@ -59,14 +59,14 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 
 ## F2 — Ayam Panggang Wicaksono (APW) · 12 Okt – 6 Nov
 
-Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: **Kesambi saja** (dikonfirmasi Fran 29 Sep; Cipto tidak dipakai).
+Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: **hanya Kesambi** (dikonfirmasi Fran 29 Sep). Cabang **Cipto** di DB lokal & `prisma/seed.ts` adalah **data contoh**: bukan cabang APW, jangan dipakai untuk pengecekan tampilan/JSON-LD/screenshot.
 
 - [ ] **F2.1** 🙋 Fran beli domain (usulan: `ayampanggangwicaksono.web.id`) + arahkan A record ke 43.129.49.26.
 - [ ] **F2.2** Catatan: brand `apw` sudah ada di DB dengan data contoh (tagline, harga, cabang). Semua diganti data asli. Riset IG/TikTok → `BRIEF-APW.md` (format sama dengan brief Pak Joko): fakta brand, cerita, menu + harga dari sumber resmi, 1 cabang Kesambi (alamat, jam, WA, Maps), tone, daftar [CEK].
 - [ ] **F2.3** Usulkan 2–3 referensi desain yang **beda** dari Aminoto/Bolu/Pak Joko. 🙋 Fran pilih satu.
 - [ ] **F2.4** Template baru + halaman (Beranda, Menu, Cerita, Cabang), tanpa animasi dulu → screenshot → 🙋 cek Fran.
 - [ ] **F2.5** Animasi + F0 → screenshot → 🙋 cek Fran.
-- [ ] **F2.6** Seed khusus APW (upsert, **menimpa data contoh brand `apw` saja**) + deploy (nginx, certbot, seed, build, restart) + cek live.
+- [ ] **F2.6** Seed khusus APW (upsert, **menimpa data contoh brand `apw` saja**): cabang akhir **hanya Kesambi**, cabang contoh Cipto dihapus dari brand `apw`. Lalu deploy (nginx, certbot, seed, build, restart) + cek live: halaman Cabang & JSON-LD hanya berisi 1 cabang (Kesambi).
 
 ## F3 — Dapur Bu Joko (sarapan) · 9 Nov – 4 Des
 
