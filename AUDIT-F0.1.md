@@ -65,6 +65,13 @@ Ini akar sebagian besar gap per brand. Diselesaikan sekali di F0.2–F0.7.
 4. **Pak Joko — TikTok.** Belum ada akun TikTok di data. Ada atau tidak?
 5. **`prisma/seed.ts` masih berisi brand `bakmi-jowo` dan `bu-joko` versi contoh** (nama "Mas Joko", "Warung Bu Joko"). Aman selama seed penuh tidak dijalankan di VPS (aturan 6). Perlu diingat saat F3.6: brand baru `dapur-bu-joko` beda slug dengan `bu-joko` contoh.
 
+### Jawaban Fran (29 Sep 2026)
+
+- APW: **Kesambi saja**. Cabang Cipto tidak dipakai. ROADMAP F2 sudah disesuaikan.
+- Bolu: satu nomor WA untuk semua cabang **memang benar**.
+- Pak Joko TikTok: https://www.tiktok.com/@bakmi.pakjoko (dipasang di F0.4/F0.5).
+- Jam buka Bolu: menyusul, sebelum F0.4.
+
 ## 4. Masukan untuk task F0 berikutnya
 
 - **F0.2**: tambah `metadataBase` dari hostname, canonical, OG/Twitter, description per halaman (Beranda: tagline + kota; Menu: kategori + kisaran harga; Cabang: daftar nama cabang). Gambar OG per brand perlu kolom/asset baru.

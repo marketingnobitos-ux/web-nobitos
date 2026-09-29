@@ -41,7 +41,7 @@
 Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 
 - [x] **F0.1** Audit singkat platform & 5 brand terhadap checklist Standar Kuliner (lampiran A). Hasil: tabel gap per brand. Tidak mengubah kode. — 29 Sep 2026, `2a52aec` → `AUDIT-F0.1.md`
-- [ ] **F0.2** Lengkapi metadata (sekarang baru `title`, `description`, favicon): canonical, Open Graph + gambar OG per brand, `title` unik per halaman.
+- [x] **F0.2** Lengkapi metadata (sekarang baru `title`, `description`, favicon): canonical, Open Graph + gambar OG per brand, `title` unik per halaman. — 29 Sep 2026, `6bcb467` (gambar OG dibuat otomatis di `/og-image` dari nama, tagline & warna brand)
 - [ ] **F0.3** `sitemap.xml` dan `robots.txt` per domain (dihasilkan dari hostname).
 - [ ] **F0.4** JSON-LD `Restaurant` per cabang: nama, alamat, geo, `openingHoursSpecification`, `servesCuisine`, `priceRange`, `menu` (URL), `sameAs` (IG/TikTok), telepon/WA.
 - [ ] **F0.5** Komponen standar yang bisa dipakai semua template: status "Buka sekarang / Tutup" dari jam buka, tombol WA click-to-chat dengan pesan awal, tombol Maps, tautan IG/TikTok, halaman 404 per brand, `alt` untuk semua gambar.
@@ -59,10 +59,10 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 
 ## F2 — Ayam Panggang Wicaksono (APW) · 12 Okt – 6 Nov
 
-Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: Cipto, Kesambi.
+Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: **Kesambi saja** (dikonfirmasi Fran 29 Sep; Cipto tidak dipakai).
 
 - [ ] **F2.1** 🙋 Fran beli domain (usulan: `ayampanggangwicaksono.web.id`) + arahkan A record ke 43.129.49.26.
-- [ ] **F2.2** Catatan: brand `apw` sudah ada di DB dengan data contoh (tagline, harga, cabang). Semua diganti data asli. Riset IG/TikTok → `BRIEF-APW.md` (format sama dengan brief Pak Joko): fakta brand, cerita, menu + harga dari sumber resmi, 2 cabang (alamat, jam, WA, Maps), tone, daftar [CEK].
+- [ ] **F2.2** Catatan: brand `apw` sudah ada di DB dengan data contoh (tagline, harga, cabang). Semua diganti data asli. Riset IG/TikTok → `BRIEF-APW.md` (format sama dengan brief Pak Joko): fakta brand, cerita, menu + harga dari sumber resmi, 1 cabang Kesambi (alamat, jam, WA, Maps), tone, daftar [CEK].
 - [ ] **F2.3** Usulkan 2–3 referensi desain yang **beda** dari Aminoto/Bolu/Pak Joko. 🙋 Fran pilih satu.
 - [ ] **F2.4** Template baru + halaman (Beranda, Menu, Cerita, Cabang), tanpa animasi dulu → screenshot → 🙋 cek Fran.
 - [ ] **F2.5** Animasi + F0 → screenshot → 🙋 cek Fran.
