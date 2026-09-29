@@ -1,8 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import type { BrandTemplate } from "@prisma/client";
 import {
   BRAND_HEADER,
   PREVIEW_COOKIE,
+  getBrandBySlugCached,
   isKnownBrandSlug,
   normalizeHost,
   resolveBrandSlugByHost,
@@ -25,6 +27,21 @@ function isBypassed(pathname: string): boolean {
     BYPASS_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
     /\.[a-z0-9]+$/i.test(pathname) // file statis di /public
   );
+}
+
+// Halaman yang tidak dipakai template tertentu -> tujuan redirect. Dilakukan di middleware supaya status HTTP
+// benar-benar 307; redirect() di page terjadi setelah shell loading.tsx terkirim, jadi respons tetap 200.
+const TEMPLATE_REDIRECTS: Partial<Record<BrandTemplate, [RegExp, string][]>> = {
+  ANGLO: [
+    [/^\/galeri\/?$/, "/"],
+    [/^\/menu\/[^/]+\/?$/, "/menu"],
+  ],
+};
+
+async function templateRedirect(req: NextRequest, slug: string): Promise<NextResponse | null> {
+  const brand = await getBrandBySlugCached(slug);
+  const target = brand && TEMPLATE_REDIRECTS[brand.template]?.find(([re]) => re.test(req.nextUrl.pathname))?.[1];
+  return target ? NextResponse.redirect(new URL(target, req.nextUrl)) : null;
 }
 
 function isAdminPath(pathname: string): boolean {
@@ -81,6 +98,8 @@ export const middleware = auth(async (req) => {
 
     const cookieSlug = req.cookies.get(PREVIEW_COOKIE)?.value;
     if (cookieSlug && (await isKnownBrandSlug(cookieSlug))) {
+      const redirect = await templateRedirect(req, cookieSlug);
+      if (redirect) return redirect;
       headers.set(BRAND_HEADER, cookieSlug);
       return NextResponse.next({ request: { headers } });
     }
@@ -89,6 +108,8 @@ export const middleware = auth(async (req) => {
   // --- Produksi: hostname -> brand ---
   const slug = await resolveBrandSlugByHost(host);
   if (!slug) return notFound(req, headers, false);
+  const redirect = await templateRedirect(req, slug);
+  if (redirect) return redirect;
 
   headers.set(BRAND_HEADER, slug);
   return NextResponse.next({ request: { headers } });

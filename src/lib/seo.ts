@@ -1,8 +1,9 @@
 // Metadata SEO situs publik (ROADMAP F0.2): canonical, Open Graph, Twitter card, title & description per halaman.
 import { cache } from "react";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { getActiveBrand } from "@/lib/active-brand";
+import { PREVIEW_COOKIE, getBrandBySlugCached, resolveBrandSlugByHost } from "@/lib/brand";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 import { prisma } from "@/lib/prisma";
 
@@ -27,6 +28,18 @@ export const siteOrigin = cache(async (brandId: string): Promise<URL> => {
   const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   return new URL(`${proto}://${host}`);
 });
+
+/**
+ * Brand untuk /robots.txt & /sitemap.xml. Kedua route dilewati middleware (path berekstensi), jadi brand dicari
+ * langsung dari hostname; saat dev juga dari cookie preview. Null untuk host admin / host tak dikenal.
+ */
+export async function brandFromHost() {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "";
+  let slug = await resolveBrandSlugByHost(host);
+  if (!slug && process.env.NODE_ENV !== "production") slug = (await cookies()).get(PREVIEW_COOKIE)?.value ?? null;
+  return slug ? getBrandBySlugCached(slug) : null;
+}
 
 /** Rapikan teks (hapus penanda *miring*, spasi ganda) lalu potong di batas kata. */
 export function clip(text: string, max = DESCRIPTION_MAX): string {

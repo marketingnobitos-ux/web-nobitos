@@ -2,7 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Brand tidak ditemukan" };
+// noindex: halaman ini dijawab HTTP 200 (rewrite middleware), jangan sampai masuk indeks mesin pencari.
+export const metadata = { title: "Brand tidak ditemukan", robots: { index: false, follow: false } };
 
 // Tampil untuk domain / slug brand yang tidak terdaftar (PRD Bagian 5).
 export default async function BrandNotFoundPage() {
