@@ -23,6 +23,10 @@ model Brand {
   fontHeading    String?                 // nama font
   fontBody       String?
   template       BrandTemplate @default(BOLD) // gaya tampilan situs publik
+  // Sosial & data terstruktur (JSON-LD, ROADMAP F0.4). Kosong = belum dikonfirmasi, tidak dirender.
+  instagramUrl   String?                // URL profil resmi Instagram
+  tiktokUrl      String?                // URL profil resmi TikTok
+  servesCuisine  String[] @default([])  // jenis masakan, mis. ["Bakmi Jawa"]
   // Meta
   isPublished Boolean  @default(false)
   createdAt   DateTime @default(now())
@@ -148,6 +152,19 @@ model Branch {
   whatsapp   String?
   phone      String?
   order      Int      @default(0)
+  hours      BranchHours[]                // jam buka terstruktur (JSON-LD, status buka)
+}
+
+/// Jam buka terstruktur per hari (ROADMAP F0.4). Hari tanpa baris = jam hari itu belum dikonfirmasi (tidak dirender).
+model BranchHours {
+  id        String  @id @default(cuid())
+  branchId  String
+  branch    Branch  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  dayOfWeek Int                           // 1 = Senin ... 7 = Minggu (ISO 8601)
+  isClosed  Boolean @default(false)       // true = hari libur
+  opens     String?                       // "16:00" (WIB); null kalau isClosed
+  closes    String?                       // "23:00"
+  @@unique([branchId, dayOfWeek])
 }
 
 // ---- ADMIN / AUTH ----

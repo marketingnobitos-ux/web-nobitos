@@ -5,7 +5,10 @@
 //   --branches ganti seluruh cabang + tulis ulang link sosial media,
 //   --gallery  ganti album galeri dengan foto asli toko (public/brand/galeri),
 //   --logo     pasang logo transparan dari public/brand.
+//   --jsonld   upsert jam buka terstruktur per cabang + URL Instagram/TikTok di Brand (JSON-LD, ROADMAP F0.4).
+//              Tidak menghapus apa pun; cabang dicocokkan dari nama. `npm run bolu:jsonld`
 import { PrismaClient, type Prisma } from "@prisma/client";
+import { weeklyHours, type DayHours } from "../src/lib/hours";
 
 export const BOLU_TAGLINE = "Dari Cirebon, pulang membawa rasa";
 
@@ -133,7 +136,7 @@ async function replaceBoluMenu() {
 /** Satu nomor WhatsApp admin untuk semua outlet. */
 export const BOLU_WHATSAPP = "085165206098";
 
-/** Outlet resmi. Titik koordinat dari link Google Maps; jam buka belum ada data resmi. */
+/** Outlet resmi. Titik koordinat dari link Google Maps; jam buka terstruktur ada di BOLU_HOURS. */
 export const BOLU_BRANCHES = [
   {
     name: "Kartini",
@@ -165,6 +168,52 @@ export const BOLU_SOCIAL = [
   "Threads | https://www.threads.com/@bolu_sunyaragi",
 ];
 
+/** Jam buka per outlet (nama = BOLU_BRANCHES.name). Dikonfirmasi Fran 29 Sep 2026 (AUDIT-F0.1.md): tanpa hari libur. */
+export const BOLU_HOURS: Record<string, DayHours[]> = {
+  "Stasiun Kejaksan": weeklyHours("06:00", "21:00"),
+  Kartini: weeklyHours("08:00", "21:00"),
+  Kedawung: weeklyHours("08:00", "21:00"),
+};
+
+/** Akun resmi untuk `sameAs` JSON-LD; sama dengan BOLU_SOCIAL yang tampil di footer live (dicek 29 Sep 2026). */
+export const BOLU_INSTAGRAM = "https://www.instagram.com/bolu_sunyaragi";
+export const BOLU_TIKTOK = "https://www.tiktok.com/@bolu.sunyaragi";
+
+/** Upsert BOLU_HOURS ke cabang Bolu yang namanya cocok. Hari yang sudah ada ditimpa dengan jam resmi. */
+async function upsertBoluHours(prisma: PrismaClient, brandId: string) {
+  const branches = await prisma.branch.findMany({ where: { brandId }, select: { id: true, name: true } });
+  let rows = 0;
+  for (const branch of branches) {
+    for (const h of BOLU_HOURS[branch.name] ?? []) {
+      const { dayOfWeek, ...data } = h;
+      await prisma.branchHours.upsert({
+        where: { branchId_dayOfWeek: { branchId: branch.id, dayOfWeek } },
+        update: data,
+        create: { branchId: branch.id, ...h },
+      });
+      rows++;
+    }
+  }
+  const missing = Object.keys(BOLU_HOURS).filter((name) => !branches.some((b) => b.name === name));
+  if (missing.length) console.warn(`Cabang tidak ditemukan (jam tidak diisi): ${missing.join(", ")}`);
+  return rows;
+}
+
+/** Jam buka terstruktur + URL Instagram/TikTok Bolu Sunyaragi (untuk JSON-LD). Idempoten. */
+async function writeBoluJsonLd() {
+  const prisma = new PrismaClient();
+  try {
+    const brand = await prisma.brand.update({
+      where: { slug: "bolu-sunyaragi" },
+      data: { instagramUrl: BOLU_INSTAGRAM, tiktokUrl: BOLU_TIKTOK },
+    });
+    const rows = await upsertBoluHours(prisma, brand.id);
+    console.log(`JSON-LD Bolu Sunyaragi: ${rows} baris jam buka, Instagram & TikTok diisi.`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 /** Ganti semua cabang Bolu Sunyaragi dengan BOLU_BRANCHES dan tulis ulang link sosial media. */
 async function replaceBoluBranches() {
   const prisma = new PrismaClient();
@@ -179,6 +228,7 @@ async function replaceBoluBranches() {
         create: { brandId: brand.id, pageKey: "site", sectionKey: "social", data: { items: BOLU_SOCIAL } },
       }),
     ]);
+    await upsertBoluHours(prisma, brand.id); // cabang baru dibuat ulang, jadi jam buka ikut diisi lagi
     console.log(`Cabang Bolu Sunyaragi diganti: ${BOLU_BRANCHES.length} outlet, ${BOLU_SOCIAL.length} link sosial media.`);
   } finally {
     await prisma.$disconnect();
@@ -272,6 +322,7 @@ async function main() {
   if (process.argv.includes("--branches")) await replaceBoluBranches();
   if (process.argv.includes("--gallery")) await replaceBoluGallery();
   if (process.argv.includes("--logo")) await setBoluLogo();
+  if (process.argv.includes("--jsonld")) await writeBoluJsonLd();
 }
 
 main().catch((e) => {

@@ -8,7 +8,7 @@ export function formatRupiah(value: number): string {
 }
 
 /** "0812-3456-789" / "+62 812..." -> "628123456789" (format internasional untuk wa.me). */
-function toIntlPhone(raw: string): string {
+export function toIntlPhone(raw: string): string {
   const digits = raw.replace(/\D/g, "");
   if (digits.startsWith("0")) return `62${digits.slice(1)}`;
   if (digits.startsWith("8")) return `62${digits}`;

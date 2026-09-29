@@ -18,6 +18,10 @@ export const BAKMI_PAK_JOKO_BRAND = {
   fontHeading: "Caveat Brush",
   fontBody: "Courier Prime",
   template: "ANGLO" as const,
+  // Sosial & jenis masakan untuk JSON-LD (ROADMAP F0.4). TikTok dikonfirmasi Fran 29 Sep 2026 (AUDIT-F0.1.md).
+  instagramUrl: "https://www.instagram.com/bakmi.pakjoko",
+  tiktokUrl: "https://www.tiktok.com/@bakmi.pakjoko",
+  servesCuisine: ["Bakmi Jawa"],
 };
 
 type MenuCategoryData = {
@@ -85,6 +89,14 @@ export async function seedBakmiPakJoko(prisma: PrismaClient, { publish = false }
     update: publish ? { isPublished: true } : {},
     create: { ...BAKMI_PAK_JOKO_BRAND, isPublished: publish },
   });
+
+  // Kolom JSON-LD (F0.4) untuk brand yang sudah ada: hanya diisi kalau masih kosong, isian Admin tidak ditimpa.
+  const jsonLdFill = {
+    ...(!brand.instagramUrl && { instagramUrl: BAKMI_PAK_JOKO_BRAND.instagramUrl }),
+    ...(!brand.tiktokUrl && { tiktokUrl: BAKMI_PAK_JOKO_BRAND.tiktokUrl }),
+    ...(brand.servesCuisine.length === 0 && { servesCuisine: BAKMI_PAK_JOKO_BRAND.servesCuisine }),
+  };
+  if (Object.keys(jsonLdFill).length) await prisma.brand.update({ where: { id: brand.id }, data: jsonLdFill });
 
   let createdCategories = 0;
   let createdItems = 0;

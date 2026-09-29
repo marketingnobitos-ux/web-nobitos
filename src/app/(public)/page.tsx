@@ -7,6 +7,7 @@ import HeroSection from "@/components/public/home/HeroSection";
 import Marquee from "@/components/public/home/Marquee";
 import MenuPicker from "@/components/public/home/MenuPicker";
 import PromoPoster from "@/components/public/home/PromoPoster";
+import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
 import StoryPinned from "@/components/public/home/StoryPinned";
 import AngloHome from "@/components/templates/anglo/AngloHome";
 import EditorialHome from "@/components/templates/editorial/EditorialHome";
@@ -40,14 +41,26 @@ export function generateMetadata() {
 // hero, marquee, menu andalan, picker, cerita, promo, galeri, cabang.
 export default async function HomePage() {
   const brand = await requireActiveBrand();
-  if (brand.template === "EDITORIAL") return <EditorialHome brand={brand} />;
+  const jsonLd = <RestaurantJsonLd brand={brand} />;
+  if (brand.template === "EDITORIAL")
+    return (
+      <>
+        {jsonLd}
+        <EditorialHome brand={brand} />
+      </>
+    );
   if (brand.template === "ANGLO") {
     const featured = await prisma.menuItem.findMany({
       where: { brandId: brand.id, isFeatured: true, isAvailable: true },
       orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
       select: { id: true, name: true, description: true, price: true },
     });
-    return <AngloHome featured={featured} />;
+    return (
+      <>
+        {jsonLd}
+        <AngloHome featured={featured} />
+      </>
+    );
   }
 
   const [homeSections, storySections, menu, promos, photos, branches] = await Promise.all([
@@ -102,6 +115,7 @@ export default async function HomePage() {
 
   return (
     <>
+      {jsonLd}
       <HeroSection
         title={hero.title ?? brand.name}
         subtitle={hero.subtitle ?? brand.tagline}

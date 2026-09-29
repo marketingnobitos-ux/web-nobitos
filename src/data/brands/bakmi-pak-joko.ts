@@ -2,6 +2,7 @@
 // Sumber: BRIEF-Bakmi-Pak-Joko.md Bagian 4. Brand, warna & menu ada di database (prisma/bakmi-pak-joko.ts).
 // Web ini etalase, bukan untuk pesan: tidak ada keranjang, tombol order, atau link GrabFood/GoFood.
 // TODO: konfirmasi Fran — info GrabFood/GoFood ditampilkan sebagai teks ("Tersedia di GrabFood & GoFood") atau tidak sama sekali.
+import { DAY, weeklyHours, type DayHours } from "@/lib/hours";
 
 export type AngloBranch = {
   slug: string;
@@ -9,6 +10,11 @@ export type AngloBranch = {
   address: string;
   /** Kosong = jam belum dikonfirmasi, baris jam tidak ditampilkan. */
   hours?: string;
+  /** Jam terstruktur per hari (JSON-LD). Kosong = belum dikonfirmasi, tidak dirender. */
+  openingHours?: DayHours[];
+  /** Titik koordinat (JSON-LD `geo`). Kosong = tidak dirender. */
+  lat?: number;
+  lng?: number;
   /** Tampilan nomor; link wa.me dibentuk dari nomor ini. */
   whatsapp: string;
   mapsUrl: string;
@@ -79,12 +85,14 @@ export const BAKMI_PAK_JOKO = {
   },
 
   // 4.5 Halaman Cabang (WA & Maps dari lynk.id)
+  // TODO: konfirmasi Fran — lat/lng kedua cabang (untuk `geo` JSON-LD); belum ada, jadi tidak dirender.
   branches: [
     {
       slug: "kartini",
       name: "Kartini",
       address: "Jl. Kartini, belakang Masjid At-Taqwa, Kebonbaru, Kejaksan, Kota Cirebon",
       hours: "16.00 – 23.00, Rabu libur",
+      openingHours: weeklyHours("16:00", "23:00", [DAY.RABU]),
       whatsapp: "0851-9602-8889",
       mapsUrl: "https://maps.app.goo.gl/GGHteoTdiRDwydY57",
       showBuJoko: true,
@@ -96,6 +104,7 @@ export const BAKMI_PAK_JOKO = {
       address:
         "Komplek Ruko Taman Kota Ciperna, Jl. Jenderal Sudirman No.2 Blok A (samping Alfamart Taman Kota), Ciperna, Kec. Talun",
       hours: "16.00 – 23.00, Senin libur",
+      openingHours: weeklyHours("16:00", "23:00", [DAY.SENIN]),
       whatsapp: "0813-2472-6222",
       mapsUrl: "https://maps.app.goo.gl/rMm8BdsMNKPqSgUY9",
     },
