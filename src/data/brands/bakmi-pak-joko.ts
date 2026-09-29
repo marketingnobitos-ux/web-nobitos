@@ -29,8 +29,8 @@ export const BAKMI_PAK_JOKO = {
       "Satu wajan, satu porsi, di atas anglo arang. Aroma *smoky*-nya sudah tercium sebelum bakmi sampai di meja.",
     ctaMenu: "Lihat Menu",
     ctaLocation: "Cari Lokasi",
-    // TODO: konfirmasi Fran — jam dari caption IG 2 Sep 2026 (catatan lama 17.00–24.00), dan apakah berlaku untuk kedua cabang.
-    hours: "Buka 16.00 – 23.00 · Rabu libur",
+    // Dikonfirmasi Fran 29 Sep 2026: kedua cabang 16.00–23.00; libur beda per cabang.
+    hours: "Buka 16.00 – 23.00 · Libur: Rabu (Kartini), Senin (Ciperna)",
     /** Label stiker di kolase hero (brief 6.2). */
     stickers: ["Dimasak di atas anglo", "Buka 16.00–23.00"],
   },
@@ -95,8 +95,7 @@ export const BAKMI_PAK_JOKO = {
       // TODO: konfirmasi Fran — alamat dari video TikTok @rute.kuliner, bukan akun resmi.
       address:
         "Komplek Ruko Taman Kota Ciperna, Jl. Jenderal Sudirman No.2 Blok A (samping Alfamart Taman Kota), Ciperna, Kec. Talun",
-      // TODO: konfirmasi Fran — jam buka Ciperna [CEK], dan apakah Rabu libur juga berlaku di sini.
-      hours: undefined,
+      hours: "16.00 – 23.00, Senin libur",
       whatsapp: "0813-2472-6222",
       mapsUrl: "https://maps.app.goo.gl/rMm8BdsMNKPqSgUY9",
     },

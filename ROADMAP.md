@@ -50,7 +50,7 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 
 ## F1 — Bakmi Pak Joko (penyelesaian) · 28 Sep – 16 Okt
 
-- [ ] **F1.1** 🙋 Isi jawaban [CEK] dari Fran: nama tampil (Pak/Mas Joko), jam Ciperna, Rabu libur di kedua cabang, cerita asal-usul, harga sarapan Bu Joko.
+- [ ] **F1.1** 🙋 Isi jawaban [CEK] dari Fran: nama tampil (Pak/Mas Joko), ~~jam Ciperna, Rabu libur di kedua cabang~~ (beres 29 Sep: 16.00–23.00, Kartini libur Rabu, Ciperna libur Senin), cerita asal-usul, harga sarapan Bu Joko.
 - [ ] **F1.2** 🙋 Foto asli (6–10) dari tim konten → cut-out ala stiker, ganti ilustrasi pengganti.
 - [x] **F1.3** Pengaman animasi + slot foto asli + preload font — `37da924`.
 - [ ] **F1.3b** Cek Lighthouse mobile Beranda, perbaiki kalau < 85.
