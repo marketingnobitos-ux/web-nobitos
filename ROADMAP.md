@@ -42,7 +42,7 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 
 - [x] **F0.1** Audit singkat platform & 5 brand terhadap checklist Standar Kuliner (lampiran A). Hasil: tabel gap per brand. Tidak mengubah kode. — 29 Sep 2026, `2a52aec` → `AUDIT-F0.1.md`
 - [x] **F0.2** Lengkapi metadata (sekarang baru `title`, `description`, favicon): canonical, Open Graph + gambar OG per brand, `title` unik per halaman. — 29 Sep 2026, `6bcb467` (gambar OG dibuat otomatis di `/og-image` dari nama, tagline & warna brand)
-- [ ] **F0.3** `sitemap.xml` dan `robots.txt` per domain (dihasilkan dari hostname).
+- [x] **F0.3** `sitemap.xml` dan `robots.txt` per domain (dihasilkan dari hostname). — 29 Sep 2026, `d82c6ba` (+ redirect ANGLO `/galeri` & `/menu/[id]` jadi 307, `noindex` di halaman "Brand tidak ditemukan")
 - [ ] **F0.4** JSON-LD `Restaurant` per cabang: nama, alamat, geo, `openingHoursSpecification`, `servesCuisine`, `priceRange`, `menu` (URL), `sameAs` (IG/TikTok), telepon/WA.
 - [ ] **F0.5** Komponen standar yang bisa dipakai semua template: status "Buka sekarang / Tutup" dari jam buka, tombol WA click-to-chat dengan pesan awal, tombol Maps, tautan IG/TikTok, halaman 404 per brand, `alt` untuk semua gambar.
 - [ ] **F0.6** Rapikan penamaan `data-track` (sudah ±30 titik) supaya konsisten lintas template: `wa-<cabang>`, `maps-<cabang>`, `tel-<cabang>`, `ig`, `tiktok`. Pastikan template ANGLO & EDITORIAL ikut.

@@ -22,8 +22,8 @@ Ini akar sebagian besar gap per brand. Diselesaikan sekali di F0.2–F0.7.
 | P7 | Halaman 404 generik Next.js ("404: This page could not be found.", description "Web etalase multi-brand Nobitos"), tanpa header/footer brand. | `/halaman-tidak-ada` di 3 domain | F0.5 |
 | P8 | Tautan sosial tersebar: Bolu dari konten DB (teks bebas), Pak Joko hardcode di `src/data/brands/bakmi-pak-joko.ts`, BOLD tidak punya tempat sama sekali. | kode | F0.5 |
 | P9 | Penamaan `data-track` tidak konsisten antar template: `maps-cabang-kartini` (EDITORIAL), `cabang-maps-kartini` (ANGLO), `maps-amg-ciledug` + `maps-cabang-amg-ciledug` (BOLD), `ed-maps-<cuid>` (Beranda Editorial pakai ID database). | HTML live | F0.6 |
-| P10 | `/galeri` ANGLO memakai `redirect("/")` di tengah render → HTTP **200** + meta refresh, bukan 307/308. Halaman kosong tanpa H1 ikut bisa terindeks. | `curl -I /galeri` Pak Joko = 200 | F0.3 (keluarkan dari sitemap) / F1.4 |
-| P11 | Domain admin `nobitos.web.id/menu`, `/cabang`, dst. menjawab **200** "Brand tidak ditemukan", bukan 404. Admin sudah `noindex`, tapi halaman ini tidak. | curl | F0.3 (robots per host) |
+| P10 ✅ F0.3 | `/galeri` ANGLO memakai `redirect("/")` di tengah render → HTTP **200** + meta refresh, bukan 307/308. Halaman kosong tanpa H1 ikut bisa terindeks. | `curl -I /galeri` Pak Joko = 200 | F0.3 (keluarkan dari sitemap) / F1.4 |
+| P11 ✅ F0.3 (robots Disallow + noindex; status tetap 200) | Domain admin `nobitos.web.id/menu`, `/cabang`, dst. menjawab **200** "Brand tidak ditemukan", bukan 404. Admin sudah `noindex`, tapi halaman ini tidak. | curl | F0.3 (robots per host) |
 | P12 | `prefers-reduced-motion` sudah dihormati (GSAP, Lenis, CSS `motion-safe`). HTTPS + redirect http→https aktif. | `src/components/animations/*`, `curl -I http://` = 301 | ✅ tidak perlu task |
 
 ## 2. Tabel gap per brand
@@ -70,7 +70,7 @@ Ini akar sebagian besar gap per brand. Diselesaikan sekali di F0.2–F0.7.
 - APW: **Kesambi saja**. Cabang Cipto tidak dipakai. ROADMAP F2 sudah disesuaikan.
 - Bolu: satu nomor WA untuk semua cabang **memang benar**.
 - Pak Joko TikTok: https://www.tiktok.com/@bakmi.pakjoko (dipasang di F0.4/F0.5).
-- Jam buka Bolu: menyusul, sebelum F0.4.
+- Jam buka Bolu (dikirim Fran 29 Sep, semua cabang di Kota/Kab. Cirebon): **Stasiun Kejaksan 06.00–21.00**, **Kartini 08.00–21.00**, **Kedawung 08.00–21.00**. Hari libur belum disebut. Dimasukkan ke data lewat seed Bolu di F0.4.
 
 ## 4. Masukan untuk task F0 berikutnya
 
