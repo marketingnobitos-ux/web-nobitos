@@ -1,11 +1,12 @@
 import type { Branch } from "@prisma/client";
 import OpenBadge from "@/components/public/OpenBadge";
-import { mapsEmbedUrl, mapsLink, slugify, telUrl, whatsappUrl } from "@/lib/format";
+import { mapsEmbedUrl, mapsLink, telUrl, whatsappUrl } from "@/lib/format";
 import type { DayHours } from "@/lib/hours";
 import { waMessage } from "@/lib/site";
+import { branchKey, trackName } from "@/lib/track";
 
 export default function BranchCard({ branch, brandName }: { branch: Branch & { hours: DayHours[] }; brandName: string }) {
-  const key = slugify(branch.name);
+  const key = branchKey(branch.name);
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       <iframe
@@ -29,7 +30,7 @@ export default function BranchCard({ branch, brandName }: { branch: Branch & { h
             href={mapsLink(branch)}
             target="_blank"
             rel="noopener noreferrer"
-            data-track={`maps-cabang-${key}`}
+            data-track={trackName("maps", key)}
             className="rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary hover:bg-primary/5"
           >
             Buka di Google Maps
@@ -39,7 +40,7 @@ export default function BranchCard({ branch, brandName }: { branch: Branch & { h
               href={whatsappUrl(branch.whatsapp, waMessage(brandName, branch.name))}
               target="_blank"
               rel="noopener noreferrer"
-              data-track={`wa-cabang-${key}`}
+              data-track={trackName("wa", key)}
               className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90"
             >
               WhatsApp
@@ -48,7 +49,7 @@ export default function BranchCard({ branch, brandName }: { branch: Branch & { h
           {branch.phone && (
             <a
               href={telUrl(branch.phone)}
-              data-track={`telp-cabang-${key}`}
+              data-track={trackName("tel", key)}
               className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               Telepon

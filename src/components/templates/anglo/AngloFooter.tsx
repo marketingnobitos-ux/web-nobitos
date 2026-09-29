@@ -4,6 +4,7 @@ import { WarungFront } from "@/components/templates/anglo/illustrations";
 import { ANGLO_NAV, LocationCard, WRAP } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 import { socialHandle } from "@/lib/site";
+import { trackName } from "@/lib/track";
 
 /** Footer Anglo (brief 6.3): ilustrasi garis warung, kartu lokasi per cabang, link Instagram & TikTok (kolom Brand). */
 export default function AngloFooter({ brand }: { brand: Brand }) {
@@ -17,7 +18,7 @@ export default function AngloFooter({ brand }: { brand: Brand }) {
         <ul className="mt-14 grid gap-8 md:mt-20 md:grid-cols-2 md:gap-10">
           {branches.map((b, i) => (
             <li key={b.slug}>
-              <LocationCard branch={b} brandName={brand.name} track="footer" className={i % 2 ? "md:rotate-1" : "md:-rotate-1"} />
+              <LocationCard branch={b} brandName={brand.name} className={i % 2 ? "md:rotate-1" : "md:-rotate-1"} />
             </li>
           ))}
         </ul>
@@ -48,7 +49,7 @@ export default function AngloFooter({ brand }: { brand: Brand }) {
                     href={brand.instagramUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    data-track="footer-instagram"
+                    data-track={trackName("ig")}
                     className="ag-sticker rotate-1"
                   >
                     Instagram {socialHandle(brand.instagramUrl)}
@@ -59,7 +60,7 @@ export default function AngloFooter({ brand }: { brand: Brand }) {
                     href={brand.tiktokUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    data-track="footer-tiktok"
+                    data-track={trackName("tiktok")}
                     className="ag-sticker -rotate-1"
                   >
                     TikTok {socialHandle(brand.tiktokUrl)}

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { imageSrcSet } from "@/lib/image";
 import { formatRupiah } from "@/lib/format";
+import { trackName } from "@/lib/track";
 
 export type FeaturedItem = {
   id: string;
@@ -74,7 +75,7 @@ export default function FeaturedCarousel({ items }: { items: FeaturedItem[] }) {
             key={item.id}
             href={`/menu/${item.id}`}
             data-card
-            data-track={`menu-andalan-${i + 1}`}
+            data-track={trackName("menu_item", i + 1)}
             draggable={false}
             className="group relative block aspect-[3/4.4] w-[78vw] max-w-[380px] shrink-0 snap-start overflow-hidden rounded-[1.75rem] bg-ink text-paper sm:w-[340px]"
           >

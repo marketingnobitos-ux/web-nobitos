@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { BrandTemplate } from "@prisma/client";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { WRAP } from "@/components/templates/anglo/shared";
+import { trackName } from "@/lib/track";
 
 const TITLE = "Halaman tidak ditemukan";
 const BODY = "Halaman yang kamu cari tidak ada atau sudah pindah. Coba mulai dari Beranda atau lihat menu.";
@@ -16,10 +17,10 @@ export default function BrandNotFound({ template }: { template: BrandTemplate })
           <h1 className="ag-marker mt-4 text-[clamp(56px,10vw,120px)]">{TITLE}</h1>
           <p className="mt-6 max-w-xl leading-relaxed">{BODY}</p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/" data-track="404-beranda" className="ag-pill bg-accent text-ink">
+            <Link href="/" data-track={trackName("beranda")} className="ag-pill bg-accent text-ink">
               Ke Beranda
             </Link>
-            <Link href="/menu" data-track="404-menu" className="ag-pill bg-white text-ink hover:bg-ink hover:text-sheet">
+            <Link href="/menu" data-track={trackName("menu")} className="ag-pill bg-white text-ink hover:bg-ink hover:text-sheet">
               Lihat Menu
             </Link>
           </div>
@@ -38,10 +39,10 @@ export default function BrandNotFound({ template }: { template: BrandTemplate })
           </h1>
           <p className="mt-6 max-w-xl text-ink/70">{BODY}</p>
           <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-            <EdLink href="/" track="404-beranda">
+            <EdLink href="/" track={trackName("beranda")}>
               Ke Beranda
             </EdLink>
-            <EdLink href="/menu" track="404-menu">
+            <EdLink href="/menu" track={trackName("menu")}>
               Lihat Menu
             </EdLink>
           </div>
@@ -60,14 +61,14 @@ export default function BrandNotFound({ template }: { template: BrandTemplate })
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/"
-            data-track="404-beranda"
+            data-track={trackName("beranda")}
             className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-semibold text-paper transition hover:bg-brand"
           >
             Ke Beranda
           </Link>
           <Link
             href="/menu"
-            data-track="404-menu"
+            data-track={trackName("menu")}
             className="inline-flex h-12 items-center rounded-full border-2 border-ink px-6 font-semibold transition hover:bg-ink hover:text-paper"
           >
             Lihat Menu

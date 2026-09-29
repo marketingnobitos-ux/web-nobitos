@@ -11,8 +11,8 @@ type Props = {
   subtitle?: string | null;
   imageUrl: string;
   videoUrl?: string | null;
-  primary: { href: string; label: string; external?: boolean };
-  secondary?: { href: string; label: string; external?: boolean };
+  primary: { href: string; label: string; external?: boolean; track: string };
+  secondary?: { href: string; label: string; external?: boolean; track: string };
 };
 
 /**
@@ -80,11 +80,11 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
           className="ed-rise flex flex-col items-start gap-3 text-lg md:col-span-4 md:items-end"
           style={{ "--delay": "950ms" } as React.CSSProperties}
         >
-          <EdLink href={primary.href} external={primary.external} track="ed-hero-primary">
+          <EdLink href={primary.href} external={primary.external} track={primary.track}>
             {primary.label}
           </EdLink>
           {secondary && (
-            <EdLink href={secondary.href} external={secondary.external} track="ed-hero-secondary">
+            <EdLink href={secondary.href} external={secondary.external} track={secondary.track}>
               {secondary.label}
             </EdLink>
           )}

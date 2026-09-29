@@ -10,6 +10,7 @@ import { mapsLink, whatsappUrl } from "@/lib/format";
 import { EDITORIAL_PLACEHOLDER, realPhoto } from "@/lib/placeholder";
 import { prisma } from "@/lib/prisma";
 import { branchLabel, parseChapters, shortHours, waMessage } from "@/lib/site";
+import { branchKey, trackName } from "@/lib/track";
 
 /**
  * Beranda template Editorial (mis. Bolu Sunyaragi): sinematik, lega, gerak kalem.
@@ -52,6 +53,7 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
 
   const outlets = branches.map((b) => ({
     id: b.id,
+    slug: branchKey(b.name),
     name: branchLabel(b.name),
     address: b.address,
     hours: shortHours(b.openHours),
@@ -66,8 +68,8 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
         subtitle={hero.subtitle ?? brand.tagline}
         imageUrl={realPhoto(hero.imageUrl) ?? EDITORIAL_PLACEHOLDER.hero}
         videoUrl={hero.videoUrl}
-        primary={{ href: "/menu", label: "Lihat menu" }}
-        secondary={waHref ? { href: waHref, label: "Pesan lewat WhatsApp", external: true } : { href: "/cabang", label: "Kunjungi toko" }}
+        primary={{ href: "/menu", label: "Lihat menu", track: trackName("menu") }}
+        secondary={waHref ? { href: waHref, label: "Pesan lewat WhatsApp", external: true, track: trackName("wa") } : { href: "/cabang", label: "Kunjungi toko", track: trackName("cabang") }}
       />
 
       <EdStatement label="Tentang kami" text={intro?.body ?? story("profile")?.body ?? brand.tagline ?? brand.name} />
@@ -81,6 +83,7 @@ export default async function EditorialHome({ brand }: { brand: Brand }) {
       <EdClosing
         href={waHref ?? "/cabang"}
         external={Boolean(waHref)}
+        track={trackName(waHref ? "wa" : "cabang")}
         label={waHref ? "Pesan lewat WhatsApp" : "Kunjungi toko kami"}
         note={waHref ? "Pesan dulu, tinggal ambil. Atau minta dikirim ke rumah." : "Datang langsung, bolu selalu baru tiap pagi."}
       />

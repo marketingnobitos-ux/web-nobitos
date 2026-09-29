@@ -6,6 +6,7 @@ import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
 import { greetingFor } from "@/lib/greeting";
 import { imageSrcSet } from "@/lib/image";
 import { altText } from "@/lib/site";
+import { trackName } from "@/lib/track";
 
 type Props = {
   title: string;
@@ -97,14 +98,14 @@ export default function HeroSection({ title, subtitle, imageUrl, greeting: initi
           <div className="flex flex-wrap gap-3">
             <Link
               href="/menu"
-              data-track="cta-lihat-menu"
+              data-track={trackName("menu")}
               className="inline-flex h-13 items-center rounded-full bg-paper px-7 font-semibold text-ink transition hover:bg-paper/85"
             >
               Lihat menu
             </Link>
             <Link
               href="/cabang"
-              data-track="cta-cari-cabang"
+              data-track={trackName("cabang")}
               className="inline-flex h-13 items-center rounded-full border border-paper/50 px-7 font-semibold transition hover:bg-paper hover:text-ink"
             >
               Cari cabang

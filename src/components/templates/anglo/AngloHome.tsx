@@ -6,6 +6,7 @@ import { AngloStove, IcedTea, MenuIllustration, NoodleBowl, WokFlame } from "@/c
 import { Emph, Smoke, StickerLabels, SwipeHint, WRAP, formatHarga } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 import { menuPhotoSlot, type AngloPhotoSlot } from "@/lib/anglo-photos";
+import { trackName } from "@/lib/track";
 
 type FeaturedItem = { id: string; name: string; description: string | null; price: number };
 
@@ -89,10 +90,10 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
             <Emph text={hero.subtitle} />
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <Link href="/menu" data-track="cta-lihat-menu" className="ag-pill bg-accent text-ink">
+            <Link href="/menu" data-track={trackName("menu")} className="ag-pill bg-accent text-ink">
               {hero.ctaMenu}
             </Link>
-            <Link href="/cabang" data-track="cta-cari-lokasi" className="ag-pill bg-white text-ink hover:bg-ink hover:text-sheet">
+            <Link href="/cabang" data-track={trackName("cabang")} className="ag-pill bg-white text-ink hover:bg-ink hover:text-sheet">
               {hero.ctaLocation}
             </Link>
           </div>
@@ -156,7 +157,7 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
                 {featuredCopy.title}
               </h2>
             </div>
-            <Link href="/menu" data-track="cta-andalan-lihat-menu" className="ag-pill self-start bg-accent text-ink md:self-end">
+            <Link href="/menu" data-track={trackName("menu")} className="ag-pill self-start bg-accent text-ink md:self-end">
               {hero.ctaMenu}
             </Link>
           </div>
@@ -194,7 +195,7 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
       {/* 4. Strip Dapur Bu Joko — blok hijau */}
       <section aria-label="Dapur Bu Joko" className="ag-noise border-y-2 border-ink bg-daun py-12 md:py-14">
         <div className={WRAP}>
-          <BuJokoNotice track="ig-bujoko-beranda" />
+          <BuJokoNotice track={trackName("ig_bujoko")} />
         </div>
       </section>
 

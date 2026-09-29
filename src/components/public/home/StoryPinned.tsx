@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { MOTION_QUERIES, ScrollTrigger, gsap } from "@/components/animations/gsap";
 import { imageSrcSet } from "@/lib/image";
+import { trackName } from "@/lib/track";
 
 type Props = { lines: string[]; body?: string | null; imageUrl: string };
 
@@ -106,7 +107,7 @@ export default function StoryPinned({ lines, body, imageUrl }: Props) {
           {body && <p className="mt-6 max-w-md text-base text-ink/75 md:text-lg">{body}</p>}
           <Link
             href="/cerita"
-            data-track="cta-cerita"
+            data-track={trackName("cerita")}
             className="mt-8 inline-flex w-fit items-center gap-3 border-b-2 border-ink pb-1 text-lg font-semibold transition hover:gap-5 hover:border-brand hover:text-brand"
           >
             Kenalan lebih dekat <span aria-hidden>→</span>

@@ -3,9 +3,10 @@ import type { Brand } from "@prisma/client";
 import { NAV_ITEMS } from "@/components/public/nav";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { getSections } from "@/lib/content";
-import { mapsLink, slugify, telUrl, whatsappUrl } from "@/lib/format";
+import { mapsLink, telUrl, whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { branchLabel, brandSocial, shortHours, waMessage } from "@/lib/site";
+import { branchKey, socialTrack, trackName } from "@/lib/track";
 
 /** Footer Editorial terstruktur: navigasi, kontak per toko, sosial, copyright. */
 export default async function EditorialFooter({ brand }: { brand: Brand }) {
@@ -59,20 +60,20 @@ export default async function EditorialFooter({ brand }: { brand: Brand }) {
                   <p className="mt-1 text-sm text-paper/65">{b.address}</p>
                   {b.openHours && <p className="text-sm tabular-nums text-paper/65">{shortHours(b.openHours)}</p>}
                   <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
-                    <EdLink href={mapsLink(b)} external track={`footer-maps-${slugify(b.name)}`}>
+                    <EdLink href={mapsLink(b)} external track={trackName("maps", branchKey(b.name))}>
                       Maps
                     </EdLink>
                     {b.whatsapp && (
                       <EdLink
                         href={whatsappUrl(b.whatsapp, waMessage(brand.name, b.name))}
                         external
-                        track={`footer-wa-${slugify(b.name)}`}
+                        track={trackName("wa", branchKey(b.name))}
                       >
                         WhatsApp
                       </EdLink>
                     )}
                     {b.phone && (
-                      <a href={telUrl(b.phone)} className="ed-link">
+                      <a href={telUrl(b.phone)} data-track={trackName("tel", branchKey(b.name))} className="ed-link">
                         Telepon
                       </a>
                     )}
@@ -88,7 +89,7 @@ export default async function EditorialFooter({ brand }: { brand: Brand }) {
               <ul className="space-y-3">
                 {social.map((s) => (
                   <li key={s.url}>
-                    <EdLink href={s.url} external track={`footer-sosmed-${slugify(s.label)}`}>
+                    <EdLink href={s.url} external track={socialTrack(s.label)}>
                       {s.label}
                     </EdLink>
                   </li>

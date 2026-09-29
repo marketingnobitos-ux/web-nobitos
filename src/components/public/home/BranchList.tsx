@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Headline from "@/components/public/home/Headline";
 import OpenBadge from "@/components/public/OpenBadge";
-import { mapsLink, slugify, whatsappUrl } from "@/lib/format";
+import { mapsLink, whatsappUrl } from "@/lib/format";
 import type { DayHours } from "@/lib/hours";
 import { waMessage } from "@/lib/site";
+import { branchKey, trackName } from "@/lib/track";
 
 type Branch = {
   id: string;
@@ -41,7 +42,7 @@ export default function BranchList({ brandName, branches }: { brandName: string;
         <ol className="mt-14 border-t border-paper/15 md:mt-20">
           {branches.map((b, i) => {
             const hours = shortHours(b.openHours);
-            const track = slugify(b.name);
+            const key = branchKey(b.name);
             return (
               <li key={b.id} className="group relative border-b border-paper/15">
                 {/* Latar aksen menyapu dari kiri saat hover. */}
@@ -55,7 +56,7 @@ export default function BranchList({ brandName, branches }: { brandName: string;
                   </span>
                   <div>
                     <h3 className="display text-2xl md:text-4xl">
-                      <Link href="/cabang" data-track={`cabang-${track}`} className="after:absolute after:inset-0">
+                      <Link href="/cabang" data-track={trackName("cabang", key)} className="after:absolute after:inset-0">
                         {b.name.replace(/\s+-\s+/, " — ")}
                       </Link>
                     </h3>
@@ -77,7 +78,7 @@ export default function BranchList({ brandName, branches }: { brandName: string;
                       href={mapsLink(b)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      data-track={`maps-${track}`}
+                      data-track={trackName("maps", key)}
                       className="inline-flex h-11 items-center rounded-full bg-paper px-5 text-sm font-semibold text-ink transition hover:bg-ink hover:text-paper"
                     >
                       Buka Maps
@@ -87,7 +88,7 @@ export default function BranchList({ brandName, branches }: { brandName: string;
                         href={whatsappUrl(b.whatsapp, waMessage(brandName, b.name))}
                         target="_blank"
                         rel="noopener noreferrer"
-                        data-track={`wa-${track}`}
+                        data-track={trackName("wa", key)}
                         className="inline-flex h-11 items-center rounded-full border border-paper/60 px-5 text-sm font-semibold transition hover:bg-paper hover:text-ink"
                       >
                         WhatsApp

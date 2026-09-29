@@ -2,9 +2,10 @@ import Reveal from "@/components/animations/Reveal";
 import OpenBadge from "@/components/public/OpenBadge";
 import EdLink from "@/components/templates/editorial/EdLink";
 import type { DayHours } from "@/lib/hours";
+import { trackName } from "@/lib/track";
 
 /** `week` = jam terstruktur untuk badge "Buka sekarang / Tutup". */
-export type Outlet = { id: string; name: string; address: string; hours: string | null; week: DayHours[]; mapsUrl: string };
+export type Outlet = { id: string; slug: string; name: string; address: string; hours: string | null; week: DayHours[]; mapsUrl: string };
 
 /**
  * Outlet: satu nama brand raksasa selebar layar, lalu semua outlet dalam grid kolom teks
@@ -39,7 +40,7 @@ export default function EdOutlets({ brandName, outlets }: { brandName: string; o
               </div>
               <p className="mt-2 max-w-sm text-paper/65">{o.address}</p>
               <OpenBadge hours={o.week} className="mt-3 text-sm text-paper/80" />
-              <EdLink href={o.mapsUrl} external track={`ed-maps-${o.id}`} className="mt-5">
+              <EdLink href={o.mapsUrl} external track={trackName("maps", o.slug)} className="mt-5">
                 Buka di Maps
               </EdLink>
             </Reveal>

@@ -4,6 +4,7 @@ import { NAV_ITEMS } from "@/components/public/nav";
 import { BAKMI_PAK_JOKO, type AngloBranch } from "@/data/brands/bakmi-pak-joko";
 import { whatsappUrl } from "@/lib/format";
 import { waMessage } from "@/lib/site";
+import { trackName } from "@/lib/track";
 
 /** Navigasi Anglo (brief 6.3): MENU · CERITA · CABANG. Beranda lewat nama brand. */
 export const ANGLO_NAV = NAV_ITEMS.filter((item) => ["/menu", "/cerita", "/cabang"].includes(item.href));
@@ -66,13 +67,11 @@ export function SwipeHint({ className = "" }: { className?: string }) {
 export function LocationCard({
   branch,
   brandName,
-  track,
   className = "",
 }: {
   branch: AngloBranch;
   /** Untuk pesan awal WhatsApp. */
   brandName: string;
-  track: string;
   className?: string;
 }) {
   const { ui } = BAKMI_PAK_JOKO;
@@ -87,7 +86,7 @@ export function LocationCard({
           href={branch.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          data-track={`${track}-maps-${branch.slug}`}
+          data-track={trackName("maps", branch.slug)}
           className="ag-pill bg-accent text-ink"
         >
           {ui.directions}
@@ -96,7 +95,7 @@ export function LocationCard({
           href={whatsappUrl(branch.whatsapp, waMessage(brandName, branch.name))}
           target="_blank"
           rel="noopener noreferrer"
-          data-track={`${track}-wa-${branch.slug}`}
+          data-track={trackName("wa", branch.slug)}
           className="ag-pill bg-white text-ink hover:bg-ink hover:text-sheet"
         >
           {ui.whatsapp} {branch.whatsapp}

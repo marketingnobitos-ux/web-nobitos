@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, m } from "framer-motion";
 import { imageSrcSet } from "@/lib/image";
 import { formatRupiah } from "@/lib/format";
+import { trackName } from "@/lib/track";
 
 export type PickerItem = {
   id: string;
@@ -145,7 +146,7 @@ export default function MenuPicker({ items }: { items: PickerItem[] }) {
                   key={o.value || "any"}
                   type="button"
                   onClick={() => choose(current.key, o.value)}
-                  data-track={`picker-${current.key}-${o.value || "bebas"}`}
+                  data-track={trackName("picker", `${current.key}-${o.value || "bebas"}`)}
                   className="group flex items-center justify-between gap-4 rounded-2xl border border-paper/20 px-5 py-5 text-left transition hover:border-paper hover:bg-paper hover:text-ink"
                 >
                   <span>
@@ -197,7 +198,7 @@ export default function MenuPicker({ items }: { items: PickerItem[] }) {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href={`/menu/${result.id}`}
-                  data-track="picker-hasil"
+                  data-track={trackName("picker_result")}
                   className="inline-flex h-13 items-center rounded-full bg-paper px-7 font-semibold text-ink transition hover:bg-paper/85"
                 >
                   Lihat menunya

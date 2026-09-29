@@ -17,6 +17,7 @@ import { greetingFor, wibHour } from "@/lib/greeting";
 import { GALLERY_PLACEHOLDERS, PLACEHOLDER, menuPhoto, realPhoto } from "@/lib/placeholder";
 import { prisma } from "@/lib/prisma";
 import { branchNames, brandPageMetadata, joinNames } from "@/lib/seo";
+import { trackName } from "@/lib/track";
 
 const DEFAULT_PROCESS = ["Diulek.", "Digoreng.", "Disajikan hangat."];
 
@@ -144,7 +145,7 @@ export default async function HomePage() {
               <p className="text-ink/70">Yang ini jarang sisa sampai tutup. Geser, pilih, gas.</p>
               <Link
                 href="/menu"
-                data-track="cta-semua-menu"
+                data-track={trackName("menu")}
                 className="mt-4 inline-flex items-center gap-2 border-b-2 border-ink pb-1 font-semibold transition hover:border-brand hover:text-brand"
               >
                 Semua menu <span aria-hidden>→</span>

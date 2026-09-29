@@ -3,6 +3,7 @@ import EdLink from "@/components/templates/editorial/EdLink";
 import EdRevealImage from "@/components/templates/editorial/EdRevealImage";
 import type { Section } from "@/lib/content";
 import { realPhoto } from "@/lib/placeholder";
+import { trackName } from "@/lib/track";
 
 /**
  * Cerita template Editorial: bab-bab bernomor. Bab bergambar tampil dua kolom bergantian
@@ -80,7 +81,7 @@ export default function EditorialStory({ brandName, tagline, sections }: { brand
         })}
 
         <Reveal className="border-t border-ink/15 pt-16 md:pt-24">
-          <EdLink href="/cabang" track="ed-cerita-cabang" className="ed-title text-[clamp(32px,4.5vw,64px)]">
+          <EdLink href="/cabang" track={trackName("cabang")} className="ed-title text-[clamp(32px,4.5vw,64px)]">
             Kunjungi outlet kami
           </EdLink>
         </Reveal>

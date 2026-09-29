@@ -3,6 +3,7 @@
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { branchKey, normalizeTarget } from "@/lib/track";
 
 /** Cookie ID pengunjung anonim (untuk hitung pengunjung unik). */
 export const VISITOR_COOKIE = "nb_vid";
@@ -164,12 +165,25 @@ export async function getTopPages(brandIds: string[], range: DateRange, limit = 
   return rows.map((r) => ({ label: r.label, count: n(r.count) }));
 }
 
+// Nama event lama (sebelum F0.6) diterjemahkan ke nama baru lalu dijumlah ulang, jadi limit dipotong setelahnya.
 export async function getTopClicks(brandIds: string[], range: DateRange, limit = 10) {
   if (!brandIds.length) return [];
-  const rows = await prisma.$queryRaw<{ label: string; count: bigint }[]>`
-    SELECT target AS label, COUNT(*) AS count
-    FROM "AnalyticsEvent"
-    WHERE type = 'click' AND target IS NOT NULL AND ${brandSql(brandIds)} AND ${rangeSql(range)}
-    GROUP BY target ORDER BY count DESC, target LIMIT ${limit}`;
-  return rows.map((r) => ({ label: r.label, count: n(r.count) }));
+  const [rows, branches] = await Promise.all([
+    prisma.$queryRaw<{ label: string; count: bigint }[]>`
+      SELECT target AS label, COUNT(*) AS count
+      FROM "AnalyticsEvent"
+      WHERE type = 'click' AND target IS NOT NULL AND ${brandSql(brandIds)} AND ${rangeSql(range)}
+      GROUP BY target`,
+    prisma.branch.findMany({ where: { brandId: { in: brandIds } }, select: { id: true, name: true } }),
+  ]);
+  const slugById = new Map(branches.map((b) => [b.id, branchKey(b.name)]));
+  const totals = new Map<string, number>();
+  for (const r of rows) {
+    const label = normalizeTarget(r.label, slugById);
+    totals.set(label, (totals.get(label) ?? 0) + n(r.count));
+  }
+  return [...totals]
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+    .slice(0, limit);
 }

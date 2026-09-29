@@ -6,6 +6,7 @@ import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
 import Headline from "@/components/public/home/Headline";
 import { imageSrcSet } from "@/lib/image";
 import { altText } from "@/lib/site";
+import { trackName } from "@/lib/track";
 
 type Photo = { id: string; imageUrl: string; caption: string | null };
 
@@ -75,7 +76,7 @@ export default function GalleryCollage({ photos }: { photos: Photo[] }) {
         <div className="mt-16 md:mt-24">
           <Link
             href="/galeri"
-            data-track="cta-lihat-galeri"
+            data-track={trackName("galeri")}
             className="display inline-flex items-center gap-3 text-2xl transition-colors hover:text-brand md:text-3xl"
           >
             Lihat semua foto <span className="transition-transform group-hover:translate-x-2" aria-hidden>→</span>

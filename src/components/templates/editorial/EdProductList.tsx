@@ -1,6 +1,7 @@
 import Reveal from "@/components/animations/Reveal";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { formatRupiah } from "@/lib/format";
+import { trackName } from "@/lib/track";
 
 type Item = { id: string; name: string; price: number; category: string };
 
@@ -16,7 +17,7 @@ export default function EdProductList({ items }: { items: Item[] }) {
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
-            <EdLink href="/menu" track="ed-semua-menu" className="text-lg">
+            <EdLink href="/menu" track={trackName("menu")} className="text-lg">
               Lihat semua menu
             </EdLink>
           </Reveal>

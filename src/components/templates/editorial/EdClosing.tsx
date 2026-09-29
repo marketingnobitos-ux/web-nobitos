@@ -1,9 +1,9 @@
 import Reveal from "@/components/animations/Reveal";
 
-type Props = { href: string; label: string; external: boolean; note?: string };
+type Props = { href: string; label: string; external: boolean; note?: string; track: string };
 
 /** CTA penutup: satu link teks raksasa (mis. "Pesan lewat WhatsApp ↗"). */
-export default function EdClosing({ href, label, external, note }: Props) {
+export default function EdClosing({ href, label, external, note, track }: Props) {
   return (
     <section className="bg-paper px-5 py-28 sm:px-8 md:px-12 md:py-44">
       <div className="mx-auto max-w-[1440px]">
@@ -16,7 +16,7 @@ export default function EdClosing({ href, label, external, note }: Props) {
           <a
             href={href}
             {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            data-track="ed-cta-penutup"
+            data-track={track}
             className="ed-link ed-title text-[clamp(40px,7vw,112px)]"
           >
             {label}

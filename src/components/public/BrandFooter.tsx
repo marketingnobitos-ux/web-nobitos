@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { Brand } from "@prisma/client";
 import { NAV_ITEMS } from "@/components/public/nav";
 import { getSections } from "@/lib/content";
-import { slugify, whatsappUrl } from "@/lib/format";
+import { whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { brandSocial, waMessage } from "@/lib/site";
+import { branchKey, socialTrack, trackName } from "@/lib/track";
 
 /** "16.00 - 23.00 setiap hari" -> "16.00–23.00". */
 function shortHours(openHours: string | null): string | null {
@@ -67,7 +68,7 @@ export default async function BrandFooter({ brand }: { brand: Brand }) {
                           href={whatsappUrl(b.whatsapp, waMessage(brand.name, b.name))}
                           target="_blank"
                           rel="noopener noreferrer"
-                          data-track={`footer-wa-${slugify(b.name)}`}
+                          data-track={trackName("wa", branchKey(b.name))}
                           className="font-semibold text-paper underline-offset-4 hover:underline"
                         >
                           WhatsApp
@@ -89,7 +90,7 @@ export default async function BrandFooter({ brand }: { brand: Brand }) {
               <ul className="space-y-2">
                 {social.map((s) => (
                   <li key={s.url}>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" data-track={`footer-sosmed-${slugify(s.label)}`} className="transition-colors hover:text-paper/70">
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" data-track={socialTrack(s.label)} className="transition-colors hover:text-paper/70">
                       {s.label} ↗
                     </a>
                   </li>

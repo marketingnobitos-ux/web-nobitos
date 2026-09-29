@@ -5,6 +5,7 @@ import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 import { formatRupiah } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { pageMetadata } from "@/lib/seo";
+import { trackName } from "@/lib/track";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -62,7 +63,7 @@ export default async function MenuDetailPage({ params }: Props) {
           {item.description && <p className="mt-6 leading-relaxed text-gray-700">{item.description}</p>}
           <Link
             href="/cabang"
-            data-track="cta-cabang-dari-menu"
+            data-track={trackName("cabang")}
             className="mt-8 inline-block rounded-lg border border-primary px-5 py-2.5 font-medium text-primary hover:bg-primary/5"
           >
             Temukan di cabang terdekat

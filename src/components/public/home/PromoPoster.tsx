@@ -2,6 +2,7 @@ import Reveal from "@/components/animations/Reveal";
 import { Sticker } from "@/components/public/home/HeroSection";
 import { imageSrcSet } from "@/lib/image";
 import { formatDate } from "@/lib/format";
+import { trackName } from "@/lib/track";
 
 type Promo = { id: string; title: string; description: string | null; imageUrl: string | null; endsAt: Date | null };
 
@@ -45,7 +46,7 @@ export default function PromoPoster({ promos, fallbackPhoto }: { promos: Promo[]
                   )}
                   <a
                     href="/cabang"
-                    data-track={`promo-${i + 1}`}
+                    data-track={trackName("promo", i + 1)}
                     className="inline-flex h-13 items-center rounded-full bg-paper px-7 font-semibold text-ink transition hover:bg-paper/85"
                   >
                     Serbu ke cabang →

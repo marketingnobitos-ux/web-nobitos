@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, m } from "framer-motion";
 import { NAV_ITEMS } from "@/components/public/nav";
+import { trackName } from "@/lib/track";
 
 type Props = { brandName: string; logoUrl: string | null };
 
@@ -85,7 +86,7 @@ export default function BrandHeader({ brandName, logoUrl }: Props) {
           <div className="flex items-center gap-2">
             <Link
               href="/cabang"
-              data-track="header-cabang"
+              data-track={trackName("cabang")}
               className="hidden whitespace-nowrap rounded-full bg-paper px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-paper/85 sm:inline-flex"
             >
               Cari cabang
