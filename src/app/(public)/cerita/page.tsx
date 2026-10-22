@@ -1,9 +1,11 @@
 import Link from "next/link";
 import AngloStory from "@/components/templates/anglo/AngloStory";
+import DadakStory from "@/components/templates/dadak/DadakStory";
 import EditorialStory from "@/components/templates/editorial/EditorialStory";
 import TungkuStory from "@/components/templates/tungku/TungkuStory";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
+import { AMINOTO } from "@/data/brands/aminoto";
 import { APW } from "@/data/brands/apw";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 import { brandPageMetadata } from "@/lib/seo";
@@ -17,7 +19,9 @@ export function generateMetadata() {
         ? BAKMI_PAK_JOKO.story.paragraphs[0]
         : brand.template === "TUNGKU"
           ? `${APW.slogan} ${APW.intro.body}`
-          : (await getSections(brand.id, "story")).find((s) => s.key === "profile")?.data.body;
+          : brand.template === "DADAK"
+            ? AMINOTO.story.paragraphs[0]
+            : (await getSections(brand.id, "story")).find((s) => s.key === "profile")?.data.body;
     return {
       title: "Cerita",
       description: intro ?? `Cerita di balik ${brand.name}. ${brand.tagline ?? ""}`,
@@ -31,6 +35,7 @@ export default async function CeritaPage() {
   const brand = await requireActiveBrand();
   if (brand.template === "ANGLO") return <AngloStory />;
   if (brand.template === "TUNGKU") return <TungkuStory />;
+  if (brand.template === "DADAK") return <DadakStory />;
   const sections = await getSections(brand.id, "story");
 
   if (brand.template === "EDITORIAL") {

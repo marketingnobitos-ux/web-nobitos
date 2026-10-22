@@ -10,6 +10,7 @@ import PromoPoster from "@/components/public/home/PromoPoster";
 import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
 import StoryPinned from "@/components/public/home/StoryPinned";
 import AngloHome from "@/components/templates/anglo/AngloHome";
+import DadakHome from "@/components/templates/dadak/DadakHome";
 import EditorialHome from "@/components/templates/editorial/EditorialHome";
 import TungkuHome from "@/components/templates/tungku/TungkuHome";
 import { requireActiveBrand } from "@/lib/active-brand";
@@ -62,6 +63,24 @@ export default async function HomePage() {
       <>
         {jsonLd}
         <AngloHome featured={featured} />
+      </>
+    );
+  }
+
+  if (brand.template === "DADAK") {
+    const [featured, branches] = await Promise.all([
+      prisma.menuItem.findMany({
+        where: { brandId: brand.id, isFeatured: true, isAvailable: true },
+        orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
+        take: 3,
+        select: { id: true, name: true, description: true, price: true, portion: true, imageUrl: true },
+      }),
+      prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, include: { hours: true } }),
+    ]);
+    return (
+      <>
+        {jsonLd}
+        <DadakHome brandName={brand.name} featured={featured} branches={branches} />
       </>
     );
   }

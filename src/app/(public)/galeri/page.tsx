@@ -17,7 +17,7 @@ export function generateMetadata() {
 // Album foto per brand, klik foto untuk lightbox.
 export default async function GaleriPage() {
   const brand = await requireActiveBrand();
-  if (brand.template === "ANGLO" || brand.template === "TUNGKU") redirect("/"); // template tanpa halaman galeri
+  if (brand.template === "ANGLO" || brand.template === "TUNGKU" || brand.template === "DADAK") redirect("/"); // template tanpa halaman galeri
 
   const albums = await prisma.galleryAlbum.findMany({
     where: { brandId: brand.id },

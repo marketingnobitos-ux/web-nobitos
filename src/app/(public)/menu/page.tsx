@@ -1,5 +1,6 @@
 import MenuFilter from "@/components/public/MenuFilter";
 import AngloMenu from "@/components/templates/anglo/AngloMenu";
+import DadakMenu from "@/components/templates/dadak/DadakMenu";
 import EditorialMenu from "@/components/templates/editorial/EditorialMenu";
 import TungkuMenu from "@/components/templates/tungku/TungkuMenu";
 import { requireActiveBrand } from "@/lib/active-brand";
@@ -55,6 +56,12 @@ export default async function MenuPage() {
       .map((c) => ({ ...c, items: c.items.filter((i) => i.isAvailable) }))
       .filter((c) => c.items.length > 0);
     return <AngloMenu brandName={brand.name} categories={available} />;
+  }
+  if (brand.template === "DADAK") {
+    const available = categories
+      .map((c) => ({ ...c, items: c.items.filter((i) => i.isAvailable) }))
+      .filter((c) => c.items.length > 0);
+    return <DadakMenu categories={available} />;
   }
   if (brand.template === "TUNGKU") {
     const available = categories

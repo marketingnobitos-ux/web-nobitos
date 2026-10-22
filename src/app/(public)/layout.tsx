@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Courier_Prime, DM_Sans, Instrument_Sans, M_PLUS_Rounded_1c, Nunito_Sans, Space_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Courier_Prime, DM_Sans, Instrument_Sans, M_PLUS_Rounded_1c, Nunito_Sans, Outfit, Space_Mono } from "next/font/google";
 import { preload } from "react-dom";
 import MotionProvider from "@/components/animations/MotionProvider";
 import { NoScriptReveal } from "@/components/animations/Reveal";
@@ -11,6 +11,8 @@ import BrandHeader from "@/components/public/BrandHeader";
 import AngloFooter from "@/components/templates/anglo/AngloFooter";
 import AngloHeader from "@/components/templates/anglo/AngloHeader";
 import { StickerDefs } from "@/components/templates/anglo/illustrations";
+import DadakFooter from "@/components/templates/dadak/DadakFooter";
+import DadakHeader from "@/components/templates/dadak/DadakHeader";
 import EditorialFooter from "@/components/templates/editorial/EditorialFooter";
 import TungkuFooter from "@/components/templates/tungku/TungkuFooter";
 import TungkuHeader from "@/components/templates/tungku/TungkuHeader";
@@ -19,6 +21,7 @@ import Tracker from "@/components/public/Tracker";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 import { darkTones } from "@/lib/color";
 import { ogImage, siteOrigin } from "@/lib/seo";
+import "@/styles/tpl-dadak.css";
 
 // Judul: sans tebal yang bulat & ramah; teks: DM Sans.
 const bricolage = Bricolage_Grotesque({
@@ -60,6 +63,10 @@ const mplusRounded = M_PLUS_Rounded_1c({
 });
 const nunitoSans = Nunito_Sans({ subsets: ["latin"], weight: ["300", "400"], display: "swap", preload: false, variable: "--font-nunito-sans" });
 
+// Template Dadak (Aminoto): satu keluarga sans geometris (mirip referensi Fran), 400–700. Tidak di-preload supaya brand
+// lain tidak ikut mengunduh.
+const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap", preload: false, variable: "--font-outfit" });
+
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getActiveBrand();
   if (!brand) return {};
@@ -82,6 +89,7 @@ export default async function PublicLayout({ children }: { children: React.React
   const editorial = brand.template === "EDITORIAL";
   const anglo = brand.template === "ANGLO";
   const tungku = brand.template === "TUNGKU";
+  const dadak = brand.template === "DADAK";
   // Font judul = elemen LCP Beranda Anglo: unduh sedini mungkin supaya judul langsung tampil dengan font akhirnya.
   if (anglo) preload(ANGLO_MARKER_FONT, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
 
@@ -89,7 +97,8 @@ export default async function PublicLayout({ children }: { children: React.React
   // Editorial: gelapnya sedikit lebih terang (maroon, bukan hampir hitam) & latar terang dari warna secondary.
   // Anglo: warna brief dipakai apa adanya (primary = tinta hitam, secondary = kertas krem).
   // Tungku: teks gelap netral hangat (bukan turunan marun), latar putih; krem (secondary) hanya aksen kecil.
-  const tones = anglo
+  // Dadak: hijau tua (primary) dipakai apa adanya untuk teks & tombol, latar terang dari secondary, stabilo = accent.
+  const tones = anglo || dadak
     ? { ink: brand.colorPrimary, inkDeep: brand.colorPrimary }
     : tungku
       ? { ink: "#2b211e", inkDeep: "#1c1513" }
@@ -98,7 +107,7 @@ export default async function PublicLayout({ children }: { children: React.React
     "--brand": brand.colorPrimary,
     ...(tones ? { "--ink": tones.ink, "--ink-deep": tones.inkDeep } : {}),
     ...(brand.colorAccent ? { "--accent": brand.colorAccent } : {}),
-    ...(editorial || anglo ? { "--paper": brand.colorSecondary } : {}),
+    ...(editorial || anglo || dadak ? { "--paper": brand.colorSecondary } : {}),
     ...(tungku ? { "--paper": "#ffffff", "--cream": brand.colorSecondary } : {}),
   } as CSSProperties;
   const fonts = editorial
@@ -107,7 +116,9 @@ export default async function PublicLayout({ children }: { children: React.React
       ? `${spaceMono.variable} ${courierPrime.variable} tpl-anglo`
       : tungku
         ? `${mplusRounded.variable} ${nunitoSans.variable} tpl-tungku`
-        : `${bricolage.variable} ${dmSans.variable}`;
+        : dadak
+          ? `${outfit.variable} tpl-dadak`
+          : `${bricolage.variable} ${dmSans.variable}`;
 
   return (
     <div
@@ -122,6 +133,8 @@ export default async function PublicLayout({ children }: { children: React.React
           <EditorialHeader brandName={brand.name} logoUrl={brand.logoUrl} />
         ) : anglo ? (
           <AngloHeader brandName={brand.name} />
+        ) : dadak ? (
+          <DadakHeader />
         ) : tungku ? (
           <TungkuHeader brandName={brand.name} logoUrl={brand.logoUrl} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />
         ) : (
@@ -132,6 +145,8 @@ export default async function PublicLayout({ children }: { children: React.React
           <EditorialFooter brand={brand} />
         ) : anglo ? (
           <AngloFooter brand={brand} />
+        ) : dadak ? (
+          <DadakFooter brand={brand} />
         ) : tungku ? (
           <TungkuFooter brand={brand} />
         ) : (

@@ -11,8 +11,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const origin = await siteOrigin(brand.id);
   const url = (path: string) => new URL(path, origin).toString();
-  // ANGLO & TUNGKU tidak punya halaman galeri & detail menu (keduanya redirect), jadi tidak dicantumkan.
-  const anglo = brand.template === "ANGLO" || brand.template === "TUNGKU";
+  // ANGLO, TUNGKU & DADAK tidak punya halaman galeri & detail menu (keduanya redirect), jadi tidak dicantumkan.
+  const anglo = brand.template === "ANGLO" || brand.template === "TUNGKU" || brand.template === "DADAK";
 
   const [photoCount, items] = await Promise.all([
     anglo ? 0 : prisma.galleryPhoto.count({ where: { album: { brandId: brand.id } } }),
