@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { preload } from "react-dom";
 import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { imageSrcSet, repoWebp } from "@/lib/image";
@@ -23,12 +24,12 @@ type Props = {
 export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, secondary }: Props) {
   const root = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+  // Poster video = gambar pertama yang terlihat (LCP): minta browser mengunduhnya lebih dulu.
+  if (videoUrl) preload(repoWebp(imageUrl), { as: "image", fetchPriority: "high" });
 
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    // Video tidak diputar untuk pengunjung yang memilih kurangi gerakan.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) video.current?.pause();
     const mm = gsap.matchMedia();
     mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
       gsap.fromTo(
@@ -40,6 +41,22 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
     return () => mm.revert();
   }, []);
 
+  // Video (±2,8 MB) baru diunduh setelah halaman selesai dimuat, jadi tidak berebut jaringan dengan judul & poster.
+  // Pengunjung yang memilih kurangi gerakan cukup melihat poster, videonya tidak diunduh.
+  useEffect(() => {
+    const v = video.current;
+    if (!v || !videoUrl || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const start = () => {
+      v.src = videoUrl;
+      v.play().catch(() => {});
+    };
+    if (document.readyState === "complete") start();
+    else {
+      window.addEventListener("load", start, { once: true });
+      return () => window.removeEventListener("load", start);
+    }
+  }, [videoUrl]);
+
   return (
     <section ref={root} className="relative isolate flex h-svh min-h-[560px] items-end overflow-hidden bg-ink text-paper">
       <div data-ed-media className="absolute inset-0 -z-10 will-change-transform">
@@ -47,13 +64,12 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
           <video
             ref={video}
             className="h-full w-full object-cover"
-            src={videoUrl}
             poster={repoWebp(imageUrl)}
             autoPlay
             muted
             loop
             playsInline
-            preload="auto"
+            preload="none"
             aria-hidden
           />
         ) : (

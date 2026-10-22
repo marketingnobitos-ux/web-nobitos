@@ -7,6 +7,8 @@
 //   --logo     pasang logo transparan dari public/brand.
 //   --jsonld   upsert jam buka terstruktur per cabang + URL Instagram/TikTok di Brand (JSON-LD, ROADMAP F0.4).
 //              Tidak menghapus apa pun; cabang dicocokkan dari nama. `npm run bolu:jsonld`
+//   --address  tulis ulang alamat lengkap tiap cabang (dicocokkan dari nama, tidak menghapus apa pun).
+//   --favicon  pasang favicon 256px dari public/brands/bolu-sunyaragi (pengganti upload 1920px). `npm run bolu:alamat-favicon`
 import { PrismaClient, type Prisma } from "@prisma/client";
 import { weeklyHours, type DayHours } from "../src/lib/hours";
 
@@ -136,25 +138,28 @@ async function replaceBoluMenu() {
 /** Satu nomor WhatsApp admin untuk semua outlet. */
 export const BOLU_WHATSAPP = "085165206098";
 
-/** Outlet resmi. Titik koordinat dari link Google Maps; jam buka terstruktur ada di BOLU_HOURS. */
+/**
+ * Outlet resmi. Titik koordinat & alamat dari pin Google Maps resmi tiap cabang (alamat diambil 22 Okt 2026);
+ * jam buka terstruktur ada di BOLU_HOURS.
+ */
 export const BOLU_BRANCHES = [
   {
     name: "Kartini",
-    address: "Jl. Kartini, Kota Cirebon",
+    address: "Jl. Kartini No.6, Kebonbaru, Kec. Kejaksan, Kota Cirebon 45121",
     mapsUrl: "https://maps.app.goo.gl/6AzYqbjfKbHqxvZy5",
     lat: -6.7103911,
     lng: 108.557727,
   },
   {
     name: "Kedawung",
-    address: "Kedawung, Kabupaten Cirebon",
+    address: "Jl. Raya Kedawung, Kemlakagede, Kec. Tengah Tani, Kabupaten Cirebon 45153",
     mapsUrl: "https://maps.app.goo.gl/KPh4xqxv9QwB19Mb9",
     lat: -6.7089953,
     lng: 108.5264373,
   },
   {
     name: "Stasiun Kejaksan",
-    address: "Stasiun Cirebon (Kejaksan), Kota Cirebon",
+    address: "Stasiun Cirebon (Kejaksan), Jl. Inspeksi, Kesenden, Kec. Kejaksan, Kota Cirebon 45121",
     mapsUrl: "https://maps.app.goo.gl/hBYr6rKFMMQw7eSJA",
     lat: -6.7053697,
     lng: 108.5554445,
@@ -276,6 +281,33 @@ async function setBoluLogo() {
   }
 }
 
+/** Tulis ulang alamat cabang dari BOLU_BRANCHES (dicocokkan dari nama). Cabang lain & data lain tidak disentuh. */
+async function writeBoluAddresses() {
+  const prisma = new PrismaClient();
+  try {
+    const brand = await prisma.brand.findUniqueOrThrow({ where: { slug: "bolu-sunyaragi" } });
+    for (const b of BOLU_BRANCHES) {
+      const { count } = await prisma.branch.updateMany({ where: { brandId: brand.id, name: b.name }, data: { address: b.address } });
+      console.log(count ? `Alamat ${b.name}: ${b.address}` : `Cabang ${b.name} tidak ditemukan, alamat tidak diubah.`);
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export const BOLU_FAVICON = "/brands/bolu-sunyaragi/favicon.png";
+
+/** Pasang favicon kecil (256px, ±8 KB) dari public/brands; upload lama 1920px ±257 KB terlalu berat untuk ikon tab. */
+async function setBoluFavicon() {
+  const prisma = new PrismaClient();
+  try {
+    await prisma.brand.update({ where: { slug: "bolu-sunyaragi" }, data: { faviconUrl: BOLU_FAVICON } });
+    console.log(`Favicon Bolu Sunyaragi: ${BOLU_FAVICON}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 /** Tulis ulang tagline dan semua section cerita Bolu Sunyaragi (menimpa isian admin). */
 async function writeBoluStory() {
   const prisma = new PrismaClient();
@@ -323,6 +355,8 @@ async function main() {
   if (process.argv.includes("--gallery")) await replaceBoluGallery();
   if (process.argv.includes("--logo")) await setBoluLogo();
   if (process.argv.includes("--jsonld")) await writeBoluJsonLd();
+  if (process.argv.includes("--address")) await writeBoluAddresses();
+  if (process.argv.includes("--favicon")) await setBoluFavicon();
 }
 
 main().catch((e) => {

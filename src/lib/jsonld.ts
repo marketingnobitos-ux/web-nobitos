@@ -1,4 +1,5 @@
-// Data terstruktur Google (ROADMAP F0.4): satu schema.org `Restaurant` per cabang, dirender di Beranda & Cabang.
+// Data terstruktur Google (ROADMAP F0.4): satu schema.org `Restaurant` (atau subtipe lain, lihat BUSINESS_TYPE) per cabang,
+// dirender di Beranda & Cabang.
 // Aturan: tidak ada data karangan. Field yang nilainya belum ada di DB / src/data/brands tidak dirender.
 import type { Brand } from "@prisma/client";
 import { BAKMI_PAK_JOKO, type AngloBranch } from "@/data/brands/bakmi-pak-joko";
@@ -8,6 +9,11 @@ import { prisma } from "@/lib/prisma";
 import { ogImage, siteOrigin } from "@/lib/seo";
 
 type JsonLd = Record<string, unknown>;
+
+/** Jenis usaha schema.org per brand (subtipe FoodEstablishment). Brand yang tidak tercantum = `Restaurant`. */
+const BUSINESS_TYPE: Record<string, string> = {
+  "bolu-sunyaragi": "Bakery", // toko kue & oleh-oleh, bukan rumah makan
+};
 
 type BranchSource = {
   key: string;
@@ -92,7 +98,7 @@ export async function restaurantJsonLd(brand: Brand): Promise<JsonLd | null> {
   const restaurants = branches.map((b) => {
     const phone = b.phone ?? b.whatsapp;
     return compact({
-      "@type": "Restaurant",
+      "@type": BUSINESS_TYPE[brand.slug] ?? "Restaurant",
       "@id": url(`/cabang#${b.key}`),
       name: `${brand.name} — ${b.name}`,
       url: url("/cabang"),
