@@ -97,7 +97,7 @@ export function PageHero({
       </picture>
       <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(10_34_25/0.55)_0%,rgb(10_34_25/0.25)_38%,rgb(10_34_25/0.88)_100%)]" />
       <div className={`${WRAP} pb-14 pt-36 text-center md:pb-20`}>
-        <h1 id="page-title" className={`dk-display mx-auto max-w-[14ch] ${tall ? "text-[clamp(52px,8.6vw,124px)]" : "text-[clamp(46px,7vw,96px)]"}`}>
+        <h1 id="page-title" className={`dk-display mx-auto ${tall ? "max-w-[17ch] text-[clamp(52px,8.2vw,120px)]" : "max-w-[14ch] text-[clamp(46px,7vw,96px)]"}`}>
           {title}
         </h1>
         {sub && <p className="dk-caps mx-auto mt-5 max-w-[34ch] text-[15px] font-medium leading-snug text-[var(--dk-cream)]/90 sm:text-base">{sub}</p>}
