@@ -1,13 +1,12 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Anton, Archivo, Bricolage_Grotesque, Courier_Prime, DM_Sans, Fraunces, Instrument_Sans, M_PLUS_Rounded_1c, Nunito_Sans, Oswald, Space_Mono } from "next/font/google";
-import { preload } from "react-dom";
 import MotionProvider from "@/components/animations/MotionProvider";
 import { NoScriptReveal } from "@/components/animations/Reveal";
 import SmoothScroll from "@/components/animations/SmoothScroll";
 import BackToTop from "@/components/public/BackToTop";
 import BrandFooter from "@/components/public/BrandFooter";
 import BrandHeader from "@/components/public/BrandHeader";
+import TemplateFrame from "@/components/public/TemplateFrame";
 import AngloFooter from "@/components/templates/anglo/AngloFooter";
 import AngloHeader from "@/components/templates/anglo/AngloHeader";
 import { StickerDefs } from "@/components/templates/anglo/illustrations";
@@ -25,58 +24,11 @@ import { darkTones } from "@/lib/color";
 import { isCompleteWeek } from "@/lib/hours";
 import { prisma } from "@/lib/prisma";
 import { ogImage, siteOrigin } from "@/lib/seo";
-import "@/styles/tpl-dadak.css";
-import "@/styles/tpl-gerabah.css";
 
-// Judul: sans tebal yang bulat & ramah; teks: DM Sans.
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  display: "swap",
-  variable: "--font-bricolage",
-});
-const dmSans = DM_Sans({ subsets: ["latin"], display: "swap", variable: "--font-dm-sans" });
-// Template Editorial: satu keluarga sans geometris, italic untuk penekanan.
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  display: "swap",
-  variable: "--font-instrument-sans",
-});
-// Template Anglo (kertas & zine): label/harga mesin ketik, paragraf Courier. Tidak di-preload supaya brand lain
-// tidak ikut mengunduh. Font judul spidol (Caveat Brush) di-self-host di globals.css & di-preload hanya untuk Anglo.
+// Font & CSS khusus template ada di frame template masing-masing (components/public/TemplateFrame.tsx), jadi tiap brand
+// hanya mengunduh milik template-nya. Font judul spidol Anglo (Caveat Brush) di-self-host di tpl-anglo.css; di-preload
+// di sini hanya untuk Anglo.
 const ANGLO_MARKER_FONT = "/brands/bakmi-pak-joko/fonts/caveat-brush-latin.woff2";
-const spaceMono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], display: "swap", preload: false, variable: "--font-space-mono" });
-const courierPrime = Courier_Prime({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-  preload: false,
-  variable: "--font-courier-prime",
-});
-
-// Template Tungku (APW): judul M PLUS Rounded 1c 300 (tipis), tombol 400, isi Nunito Sans 300–400. Tidak di-preload supaya
-// brand lain tidak ikut mengunduh.
-const mplusRounded = M_PLUS_Rounded_1c({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  display: "swap",
-  preload: false,
-  variable: "--font-mplus-rounded",
-});
-const nunitoSans = Nunito_Sans({ subsets: ["latin"], weight: ["300", "400"], display: "swap", preload: false, variable: "--font-nunito-sans" });
-
-// Template Dadak (Aminoto, referensi "kado"): judul Anton (kondensed tebal), teks Oswald 400–600. Tidak di-preload supaya
-// brand lain tidak ikut mengunduh.
-const anton = Anton({ subsets: ["latin"], weight: "400", display: "swap", preload: false, variable: "--font-anton" });
-const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", preload: false, variable: "--font-oswald" });
-
-// Template Gerabah (APW, referensi "Daily Dishes Lab"): judul & teks Archivo (variabel, sumbu lebar untuk judul kapital),
-// aksen serif Fraunces. Tidak di-preload supaya brand lain tidak ikut mengunduh.
-const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], display: "swap", preload: false, variable: "--font-archivo" });
-const fraunces = Fraunces({ subsets: ["latin"], style: ["normal", "italic"], display: "swap", preload: false, variable: "--font-fraunces" });
 
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getActiveBrand();
@@ -102,8 +54,6 @@ export default async function PublicLayout({ children }: { children: React.React
   const tungku = brand.template === "TUNGKU";
   const dadak = brand.template === "DADAK";
   const gerabah = brand.template === "GERABAH";
-  // Font judul = elemen LCP Beranda Anglo: unduh sedini mungkin supaya judul langsung tampil dengan font akhirnya.
-  if (anglo) preload(ANGLO_MARKER_FONT, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
 
   // Warna gelap dominan (--ink) diturunkan dari warna brand, jadi tiap brand punya nuansa sendiri.
   // Editorial: gelapnya sedikit lebih terang (maroon, bukan hampir hitam) & latar terang dari warna secondary.
@@ -122,28 +72,24 @@ export default async function PublicLayout({ children }: { children: React.React
     ...(editorial || anglo || dadak ? { "--paper": brand.colorSecondary } : {}),
     ...(tungku ? { "--paper": "#ffffff", "--cream": brand.colorSecondary } : {}),
   } as CSSProperties;
-  const fonts = editorial
-    ? `${instrumentSans.variable} tpl-editorial`
-    : anglo
-      ? `${spaceMono.variable} ${courierPrime.variable} tpl-anglo`
-      : tungku
-        ? `${mplusRounded.variable} ${nunitoSans.variable} tpl-tungku`
-        : dadak
-          ? `${anton.variable} ${oswald.variable} tpl-dadak`
-          : gerabah
-            ? `${archivo.variable} ${fraunces.variable} tpl-gerabah`
-            : `${bricolage.variable} ${dmSans.variable}`;
   // Gerabah: badge "Buka sekarang" di header butuh jam cabang (APW hanya Kesambi).
   const gerabahHours = gerabah
     ? (await prisma.branch.findFirst({ where: { brandId: brand.id }, orderBy: { order: "asc" }, select: { hours: true } }))?.hours ?? []
     : [];
 
   return (
-    <div
+    <TemplateFrame
+      template={brand.template}
       style={brandVars}
       data-template={brand.template}
-      className={`brand-scope ${fonts} flex min-h-screen flex-col bg-paper font-sans text-ink`}
+      className="brand-scope flex min-h-screen flex-col bg-paper font-sans text-ink"
     >
+      {/*
+        Font judul = elemen LCP Beranda Anglo: unduh sedini mungkin supaya judul langsung tampil dengan font akhirnya.
+        Elemen <link> (bukan preload() dari react-dom): React menaruhnya di <head> HTML awal, sedangkan preload() di
+        server component hanya jadi hint RSC yang baru diproses setelah JS halaman terunduh.
+      */}
+      {anglo && <link rel="preload" href={ANGLO_MARKER_FONT} as="font" type="font/woff2" crossOrigin="anonymous" />}
       <NoScriptReveal />
       {anglo && <StickerDefs />}
       <MotionProvider>
@@ -184,6 +130,6 @@ export default async function PublicLayout({ children }: { children: React.React
       </MotionProvider>
       <SmoothScroll />
       <Tracker brandSlug={brand.slug} />
-    </div>
+    </TemplateFrame>
   );
 }

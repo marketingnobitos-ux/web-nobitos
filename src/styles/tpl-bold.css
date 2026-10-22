@@ -1,0 +1,125 @@
+/*
+ * Template BOLD (bawaan, brand tanpa template khusus): judul sans tebal, hero dengan baris judul muncul dari mask,
+ * stiker berputar, pita teks berjalan, butiran di blok warna. Dimuat hanya untuk brand BOLD (lewat BoldFrame).
+ */
+
+/* Judul: sans tebal, huruf besar-kecil, spasi huruf sedikit rapat. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.display em {
+  font-style: normal;
+}
+
+/* ---------- Animasi CSS (tetap jalan tanpa JS, mati saat reduced-motion) ---------- */
+
+/* Baris judul muncul dari balik "mask". */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.line-mask > span {
+  display: block;
+  transform: translateY(105%);
+  animation: line-up 1s cubic-bezier(0.2, 0.75, 0.15, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 110ms + 150ms);
+}
+@keyframes line-up {
+  to {
+    transform: none;
+  }
+}
+
+.fade-up-in {
+  opacity: 0;
+  animation: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: var(--delay, 0ms);
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Stiker bulat berputar. */
+.spin-slow {
+  animation: spin 22s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pita teks berjalan: isi digandakan, geser -50% lalu ulang. */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.scroll-line {
+  animation: scroll-line 2.2s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+  transform-origin: top;
+}
+@keyframes scroll-line {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-mask > span,
+  .fade-up-in {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+  .spin-slow,
+  .marquee-track,
+  .scroll-line {
+    animation: none;
+  }
+}
+
+/* Butiran halus di atas blok warna, biar tidak terasa "flat". */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}

@@ -30,7 +30,8 @@ function isBypassed(pathname: string): boolean {
 }
 
 // Halaman yang tidak dipakai template tertentu -> tujuan redirect. Dilakukan di middleware supaya status HTTP
-// benar-benar 307; redirect() di page terjadi setelah shell loading.tsx terkirim, jadi respons tetap 200.
+// langsung 307 tanpa merender halaman. (Dulu juga karena redirect() di page baru terjadi setelah shell loading.tsx
+// terkirim sehingga respons tetap 200; (public)/loading.tsx sudah dihapus di F2.7.)
 const TEMPLATE_REDIRECTS: Partial<Record<BrandTemplate, [RegExp, string][]>> = {
   ANGLO: [
     [/^\/galeri\/?$/, "/"],

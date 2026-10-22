@@ -1,0 +1,264 @@
+/*
+ * Template ANGLO (Bakmi Jowo Anglo Pak Joko): kertas krem, spidol, mesin ketik, label stiker.
+ * Dimuat hanya untuk brand ANGLO (lewat AngloFrame).
+ */
+
+/* Caveat Brush (Google Fonts, SIL OFL), subset latin, di-self-host supaya bisa di-preload hanya di halaman Anglo. */
+@font-face {
+  font-family: "Anglo Marker";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/brands/bakmi-pak-joko/fonts/caveat-brush-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Fallback bermetrik mirip (angka dari next/font) supaya pergantian font tidak menggeser layout. */
+@font-face {
+  font-family: "Anglo Marker Fallback";
+  src: local("Arial");
+  ascent-override: 120.9%;
+  descent-override: 37.78%;
+  line-gap-override: 0%;
+  size-adjust: 79.41%;
+}
+.tpl-anglo {
+  /* Blok pastel, satu warna per section (brief 6.2). */
+  --kunyit: #e8b64a;
+  --daun: #9db86b;
+  --enamel: #6e8fa8;
+  --wood: #8a5a34; /* rak kayu papan pengumuman */
+  --nav: #2b2926; /* bar navigasi abu gelap */
+  --sheet: #fbf6ea; /* kertas tempel / poster */
+  --font-display: "Anglo Marker", "Anglo Marker Fallback", cursive;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  font-family: var(--font-courier-prime), ui-monospace, monospace;
+}
+.tpl-anglo .font-sans {
+  font-family: var(--font-courier-prime), ui-monospace, monospace;
+}
+@layer components {
+  /* Judul spidol: kapital, rapat. */
+  .ag-marker {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  /* Tekstur kertas: noise halus di atas warna latar apa pun. Tile PNG kecil (bukan filter SVG) supaya ringan di HP. */
+  .ag-noise {
+    background-image: url("/brands/bakmi-pak-joko/tekstur-kertas.png");
+    background-size: 128px 128px;
+  }
+  /* Label stiker: kotak mono kapital, sedikit miring (atur putaran dengan utility rotate-*). */
+  .ag-sticker {
+    display: inline-block;
+    padding: 0.35em 0.7em;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap; /* label tidak patah di tengah frasa; frasa panjang dipecah jadi beberapa label */
+    background: var(--ink);
+    color: var(--sheet);
+  }
+  .ag-sticker-light {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  /* Tombol pil. */
+  .ag-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.8em 1.6em;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .ag-pill:hover {
+    transform: translateY(-2px);
+  }
+  /* Foto asli sebagai potongan stiker: tepi putih tebal mengikuti bentuk (PNG/WebP transparan) + bayangan tipis. */
+  .ag-photo-sticker {
+    filter: drop-shadow(5px 0 0 #fff) drop-shadow(-5px 0 0 #fff) drop-shadow(0 5px 0 #fff) drop-shadow(0 -5px 0 #fff)
+      drop-shadow(2px 6px 6px rgb(22 20 18 / 0.3));
+  }
+  /* Kertas tempel / poster: garis tinta + bayangan keras. */
+  .ag-paper {
+    background: var(--sheet);
+    border: 2px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  /* Selotip di atas kertas tempel. */
+  .ag-tape::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 84px;
+    height: 24px;
+    transform: translateX(-50%) rotate(-3deg);
+    background: rgb(255 255 255 / 0.55);
+    border: 1px solid rgb(22 20 18 / 0.15);
+  }
+  /* Carousel geser: snap per kartu. Mulai md tampil berjajar (atur dengan utility md:grid). */
+  .ag-rail {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1rem;
+    padding: 1.25rem 1rem 1.75rem;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .ag-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .ag-rail > * {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+  }
+  /* Baris menu cetak: nama ........ harga. */
+  .ag-leader {
+    flex: 1 1 1.5rem;
+    min-width: 1.5rem;
+    border-bottom: 2px dotted currentColor;
+    opacity: 0.45;
+    transform: translateY(-0.3em);
+  }
+}
+
+/* ---------- Animasi Anglo (brief 6.4): gaya "tempel", bukan "reveal" ---------- */
+
+/* Asap tipis dari anglo (ilustrasi hero). Tidak tampil tanpa animasi. */
+.ag-smoke {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: rgb(22 20 18 / 0.2);
+  filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ag-smoke {
+    animation: ag-smoke 4.2s ease-out infinite;
+    animation-delay: calc(var(--i, 0) * 1.4s);
+  }
+
+  /* Stiker & potongan: tersembunyi sampai masuk layar, lalu "ditempel" (putar + mantul kecil). */
+  @media (scripting: enabled) {
+    .tpl-anglo [data-stick]:not([data-stuck]) {
+      opacity: 0;
+    }
+    /*
+     * Pengaman: selama StickObserver belum aktif (html belum punya [data-ag-stick], mis. hydrate gagal
+     * atau JS error), semua stiker tetap muncul sendiri setelah 2 detik.
+     */
+    html:not([data-ag-stick]) .tpl-anglo [data-stick]:not([data-stuck]) {
+      animation: ag-failsafe 0.3s ease-out 2s forwards;
+    }
+    .tpl-anglo [data-stick][data-stuck] {
+      animation: ag-stick 0.7s cubic-bezier(0.3, 1.35, 0.5, 1) both;
+      animation-delay: var(--stick-delay, 0ms);
+    }
+  }
+
+  /* Poster papan pengumuman bergoyang tipis saat hover (hanya perangkat dengan hover/desktop). */
+  @media (hover: hover) and (min-width: 768px) {
+    .ag-poster {
+      transform-origin: 50% 14px; /* poros di paku */
+    }
+    .ag-poster:hover {
+      animation: ag-sway 1.6s ease-in-out infinite;
+    }
+  }
+}
+
+/* HP: tempel lebih sederhana (tanpa putar & mantul), asap cukup dua gumpal. */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) and (max-width: 767px) {
+  .tpl-anglo [data-stick][data-stuck] {
+    animation: ag-stick-lite 0.45s ease-out both;
+    animation-delay: var(--stick-delay, 0ms);
+  }
+}
+@media (max-width: 767px) {
+  .ag-smoke:nth-child(n + 3) {
+    display: none;
+  }
+}
+
+@keyframes ag-stick {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--stick-from, -8deg)) scale(1.16) translateY(-8px);
+  }
+  55% {
+    opacity: 1;
+    transform: rotate(calc(var(--stick-from, -8deg) * -0.25)) scale(0.97);
+  }
+  78% {
+    transform: rotate(calc(var(--stick-from, -8deg) * 0.08)) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ag-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ag-stick-lite {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ag-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-1.6deg);
+  }
+  75% {
+    transform: rotate(1.6deg);
+  }
+}
+@keyframes ag-smoke {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.6);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--drift, 10px)), -260%) scale(2.4);
+  }
+}
