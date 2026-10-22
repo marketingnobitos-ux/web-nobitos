@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
+import { withGsap } from "@/components/animations/lazy-gsap";
 
 /**
  * Pernyataan pembuka: satu kalimat besar, posisi asimetris; kata-kata "menyala" bertahap
@@ -13,20 +13,22 @@ export default function EdStatement({ text, label }: { text: string; label?: str
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    const mm = gsap.matchMedia();
-    mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
-      gsap.fromTo(
-        el.querySelectorAll("[data-word]"),
-        { opacity: 0.14 },
-        {
-          opacity: 1,
-          stagger: 0.08,
-          ease: "none",
-          scrollTrigger: { trigger: el, start: "top 80%", end: "bottom 45%", scrub: 0.8 },
-        },
-      );
+    return withGsap(({ MOTION_QUERIES, gsap }) => {
+      const mm = gsap.matchMedia();
+      mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
+        gsap.fromTo(
+          el.querySelectorAll("[data-word]"),
+          { opacity: 0.14 },
+          {
+            opacity: 1,
+            stagger: 0.08,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: "top 80%", end: "bottom 45%", scrub: 0.8 },
+          },
+        );
+      });
+      return () => mm.revert();
     });
-    return () => mm.revert();
   }, []);
 
   // Pecah per kata; tandai kata yang berada di dalam *...* sebagai miring.

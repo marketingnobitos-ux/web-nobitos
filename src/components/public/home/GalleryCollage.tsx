@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
+import { withGsap } from "@/components/animations/lazy-gsap";
 import Headline from "@/components/public/home/Headline";
 import { imageSrcSet } from "@/lib/image";
 import { altText } from "@/lib/site";
@@ -27,20 +27,22 @@ export default function GalleryCollage({ photos }: { photos: Photo[] }) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    const mm = gsap.matchMedia();
-    const run = (factor: number) => {
-      gsap.utils.toArray<HTMLElement>("[data-speed]", el).forEach((item) => {
-        const speed = Number(item.dataset.speed) * factor;
-        gsap.fromTo(
-          item,
-          { yPercent: speed },
-          { yPercent: -speed, ease: "none", scrollTrigger: { trigger: item, start: "top bottom", end: "bottom top", scrub: true } },
-        );
-      });
-    };
-    mm.add(MOTION_QUERIES.desktop, () => run(1));
-    mm.add(MOTION_QUERIES.mobile, () => run(0.4));
-    return () => mm.revert();
+    return withGsap(({ MOTION_QUERIES, gsap }) => {
+      const mm = gsap.matchMedia();
+      const run = (factor: number) => {
+        gsap.utils.toArray<HTMLElement>("[data-speed]", el).forEach((item) => {
+          const speed = Number(item.dataset.speed) * factor;
+          gsap.fromTo(
+            item,
+            { yPercent: speed },
+            { yPercent: -speed, ease: "none", scrollTrigger: { trigger: item, start: "top bottom", end: "bottom top", scrub: true } },
+          );
+        });
+      };
+      mm.add(MOTION_QUERIES.desktop, () => run(1));
+      mm.add(MOTION_QUERIES.mobile, () => run(0.4));
+      return () => mm.revert();
+    });
   }, []);
 
   return (

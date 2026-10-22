@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
+import { withGsap } from "@/components/animations/lazy-gsap";
 import { greetingFor } from "@/lib/greeting";
 import { imageSrcSet } from "@/lib/image";
 import { altText } from "@/lib/site";
@@ -43,17 +43,19 @@ export default function HeroSection({ title, subtitle, imageUrl, greeting: initi
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    const mm = gsap.matchMedia();
-    const parallax = (strength: number) => {
-      gsap
-        .timeline({ scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } })
-        .to(el.querySelector("[data-hero-media]"), { yPercent: strength, ease: "none" }, 0)
-        .to(el.querySelector("[data-hero-content]"), { yPercent: -strength * 0.8, opacity: 0.2, ease: "none" }, 0)
-        .to(el.querySelector("[data-hero-sticker]"), { rotate: 120, yPercent: -40, ease: "none" }, 0);
-    };
-    mm.add(MOTION_QUERIES.desktop, () => parallax(22));
-    mm.add(MOTION_QUERIES.mobile, () => parallax(12));
-    return () => mm.revert();
+    return withGsap(({ MOTION_QUERIES, gsap }) => {
+      const mm = gsap.matchMedia();
+      const parallax = (strength: number) => {
+        gsap
+          .timeline({ scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } })
+          .to(el.querySelector("[data-hero-media]"), { yPercent: strength, ease: "none" }, 0)
+          .to(el.querySelector("[data-hero-content]"), { yPercent: -strength * 0.8, opacity: 0.2, ease: "none" }, 0)
+          .to(el.querySelector("[data-hero-sticker]"), { rotate: 120, yPercent: -40, ease: "none" }, 0);
+      };
+      mm.add(MOTION_QUERIES.desktop, () => parallax(22));
+      mm.add(MOTION_QUERIES.mobile, () => parallax(12));
+      return () => mm.revert();
+    });
   }, []);
 
   const lines = toLines(title);

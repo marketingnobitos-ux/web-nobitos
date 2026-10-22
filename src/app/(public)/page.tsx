@@ -1,12 +1,17 @@
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import BranchList from "@/components/public/home/BranchList";
 import FeaturedCarousel from "@/components/public/home/FeaturedCarousel";
+import GalleryCollage from "@/components/public/home/GalleryCollage";
 import Headline from "@/components/public/home/Headline";
+import HeroSection from "@/components/public/home/HeroSection";
 import Marquee from "@/components/public/home/Marquee";
 import MenuPicker from "@/components/public/home/MenuPicker";
+import PromoPoster from "@/components/public/home/PromoPoster";
 import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
+import StoryPinned from "@/components/public/home/StoryPinned";
 import AngloHome from "@/components/templates/anglo/AngloHome";
+import EditorialHome from "@/components/templates/editorial/EditorialHome";
+import TungkuHome from "@/components/templates/tungku/TungkuHome";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
 import { greetingFor, wibHour } from "@/lib/greeting";
@@ -14,15 +19,6 @@ import { GALLERY_PLACEHOLDERS, PLACEHOLDER, menuPhoto, realPhoto } from "@/lib/p
 import { prisma } from "@/lib/prisma";
 import { branchNames, brandPageMetadata, joinNames } from "@/lib/seo";
 import { trackName } from "@/lib/track";
-
-// Komponen yang memakai GSAP dimuat lewat dynamic(): JS-nya hanya diunduh brand yang benar-benar merendernya,
-// jadi Beranda template lain (mis. Anglo) tidak ikut mengunduh GSAP + ScrollTrigger. HTML tetap dirender di server.
-const EditorialHome = dynamic(() => import("@/components/templates/editorial/EditorialHome"));
-const TungkuHome = dynamic(() => import("@/components/templates/tungku/TungkuHome"));
-const HeroSection = dynamic(() => import("@/components/public/home/HeroSection"));
-const StoryPinned = dynamic(() => import("@/components/public/home/StoryPinned"));
-const GalleryCollage = dynamic(() => import("@/components/public/home/GalleryCollage"));
-const PromoPoster = dynamic(() => import("@/components/public/home/PromoPoster"));
 
 const DEFAULT_PROCESS = ["Diulek.", "Digoreng.", "Disajikan hangat."];
 

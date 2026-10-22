@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
+import { withGsap } from "@/components/animations/lazy-gsap";
 import { imageSrcSet } from "@/lib/image";
 
 export type Chapter = { title: string; body: string; image: string };
@@ -17,37 +17,39 @@ export default function EdChapters({ heading, chapters }: { heading: string; cha
   useEffect(() => {
     const el = root.current;
     if (!el || chapters.length < 2) return;
-    const mm = gsap.matchMedia();
-    mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
-      const texts = gsap.utils.toArray<HTMLElement>("[data-ch-text]", el);
-      const images = gsap.utils.toArray<HTMLElement>("[data-ch-img]", el);
-      const counter = el.querySelector<HTMLElement>("[data-ch-count]");
-      gsap.set([...texts.slice(1), ...images.slice(1)], { autoAlpha: 0 });
-      gsap.set(texts.slice(1), { y: 40 });
+    return withGsap(({ MOTION_QUERIES, gsap }) => {
+      const mm = gsap.matchMedia();
+      mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
+        const texts = gsap.utils.toArray<HTMLElement>("[data-ch-text]", el);
+        const images = gsap.utils.toArray<HTMLElement>("[data-ch-img]", el);
+        const counter = el.querySelector<HTMLElement>("[data-ch-count]");
+        gsap.set([...texts.slice(1), ...images.slice(1)], { autoAlpha: 0 });
+        gsap.set(texts.slice(1), { y: 40 });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: el,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1,
-          onUpdate: (self) => {
-            if (!counter) return;
-            const idx = Math.min(chapters.length - 1, Math.floor(self.progress * chapters.length));
-            counter.textContent = String(idx + 1).padStart(2, "0");
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1,
+            onUpdate: (self) => {
+              if (!counter) return;
+              const idx = Math.min(chapters.length - 1, Math.floor(self.progress * chapters.length));
+              counter.textContent = String(idx + 1).padStart(2, "0");
+            },
           },
-        },
+        });
+        tl.fromTo(el.querySelector("[data-ch-progress]"), { scaleX: 1 / chapters.length }, { scaleX: 1, ease: "none", duration: chapters.length - 1 }, 0);
+        for (let i = 1; i < chapters.length; i++) {
+          tl.to(texts[i - 1], { autoAlpha: 0, y: -40, duration: 0.5, ease: "power2.inOut" }, i - 0.5)
+            .to(images[i - 1], { autoAlpha: 0, duration: 0.6, ease: "none" }, i - 0.5)
+            .to(images[i], { autoAlpha: 1, duration: 0.6, ease: "none" }, i - 0.5)
+            .to(texts[i], { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, i - 0.2);
+        }
+        tl.to({}, { duration: 0.3 });
       });
-      tl.fromTo(el.querySelector("[data-ch-progress]"), { scaleX: 1 / chapters.length }, { scaleX: 1, ease: "none", duration: chapters.length - 1 }, 0);
-      for (let i = 1; i < chapters.length; i++) {
-        tl.to(texts[i - 1], { autoAlpha: 0, y: -40, duration: 0.5, ease: "power2.inOut" }, i - 0.5)
-          .to(images[i - 1], { autoAlpha: 0, duration: 0.6, ease: "none" }, i - 0.5)
-          .to(images[i], { autoAlpha: 1, duration: 0.6, ease: "none" }, i - 0.5)
-          .to(texts[i], { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, i - 0.2);
-      }
-      tl.to({}, { duration: 0.3 });
+      return () => mm.revert();
     });
-    return () => mm.revert();
   }, [chapters.length]);
 
   const total = String(chapters.length).padStart(2, "0");

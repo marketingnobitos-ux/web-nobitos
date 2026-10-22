@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { MOTION_QUERIES, ScrollTrigger, gsap } from "@/components/animations/gsap";
+import { withGsap } from "@/components/animations/lazy-gsap";
 import { imageSrcSet } from "@/lib/image";
 import { trackName } from "@/lib/track";
 
@@ -18,42 +18,44 @@ export default function StoryPinned({ lines, body, imageUrl }: Props) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    const mm = gsap.matchMedia();
-    mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
-      const items = gsap.utils.toArray<HTMLElement>("[data-story-line]", el);
-      const counter = el.querySelector<HTMLElement>("[data-story-count]");
-      gsap.set(items, { yPercent: 100, opacity: 0 });
-      gsap.set(items[0], { yPercent: 0, opacity: 1 });
+    return withGsap(({ MOTION_QUERIES, ScrollTrigger, gsap }) => {
+      const mm = gsap.matchMedia();
+      mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
+        const items = gsap.utils.toArray<HTMLElement>("[data-story-line]", el);
+        const counter = el.querySelector<HTMLElement>("[data-story-count]");
+        gsap.set(items, { yPercent: 100, opacity: 0 });
+        gsap.set(items[0], { yPercent: 0, opacity: 1 });
 
-      // Satu timeline di-scrub sepanjang section: baris lama naik & hilang, baris baru masuk.
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: el,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.6,
-          onUpdate: (self) => {
-            if (!counter) return;
-            const idx = Math.min(items.length - 1, Math.floor(self.progress * items.length));
-            counter.textContent = String(idx + 1).padStart(2, "0");
+        // Satu timeline di-scrub sepanjang section: baris lama naik & hilang, baris baru masuk.
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.6,
+            onUpdate: (self) => {
+              if (!counter) return;
+              const idx = Math.min(items.length - 1, Math.floor(self.progress * items.length));
+              counter.textContent = String(idx + 1).padStart(2, "0");
+            },
           },
-        },
-      });
-      items.forEach((item, i) => {
-        if (i === 0) return;
-        tl.to(items[i - 1], { yPercent: -100, opacity: 0, duration: 1, ease: "power2.inOut" }, i)
-          .to(item, { yPercent: 0, opacity: 1, duration: 1, ease: "power2.inOut" }, i);
-      });
-      tl.to({}, { duration: 0.6 });
+        });
+        items.forEach((item, i) => {
+          if (i === 0) return;
+          tl.to(items[i - 1], { yPercent: -100, opacity: 0, duration: 1, ease: "power2.inOut" }, i)
+            .to(item, { yPercent: 0, opacity: 1, duration: 1, ease: "power2.inOut" }, i);
+        });
+        tl.to({}, { duration: 0.6 });
 
-      gsap.fromTo(
-        el.querySelector("[data-story-img]"),
-        { yPercent: -8, scale: 1.15 },
-        { yPercent: 8, scale: 1.05, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } },
-      );
-      ScrollTrigger.refresh();
+        gsap.fromTo(
+          el.querySelector("[data-story-img]"),
+          { yPercent: -8, scale: 1.15 },
+          { yPercent: 8, scale: 1.05, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } },
+        );
+        ScrollTrigger.refresh();
+      });
+      return () => mm.revert();
     });
-    return () => mm.revert();
   }, []);
 
   const total = String(lines.length).padStart(2, "0");

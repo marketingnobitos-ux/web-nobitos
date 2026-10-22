@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { preload } from "react-dom";
-import { MOTION_QUERIES, gsap } from "@/components/animations/gsap";
+import { withGsap } from "@/components/animations/lazy-gsap";
 import EdLink from "@/components/templates/editorial/EdLink";
 import { imageSrcSet, repoWebp } from "@/lib/image";
 import { altText } from "@/lib/site";
@@ -30,15 +30,17 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    const mm = gsap.matchMedia();
-    mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
-      gsap.fromTo(
-        el.querySelector("[data-ed-media]"),
-        { scale: 1.08 },
-        { scale: 1, yPercent: 8, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } },
-      );
+    return withGsap(({ MOTION_QUERIES, gsap }) => {
+      const mm = gsap.matchMedia();
+      mm.add(`${MOTION_QUERIES.desktop}, ${MOTION_QUERIES.mobile}`, () => {
+        gsap.fromTo(
+          el.querySelector("[data-ed-media]"),
+          { scale: 1.08 },
+          { scale: 1, yPercent: 8, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } },
+        );
+      });
+      return () => mm.revert();
     });
-    return () => mm.revert();
   }, []);
 
   // Video (±2,8 MB) baru diunduh setelah halaman selesai dimuat, jadi tidak berebut jaringan dengan judul & poster.
@@ -59,7 +61,8 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
 
   return (
     <section ref={root} className="relative isolate flex h-svh min-h-[560px] items-end overflow-hidden bg-ink text-paper">
-      <div data-ed-media className="absolute inset-0 -z-10 will-change-transform">
+      {/* Skala awal = titik mulai animasi scroll (GSAP dimuat belakangan), jadi tidak ada lompatan zoom saat GSAP siap. */}
+      <div data-ed-media className="absolute inset-0 -z-10 will-change-transform motion-safe:[transform:scale(1.08)]">
         {videoUrl ? (
           <video
             ref={video}
