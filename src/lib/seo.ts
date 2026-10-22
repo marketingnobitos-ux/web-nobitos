@@ -25,7 +25,9 @@ export const siteOrigin = cache(async (brandId: string): Promise<URL> => {
   if (domain) return new URL(`https://${domain.hostname}`);
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  // localhost & domain lokal "*.localhost" (preview brand di dev) dilayani lewat http.
+  const local = /^(?:[^/]+\.)?localhost(?::\d+)?$/.test(host);
+  const proto = h.get("x-forwarded-proto") ?? (local ? "http" : "https");
   return new URL(`${proto}://${host}`);
 });
 

@@ -1,6 +1,7 @@
 import AngloBranches from "@/components/templates/anglo/AngloBranches";
 import BranchCard from "@/components/public/BranchCard";
 import DadakBranches from "@/components/templates/dadak/DadakBranches";
+import GerabahBranches from "@/components/templates/gerabah/GerabahBranches";
 import TungkuBranches from "@/components/templates/tungku/TungkuBranches";
 import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
 import { requireActiveBrand } from "@/lib/active-brand";
@@ -37,6 +38,14 @@ export default async function CabangPage() {
       <>
         {jsonLd}
         <DadakBranches brandName={brand.name} branches={branches} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />
+      </>
+    );
+
+  if (brand.template === "GERABAH")
+    return (
+      <>
+        {jsonLd}
+        <GerabahBranches brandName={brand.name} branches={branches} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />
       </>
     );
 

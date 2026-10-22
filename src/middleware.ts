@@ -44,6 +44,10 @@ const TEMPLATE_REDIRECTS: Partial<Record<BrandTemplate, [RegExp, string][]>> = {
     [/^\/galeri\/?$/, "/"],
     [/^\/menu\/[^/]+\/?$/, "/menu"],
   ],
+  GERABAH: [
+    [/^\/galeri\/?$/, "/"],
+    [/^\/menu\/[^/]+\/?$/, "/menu"],
+  ],
 };
 
 async function templateRedirect(req: NextRequest, slug: string): Promise<NextResponse | null> {

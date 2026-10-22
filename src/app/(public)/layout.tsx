@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Anton, Bricolage_Grotesque, Courier_Prime, DM_Sans, Instrument_Sans, M_PLUS_Rounded_1c, Nunito_Sans, Oswald, Space_Mono } from "next/font/google";
+import { Anton, Archivo, Bricolage_Grotesque, Courier_Prime, DM_Sans, Fraunces, Instrument_Sans, M_PLUS_Rounded_1c, Nunito_Sans, Oswald, Space_Mono } from "next/font/google";
 import { preload } from "react-dom";
 import MotionProvider from "@/components/animations/MotionProvider";
 import { NoScriptReveal } from "@/components/animations/Reveal";
@@ -14,14 +14,19 @@ import { StickerDefs } from "@/components/templates/anglo/illustrations";
 import DadakFooter from "@/components/templates/dadak/DadakFooter";
 import DadakHeader from "@/components/templates/dadak/DadakHeader";
 import EditorialFooter from "@/components/templates/editorial/EditorialFooter";
+import GerabahFooter from "@/components/templates/gerabah/GerabahFooter";
+import GerabahHeader from "@/components/templates/gerabah/GerabahHeader";
 import TungkuFooter from "@/components/templates/tungku/TungkuFooter";
 import TungkuHeader from "@/components/templates/tungku/TungkuHeader";
 import EditorialHeader from "@/components/templates/editorial/EditorialHeader";
 import Tracker from "@/components/public/Tracker";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
 import { darkTones } from "@/lib/color";
+import { isCompleteWeek } from "@/lib/hours";
+import { prisma } from "@/lib/prisma";
 import { ogImage, siteOrigin } from "@/lib/seo";
 import "@/styles/tpl-dadak.css";
+import "@/styles/tpl-gerabah.css";
 
 // Judul: sans tebal yang bulat & ramah; teks: DM Sans.
 const bricolage = Bricolage_Grotesque({
@@ -68,6 +73,11 @@ const nunitoSans = Nunito_Sans({ subsets: ["latin"], weight: ["300", "400"], dis
 const anton = Anton({ subsets: ["latin"], weight: "400", display: "swap", preload: false, variable: "--font-anton" });
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", preload: false, variable: "--font-oswald" });
 
+// Template Gerabah (APW, referensi "Daily Dishes Lab"): judul & teks Archivo (variabel, sumbu lebar untuk judul kapital),
+// aksen serif Fraunces. Tidak di-preload supaya brand lain tidak ikut mengunduh.
+const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], display: "swap", preload: false, variable: "--font-archivo" });
+const fraunces = Fraunces({ subsets: ["latin"], style: ["normal", "italic"], display: "swap", preload: false, variable: "--font-fraunces" });
+
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getActiveBrand();
   if (!brand) return {};
@@ -91,6 +101,7 @@ export default async function PublicLayout({ children }: { children: React.React
   const anglo = brand.template === "ANGLO";
   const tungku = brand.template === "TUNGKU";
   const dadak = brand.template === "DADAK";
+  const gerabah = brand.template === "GERABAH";
   // Font judul = elemen LCP Beranda Anglo: unduh sedini mungkin supaya judul langsung tampil dengan font akhirnya.
   if (anglo) preload(ANGLO_MARKER_FONT, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
 
@@ -119,7 +130,13 @@ export default async function PublicLayout({ children }: { children: React.React
         ? `${mplusRounded.variable} ${nunitoSans.variable} tpl-tungku`
         : dadak
           ? `${anton.variable} ${oswald.variable} tpl-dadak`
-          : `${bricolage.variable} ${dmSans.variable}`;
+          : gerabah
+            ? `${archivo.variable} ${fraunces.variable} tpl-gerabah`
+            : `${bricolage.variable} ${dmSans.variable}`;
+  // Gerabah: badge "Buka sekarang" di header butuh jam cabang (APW hanya Kesambi).
+  const gerabahHours = gerabah
+    ? (await prisma.branch.findFirst({ where: { brandId: brand.id }, orderBy: { order: "asc" }, select: { hours: true } }))?.hours ?? []
+    : [];
 
   return (
     <div
@@ -136,6 +153,14 @@ export default async function PublicLayout({ children }: { children: React.React
           <AngloHeader brandName={brand.name} />
         ) : dadak ? (
           <DadakHeader />
+        ) : gerabah ? (
+          <GerabahHeader
+            brandName={brand.name}
+            logoUrl={brand.logoUrl}
+            instagramUrl={brand.instagramUrl}
+            tiktokUrl={brand.tiktokUrl}
+            hours={isCompleteWeek(gerabahHours) ? gerabahHours : null}
+          />
         ) : tungku ? (
           <TungkuHeader brandName={brand.name} logoUrl={brand.logoUrl} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />
         ) : (
@@ -148,6 +173,8 @@ export default async function PublicLayout({ children }: { children: React.React
           <AngloFooter brand={brand} />
         ) : dadak ? (
           <DadakFooter brand={brand} />
+        ) : gerabah ? (
+          <GerabahFooter brand={brand} />
         ) : tungku ? (
           <TungkuFooter brand={brand} />
         ) : (

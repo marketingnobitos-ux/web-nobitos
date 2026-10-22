@@ -61,6 +61,7 @@ enum BrandTemplate {
   ANGLO // khusus Bakmi Jowo Anglo Pak Joko: konten halaman dari src/data/brands
   TUNGKU // khusus Ayam Panggang Wicaksono: terang & lega, teks halaman dari src/data/brands
   DADAK // khusus Pecel Lele Sambel Dadak Aminoto: kartu kaca, hijau tua & stabilo, teks halaman dari src/data/brands
+  GERABAH // khusus Ayam Panggang Wicaksono (pengganti TUNGKU): blok warna gerabah/arang/daun, kartu data kaca, teks dari src/data/brands
 }
 
 enum DomainStatus {

@@ -1,5 +1,5 @@
 // Data Ayam Panggang Wicaksono (APW): brand + menu resmi + cabang Kesambi (alamat & jam dari bio Instagram resmi).
-// Konten halaman (hero, cerita, teks antarmuka) ada di src/data/brands/apw.ts.
+// Konten halaman: template GERABAH (dipakai) di src/data/brands/apw-gerabah.ts; template lama TUNGKU di src/data/brands/apw.ts.
 //
 // BERBEDA dengan seed Pak Joko: seed ini MENIMPA data brand `apw` (data contoh dari prisma/seed.ts diganti data asli).
 // - Kolom brand ditimpa; menu, konten halaman, promo & galeri contoh dihapus lalu menu resmi dibuat ulang.
@@ -22,7 +22,7 @@ export const APW_BRAND = {
   colorAccent: "#F5A623",
   fontHeading: "M PLUS Rounded 1c",
   fontBody: "Nunito Sans",
-  template: "TUNGKU" as const,
+  template: "GERABAH" as const,
   // Logo dari foto profil Instagram resmi (150 px). TODO: konfirmasi Fran — file logo resolusi tinggi.
   logoUrl: "/brands/apw/foto/logo-apw.webp",
   faviconUrl: "/brands/apw/favicon.png",
@@ -47,7 +47,8 @@ export const APW_MENU: MenuCategoryData[] = [
         portion: "1/4 ekor · dada / paha",
         price: 25000,
         featured: true,
-        imageUrl: "/brands/apw/foto/menu-ayam-panggang-negeri.webp",
+        // Foto dari video TikTok resmi APW (sajian ayam panggang di atas daun pisang).
+        imageUrl: "/brands/apw/tiktok/piring-sambal.webp",
         description: "Seperempat ekor ayam negeri, dibaluri bumbu rempah lalu dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha.",
       },
       {
@@ -55,8 +56,8 @@ export const APW_MENU: MenuCategoryData[] = [
         portion: "1/4 ekor · dada / paha",
         price: 35000,
         featured: true,
-        // TODO: konfirmasi Fran — foto khusus ayam kampung (foto sekarang: sajian nasi, lalapan & ayam panggang dari reel IG).
-        imageUrl: "/brands/apw/foto/menu-ayam-panggang-kampung.webp",
+        // TODO: konfirmasi Fran — foto khusus ayam kampung (foto sekarang: ayam panggang di atas daun pisang dari video TikTok).
+        imageUrl: "/brands/apw/tiktok/piring-daun-pisang.webp",
         description: "Seperempat ekor ayam kampung, dibaluri bumbu rempah lalu dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha.",
       },
       {

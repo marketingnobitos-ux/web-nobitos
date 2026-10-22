@@ -12,6 +12,7 @@ import StoryPinned from "@/components/public/home/StoryPinned";
 import AngloHome from "@/components/templates/anglo/AngloHome";
 import DadakHome from "@/components/templates/dadak/DadakHome";
 import EditorialHome from "@/components/templates/editorial/EditorialHome";
+import GerabahHome from "@/components/templates/gerabah/GerabahHome";
 import TungkuHome from "@/components/templates/tungku/TungkuHome";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getActivePromos, getSections } from "@/lib/content";
@@ -81,6 +82,37 @@ export default async function HomePage() {
       <>
         {jsonLd}
         <DadakHome brandName={brand.name} featured={featured} branches={branches} />
+      </>
+    );
+  }
+
+  if (brand.template === "GERABAH") {
+    const [featured, categories, branch] = await Promise.all([
+      prisma.menuItem.findMany({
+        where: { brandId: brand.id, isFeatured: true, isAvailable: true },
+        orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
+        take: 3,
+        select: { id: true, name: true, price: true, portion: true, imageUrl: true },
+      }),
+      prisma.menuCategory.findMany({
+        where: { brandId: brand.id },
+        orderBy: { order: "asc" },
+        select: {
+          id: true,
+          name: true,
+          items: { where: { isAvailable: true }, orderBy: [{ order: "asc" }, { createdAt: "asc" }], select: { id: true, name: true, price: true, portion: true } },
+        },
+      }),
+      prisma.branch.findFirst({
+        where: { brandId: brand.id },
+        orderBy: { order: "asc" },
+        select: { name: true, address: true, mapsUrl: true, lat: true, lng: true, hours: { select: { dayOfWeek: true, isClosed: true, opens: true, closes: true } } },
+      }),
+    ]);
+    return (
+      <>
+        {jsonLd}
+        <GerabahHome brand={brand} featured={featured} categories={categories.filter((c) => c.items.length > 0)} branch={branch} />
       </>
     );
   }

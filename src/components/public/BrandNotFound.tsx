@@ -48,6 +48,26 @@ export default function BrandNotFound({ template }: { template: BrandTemplate })
     );
   }
 
+  if (template === "GERABAH") {
+    return (
+      <section className="gr-lines bg-[var(--gr-clay)] px-4 pb-24 pt-36 sm:px-6 md:pb-32 md:pt-44 lg:px-10">
+        <div className="mx-auto w-full max-w-[1320px]">
+          <p className="gr-caps text-[var(--gr-cream)]/80">Error 404</p>
+          <h1 className="gr-display mt-5 max-w-[14ch] text-[clamp(44px,7vw,96px)]">{TITLE}</h1>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--gr-cream)]/85">{BODY}</p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link href="/" data-track={trackName("beranda")} className="gr-pill gr-pill-gold">
+              Ke Beranda
+            </Link>
+            <Link href="/menu" data-track={trackName("menu")} className="gr-pill">
+              Lihat Menu
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (template === "DADAK") {
     return (
       <section className="mx-auto w-full max-w-[1200px] px-4 pb-24 pt-40 sm:px-6 md:pb-32 md:pt-48 lg:px-10">

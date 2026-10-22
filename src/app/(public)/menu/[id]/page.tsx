@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // Detail menu: foto besar, harga, porsi. Tanpa tombol pesan.
 export default async function MenuDetailPage({ params }: Props) {
   const brand = await requireActiveBrand();
-  if (brand.template === "ANGLO" || brand.template === "TUNGKU" || brand.template === "DADAK") redirect("/menu"); // menu cukup daftar, tanpa halaman detail
+  if (brand.template === "ANGLO" || brand.template === "TUNGKU" || brand.template === "DADAK" || brand.template === "GERABAH") redirect("/menu"); // menu cukup daftar, tanpa halaman detail
   const item = await getItem(brand.id, (await params).id);
   if (!item) notFound();
 

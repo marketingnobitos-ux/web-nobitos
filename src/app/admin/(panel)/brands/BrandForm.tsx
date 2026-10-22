@@ -52,6 +52,7 @@ export default function BrandForm({ action, brand, submitLabel }: Props) {
           { value: "ANGLO", label: "Anglo — khusus Bakmi Jowo Anglo Pak Joko (teks halaman dari kode)" },
           { value: "TUNGKU", label: "Tungku — khusus Ayam Panggang Wicaksono: terang & lega (teks halaman dari kode)" },
           { value: "DADAK", label: "Dadak — khusus Pecel Lele Aminoto: kartu kaca, hijau tua & stabilo (teks halaman dari kode)" },
+          { value: "GERABAH", label: "Gerabah — khusus Ayam Panggang Wicaksono: blok warna gerabah & arang, kartu data (teks halaman dari kode)" },
         ]}
         hint="Data & admin sama; hanya tampilan situs publik yang berbeda. Editorial memakai warna secondary sebagai latar terang."
       />

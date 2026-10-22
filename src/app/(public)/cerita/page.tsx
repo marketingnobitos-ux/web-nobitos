@@ -2,11 +2,13 @@ import Link from "next/link";
 import AngloStory from "@/components/templates/anglo/AngloStory";
 import DadakStory from "@/components/templates/dadak/DadakStory";
 import EditorialStory from "@/components/templates/editorial/EditorialStory";
+import GerabahStory from "@/components/templates/gerabah/GerabahStory";
 import TungkuStory from "@/components/templates/tungku/TungkuStory";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
 import { AMINOTO } from "@/data/brands/aminoto";
 import { APW } from "@/data/brands/apw";
+import { GR } from "@/data/brands/apw-gerabah";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
 import { brandPageMetadata } from "@/lib/seo";
 import { altText } from "@/lib/site";
@@ -21,6 +23,8 @@ export function generateMetadata() {
           ? `${APW.slogan} ${APW.intro.body}`
           : brand.template === "DADAK"
             ? AMINOTO.story.paragraphs[0]
+            : brand.template === "GERABAH"
+              ? `${GR.story.lead} ${GR.slogan}`
             : (await getSections(brand.id, "story")).find((s) => s.key === "profile")?.data.body;
     return {
       title: "Cerita",
@@ -36,6 +40,7 @@ export default async function CeritaPage() {
   if (brand.template === "ANGLO") return <AngloStory />;
   if (brand.template === "TUNGKU") return <TungkuStory />;
   if (brand.template === "DADAK") return <DadakStory />;
+  if (brand.template === "GERABAH") return <GerabahStory />;
   const sections = await getSections(brand.id, "story");
 
   if (brand.template === "EDITORIAL") {
