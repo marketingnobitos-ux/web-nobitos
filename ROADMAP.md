@@ -102,7 +102,7 @@ Sumber: IG @sayurlodeh.bujoko · Lokasi: Jl. Kartini No.4, Kebonbaru (sama denga
 ## F5 — Bolu Sunyaragi (desain beres, SEO saja) · 12 – 16 Okt
 
 - [x] **F5.1** Terapkan F0 (meta, sitemap, JSON-LD cabang Kartini & Pabrik, Buka sekarang, tracking). **Jangan ubah desain.** — 22 Okt 2026, `d75ef34` (meta/sitemap/JSON-LD/badge/tracking sudah live lewat F0, dicek live 22 Okt. Tambahan: alamat 3 cabang lengkap dari pin Google Maps resmi 🙋 Fran cek; favicon 257 → 8 KB; JSON-LD bertipe `Bakery`; video hero 2,8 MB diunduh setelah `load`, poster di-preload. Lighthouse lokal median 5 run: Perf 85–86, SEO 100, LCP 3,6 → 3,3 s. Saat deploy: `npm run bolu:alamat-favicon`)
-- [ ] **F5.2** Deploy + cek live.
+- [x] **F5.2** Deploy + cek live. — 22 Okt 2026, deploy `a5b67c0` (backup DB `~/backups/web-nobitos-pre-f5-20261022-1510.dump`, rumus update + `npm run bolu:alamat-favicon`). Cek live Bolu: 4 halaman 200, meta description di `<head>`, favicon 8 KB, JSON-LD 3 cabang `Bakery` dengan alamat lengkap, badge "Buka sekarang", video hero `preload=none` lalu berputar setelah load, zoom hero mulai 1.08, console bersih. Pak Joko ikut dicek: 0 chunk GSAP dari 15 script, Lenis & pageview jalan, console bersih. Aminoto & Admin tetap jalan.
 
 ## F6 — Admin (nobitos.web.id) · 23 Nov – 11 Des
 
