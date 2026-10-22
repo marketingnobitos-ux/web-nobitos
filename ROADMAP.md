@@ -100,6 +100,17 @@ Sumber: IG @sayurlodeh.bujoko · Lokasi: Jl. Kartini No.4, Kebonbaru (sama denga
 - [ ] **F6.3b** Tulis cara reset password di README (1 perintah VPS).
 - [ ] **F6.4** 🙋 Panduan singkat untuk Fran: daftar Google Search Console per domain + submit sitemap, hubungkan ke Google Business Profile tiap cabang.
 
+**Hasil audit Admin 22 Okt 2026** (preview lokal, login Super Admin, semua halaman panel dibuka; tidak ada error console, tidak ada scroll horizontal). Satu task = satu sesi, urut prioritas:
+
+- [ ] **F6.5** Form Brand (`brands/BrandForm.tsx` + `lib/validation.ts`): tambah field `instagramUrl`, `tiktokUrl`, `servesCuisine` (satu per baris). Sekarang kolom F0.4 ini hanya bisa diisi lewat script seed, jadi Aminoto/APW tidak bisa melengkapi link sosial & JSON-LD dari Admin. Simpan → `invalidateBrandCache()`.
+- [ ] **F6.6** Form Cabang (`branches/BranchForm.tsx` + actions): editor jam buka 7 hari (Senin–Minggu: jam buka, jam tutup, centang libur) yang menulis ke tabel `BranchHours`. Sekarang Admin hanya punya teks bebas `openHours`, sedangkan badge "Buka sekarang" dan JSON-LD membaca `BranchHours`. Teks `openHours` tetap ada sebagai keterangan tampilan. Daftar cabang menampilkan tanda "Jam 7 hari belum lengkap".
+- [ ] **F6.7** Preview brand draft di produksi: brand yang belum publish atau belum punya domain (contoh APW) tidak bisa dilihat sama sekali di produksi (preview `?brand=` / `/preview/<slug>` mati saat `NODE_ENV=production`, dan `resolveBrandSlugByHost` hanya brand `isPublished`). Buat preview khusus admin yang sudah login (mis. `/preview/<slug>` diizinkan bila sesi admin valid, halaman diberi `noindex` + banner "Mode preview"). Tombol "Lihat situs ↗" di header brand jadi "Preview ↗" saat draft/tanpa domain.
+- [ ] **F6.8** Konten Halaman sesuai template: tab ini menampilkan semua section (termasuk "template Editorial") untuk semua brand. Tampilkan hanya section yang dipakai template brand itu. Untuk ANGLO (Pak Joko) & TUNGKU (APW), teks hero/cerita masih dikunci di `src/data/brands/*.ts`: tampilkan catatan "Teks halaman ini diatur di kode" supaya admin tidak mengisi form yang tidak berpengaruh.
+- [ ] **F6.8b** 🙋 Fran putuskan: perlukah teks ANGLO/TUNGKU dipindah dari `src/data/brands/*.ts` ke DB supaya bisa diubah dari Admin? (Lebih besar: perlu section baru per template + migrasi isi.)
+- [ ] **F6.9** Menu harian lebih cepat: di daftar menu, tombol langsung "Tersedia/Habis" dan "Andalan" tanpa buka form per item; urutan item lewat tombol naik/turun (bukan isi angka). Gambar thumbnail daftar pakai `loading="lazy"`.
+- [ ] **F6.10** Kelengkapan data per brand: di kartu daftar Brand dan header brand, tampilkan badge kekurangan (IG/TikTok kosong, jam 7 hari belum lengkap, cabang tanpa WA/Maps, menu tanpa foto, domain belum ACTIVE). Bisa digabung dengan F6.2 bila dikerjakan bersamaan.
+- [ ] **F6.11** Admin di HP: di layar < 1024px sidebar jadi blok ±200px (menu + "Keluar" 2 baris) sebelum konten. Jadikan bar atas ringkas (menu bisa digeser, "Keluar" pindah ke header kanan). Cek di 375px.
+
 ## F7 — QA akhir & serah terima · 14 – 18 Des
 
 - [ ] **F7.1** Cek 6 halaman di HP & desktop: tidak ada error console, tidak ada scroll horizontal, semua tombol WA/Maps benar.
