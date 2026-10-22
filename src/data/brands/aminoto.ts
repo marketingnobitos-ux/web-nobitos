@@ -27,11 +27,14 @@ export const AMINOTO_IMAGES = {
 
 export type AminotoImage = { src: string; alt: string; srcHp?: string };
 
-/** Jam buka semua cabang (keputusan Fran 22 Okt 2026): setiap hari 10.00–22.00. */
-export const AMINOTO_HOURS: DayHours[] = weeklyHours("10:00", "22:00");
-export const AMINOTO_OPEN_HOURS = "10.00 – 22.00 setiap hari";
+/** Jam buka semua cabang (dikoreksi Fran 22 Okt 2026, sama dengan bio IG & spanduk): setiap hari 11.00–22.00. */
+export const AMINOTO_HOURS: DayHours[] = weeklyHours("11:00", "22:00");
+export const AMINOTO_OPEN_HOURS = "11.00 – 22.00 setiap hari";
 
-/** Cabang resmi. Alamat, titik & telepon dari Google Maps; link Maps dari deliveryaminoto.my.id; WA Sumber dari daftar menu ("Admin Sumber"). */
+/**
+ * Cabang resmi. Alamat, titik & telepon dari Google Maps; link Maps dari deliveryaminoto.my.id.
+ * WA admin tiap cabang: Sumber dari daftar menu ("Admin Sumber"), Cipto & Ciledug dari Fran (22 Okt 2026).
+ */
 export const AMINOTO_BRANCHES = [
   {
     name: "Cipto",
@@ -40,7 +43,7 @@ export const AMINOTO_BRANCHES = [
     lat: -6.7228936,
     lng: 108.5501909,
     phone: "0851-9424-2550",
-    whatsapp: null,
+    whatsapp: "0858-7146-6254",
   },
   {
     name: "Sumber",
@@ -58,14 +61,14 @@ export const AMINOTO_BRANCHES = [
     lat: -6.8894375,
     lng: 108.7526875,
     phone: null,
-    whatsapp: null,
+    whatsapp: "0851-9602-8883",
   },
 ];
 
 export const AMINOTO = {
   shortName: "Aminoto",
   kicker: "Pecel Lele · Sambel Dadak",
-  hoursShort: "10.00–22.00",
+  hoursShort: "11.00–22.00",
 
   hero: {
     title: "Sambalnya diulek pas kamu pesan.",
@@ -108,7 +111,7 @@ export const AMINOTO = {
     lead: "Cipto, Sumber, dan Ciledug. Datang langsung, pesan di kasir, sambalnya diulek saat itu juga.",
     cta: "Info lengkap cabang",
     pageTitle: "Cabang & kontak",
-    pageSub: "Tiga cabang di Cirebon · Buka setiap hari 10.00–22.00",
+    pageSub: "Tiga cabang di Cirebon · Buka setiap hari 11.00–22.00",
   },
 
   /** Rating Google Maps tiap cabang (dicek 22 Okt 2026). Perbarui kalau angkanya sudah jauh berubah. */
@@ -136,7 +139,7 @@ export const AMINOTO = {
     paragraphs: [
       "Pecel Lele Sambel Dadak Aminoto berangkat dari satu hal sederhana: sambal paling enak itu sambal yang baru diulek. Karena itu sambal kami dibuat dadakan, diulek di cobek saat pesananmu masuk.",
       "Lelenya digoreng sampai garing, ayam dan bebeknya dijual per porsi, dan gurame, nila, ayam, juga bebek bisa dibakar di atas bara kalau kamu lebih suka aroma panggang. Sambalnya sudah termasuk di harga menu, tinggal pilih lauk dan nasinya.",
-      "Sekarang Aminoto ada di tiga tempat di Cirebon: Cipto, Sumber, dan Ciledug. Buka setiap hari dari pukul 10.00 sampai 22.00, buat makan siang, makan malam, atau ramai-ramai bareng keluarga dan teman.",
+      "Sekarang Aminoto ada di tiga tempat di Cirebon: Cipto, Sumber, dan Ciledug. Buka setiap hari dari pukul 11.00 sampai 22.00, buat makan siang, makan malam, atau ramai-ramai bareng keluarga dan teman.",
     ],
     valuesTitle: "Yang kami jaga.",
     values: [
