@@ -55,7 +55,7 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 - [ ] **F1.1** 🙋 Isi jawaban [CEK] dari Fran: nama tampil (Pak/Mas Joko), ~~jam Ciperna, Rabu libur di kedua cabang~~ (beres 29 Sep: 16.00–23.00, Kartini libur Rabu, Ciperna libur Senin), cerita asal-usul, harga sarapan Bu Joko.
 - [ ] **F1.2** 🙋 Foto asli (6–10) dari tim konten → cut-out ala stiker, ganti ilustrasi pengganti.
 - [x] **F1.3** Pengaman animasi + slot foto asli + preload font — `37da924`.
-- [ ] **F1.3b** 🙋 Cek Lighthouse mobile Beranda, perbaiki kalau < 85. — Dicek 22 Okt 2026: **masih < 85**, menunggu keputusan Fran.
+- [ ] **F1.3b** Cek Lighthouse mobile Beranda, perbaiki kalau < 85. — Dicek 22 Okt 2026: **masih < 85**. Keputusan Fran 22 Okt: sisa perbaikan dikerjakan lewat **F2.7** (platform, setelah APW). Lewati task ini; centang bersama F2.7 setelah Beranda Pak Joko ≥ 85.
   - Hasil (build produksi lokal, median 7 run, Perf/A11y/BP/SEO): **83/100/76/91** → setelah `52bfe64` (font judul di-subset 51,9 → 20,5 KB) **84**. LCP 3,8 s, FCP 2,0 s, TBT ±200 ms. Situs live (HTTPS) ±60–72, tapi diukur saat CPU laptop sibuk. BP 76 lokal karena HTTP (di live hilang); SEO 91 karena meta description ter-stream ke `<body>` (catatan F0.7).
   - Penyebab: elemen LCP = judul hero (teks). Lighthouse menghitung LCP setelah semua JS halaman, dan Beranda Anglo ikut mengunduh JS template lain: GSAP + ScrollTrigger (±48 KB gzip) dan Lenis, karena Next memuat semua komponen client yang di-import `(public)/layout.tsx` & `(public)/page.tsx` untuk semua brand. Anglo sendiri tidak memakai GSAP. CSS global 62 KB (semua template) juga render-blocking.
   - Sudah dicoba, tidak menolong: `next/dynamic` di server component (chunk tetap ikut), smooth scroll Anglo tanpa GSAP (GSAP tetap terbawa `page.tsx`), `loading.tsx` dipindah ke sub-halaman (SEO 100 tapi FCP naik, skor sama).
@@ -75,6 +75,11 @@ Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampangg
 - [ ] **F2.4** Template baru + halaman (Beranda, Menu, Cerita, Cabang), tanpa animasi dulu → screenshot → 🙋 cek Fran.
 - [ ] **F2.5** Animasi + F0 → screenshot → 🙋 cek Fran.
 - [ ] **F2.6** Seed khusus APW (upsert, **menimpa data contoh brand `apw` saja**): cabang akhir **hanya Kesambi**, cabang contoh Cipto dihapus dari brand `apw`. Lalu deploy (nginx, certbot, seed, build, restart) + cek live: halaman Cabang & JSON-LD hanya berisi 1 cabang (Kesambi).
+- [ ] **F2.7** Platform (lintas template, disetujui Fran 22 Okt, kerjakan **setelah F2.6**): pisahkan JS & CSS per template supaya tiap brand hanya mengunduh aset template-nya sendiri. Latar belakang di catatan F1.3b: Next memuat semua komponen client yang di-import `(public)/layout.tsx` & `(public)/page.tsx`, jadi Anglo ikut mengunduh GSAP + ScrollTrigger + Lenis, dan `globals.css` (semua template, ±62 KB) render-blocking di semua brand.
+  - JS: GSAP/ScrollTrigger tidak lagi masuk entry route untuk template yang tidak memakainya (mis. `import()` di dalam efek komponen BOLD/EDITORIAL/TUNGKU, atau Beranda & header tiap template dijadikan pulau client lewat `next/dynamic` di komponen client). `next/dynamic` di server component **tidak** memisah chunk (sudah dicoba).
+  - CSS: gaya khusus template dipecah dari `globals.css` ke file per template yang hanya dimuat brand terkait.
+  - Syarat: tampilan & animasi semua brand tidak berubah (screenshot sebelum/sesudah), tidak ada kedip saat GSAP dimuat belakangan.
+  - Ukur sebelum & sesudah, Beranda semua brand (build produksi lokal, median 5–7 run, Chrome dengan `--disable-features=HttpsUpgrades` dan `--host-resolver-rules="MAP <domain> 127.0.0.1:<port>"`; tanpa flag pertama Chrome diam-diam mengukur situs live). Target Performance ≥ 85 semua brand, termasuk Pak Joko (lalu centang F1.3b).
 
 ## F3 — Dapur Bu Joko (sarapan) · 9 Nov – 4 Des
 
