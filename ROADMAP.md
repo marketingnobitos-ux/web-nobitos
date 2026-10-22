@@ -10,6 +10,7 @@
 - **Dikerjakan per sesi**: satu task (misal `F2.3`) = satu sesi Claude Code. Selesai → centang → commit → sesi baru untuk task berikutnya.
 - **Kode bersama di depan (F0)**: fitur yang dipakai semua brand (SEO, status buka, dll) dibuat sekali, lalu tiap brand tinggal isi data.
 - Mulai sesi dengan: `Baca ROADMAP.md, kerjakan task <ID> saja.`
+- **Link sesi baru otomatis**: setiap task selesai, Claude menampilkan kartu **"New session"** di aplikasi Claude (tab Code) untuk task berikutnya. Klik kartu itu = sesi baru langsung terbuka dengan perintah di atas, tanpa perlu salin-tempel. Kalau kartu tidak muncul, tempel perintah di atas secara manual di sesi baru.
 
 ## Aturan kerja untuk Claude Code
 
@@ -22,6 +23,7 @@
 7. Web brand = etalase (cerita + menu + lokasi). **Tidak ada** pemesanan/keranjang/link ojol.
 8. Urutan brand: **satu brand selesai (live) dulu baru pindah ke brand berikutnya**, kecuali F0/F6 yang lintas brand.
 9. Setiap perintah VPS yang diberikan ke Fran: siap tempel, satu baris per langkah, tanpa placeholder `[ ]`, selalu diawali `cd /home/ubuntu/web-nobitos &&` bila perlu folder app.
+10. **Akhir setiap sesi (wajib)**: setelah commit, tentukan task berikutnya = task pertama yang belum dicentang dan tidak menunggu 🙋 Fran, urut sesuai aturan 1 dan 8. Lalu tampilkan kartu sesi baru (`start_session`, context `fresh`) dengan judul `<ID> — <nama singkat task>` dan isi persis `Baca ROADMAP.md, kerjakan task <ID> saja.` Tulis juga ID dan perintah itu di pesan penutup sebagai cadangan. Kalau semua task berikutnya menunggu 🙋 Fran, jangan buat kartu: sebutkan keputusan yang ditunggu.
 
 ## Ringkasan status
 
@@ -62,6 +64,8 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: **hanya Kesambi** (dikonfirmasi Fran 29 Sep). Cabang **Cipto** di DB lokal & `prisma/seed.ts` adalah **data contoh**: bukan cabang APW, jangan dipakai untuk pengecekan tampilan/JSON-LD/screenshot.
 
 - [ ] **F2.1** 🙋 Fran beli domain (usulan: `ayampanggangwicaksono.web.id`) + arahkan A record ke 43.129.49.26.
+> ⏳ Cek 22 Okt: F2.2–F2.5 sudah ada commit (`32ba000`, `94bb0e0`, `5596e63`, `55797d3`) tapi belum dicentang, dan masih ada perubahan template TUNGKU yang belum di-commit. 🙋 Fran konfirmasi dulu hasil F2.3–F2.5 sebelum dicentang.
+
 - [ ] **F2.2** Catatan: brand `apw` sudah ada di DB dengan data contoh (tagline, harga, cabang). Semua diganti data asli. Riset IG/TikTok → `BRIEF-APW.md` (format sama dengan brief Pak Joko): fakta brand, cerita, menu + harga dari sumber resmi, 1 cabang Kesambi (alamat, jam, WA, Maps), tone, daftar [CEK].
 - [ ] **F2.3** Usulkan 2–3 referensi desain yang **beda** dari Aminoto/Bolu/Pak Joko. 🙋 Fran pilih satu.
 - [ ] **F2.4** Template baru + halaman (Beranda, Menu, Cerita, Cabang), tanpa animasi dulu → screenshot → 🙋 cek Fran.
