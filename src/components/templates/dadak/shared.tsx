@@ -1,5 +1,6 @@
 // Bagian kecil yang dipakai bersama halaman template Dadak (Pecel Lele Sambel Dadak Aminoto).
 import Link from "next/link";
+import { preload } from "react-dom";
 import { AMINOTO, AMINOTO_IMAGES, type AminotoImage } from "@/data/brands/aminoto";
 import { trackName } from "@/lib/track";
 
@@ -83,6 +84,13 @@ export function PageHero({
   tall?: boolean;
   children?: React.ReactNode;
 }) {
+  // Foto hero = elemen LCP: minta browser mengunduh potongan yang sesuai layar sejak <head>.
+  if (image.srcHp) {
+    preload(image.srcHp, { as: "image", media: "(max-width: 767px)", fetchPriority: "high" });
+    preload(image.src, { as: "image", media: "(min-width: 768px)", fetchPriority: "high" });
+  } else {
+    preload(image.src, { as: "image", fetchPriority: "high" });
+  }
   return (
     <section
       aria-labelledby="page-title"
@@ -93,7 +101,7 @@ export function PageHero({
       <picture>
         {image.srcHp && <source media="(max-width: 767px)" srcSet={image.srcHp} />}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={image.src} alt={image.alt} width={1080} height={720} fetchPriority="high" decoding="async" className="absolute inset-0 -z-20 h-full w-full object-cover" />
+        <img src={image.src} alt={image.alt} width={1080} height={720} fetchPriority="high" className="absolute inset-0 -z-20 h-full w-full object-cover" />
       </picture>
       <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(10_34_25/0.55)_0%,rgb(10_34_25/0.25)_38%,rgb(10_34_25/0.88)_100%)]" />
       <div className={`${WRAP} pb-14 pt-36 text-center md:pb-20`}>

@@ -21,7 +21,7 @@ export default function DadakHeader() {
 
   return (
     <header className="absolute inset-x-0 top-0 z-40 px-4 pt-4 text-[var(--dk-cream)] sm:px-6">
-      <div className="mx-auto w-full max-w-[1000px] border border-white/15 bg-[rgb(10_34_25/0.72)] backdrop-blur-md">
+      <div className="mx-auto w-full max-w-[1000px] border border-white/15 bg-[rgb(10_34_25/0.8)]">
         <div className="flex items-center justify-between gap-4 py-2 pl-4 pr-2">
           <Link href="/" aria-label={`${AMINOTO.shortName} — Beranda`} className="dk-display text-[26px] leading-none tracking-wide">
             {AMINOTO.shortName}
