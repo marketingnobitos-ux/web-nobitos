@@ -64,14 +64,15 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
-      className="relative overflow-hidden bg-[var(--gr-slate)] md:h-[100svh] md:max-h-[920px] md:min-h-[680px]"
+      className="relative overflow-hidden bg-[var(--gr-slate)] lg:h-[100svh] lg:max-h-[920px] lg:min-h-[680px]"
     >
-      <div className="grid md:h-full md:grid-cols-[46fr_54fr] md:grid-rows-[60fr_40fr]">
+      {/* Papan 2×2 mulai lg (1024 px); di bawahnya blok ditumpuk dengan sajian di antara judul & kalimat. */}
+      <div className="grid lg:h-full lg:grid-cols-[48fr_52fr] lg:grid-rows-[60fr_40fr]">
         {/* Kiri atas: gerabah — nama brand & judul slide. */}
-        <div className="bg-[var(--gr-clay)] px-4 pb-[calc(min(39vw,180px)+1.5rem)] pt-28 sm:px-6 md:pb-10 md:pl-10 md:pr-8 md:pt-32 lg:pl-14 xl:pl-20">
+        <div className="bg-[var(--gr-clay)] px-4 pb-[calc(min(39vw,180px)+1.5rem)] pt-28 sm:px-6 md:px-10 lg:pb-10 lg:pl-14 lg:pr-8 lg:pt-32 xl:pl-20">
           <Kicker className="text-[var(--gr-cream)]/85">{kicker}</Kicker>
           <h1 className="gr-caps mt-3 text-[13px] text-[var(--gr-cream)]">{brandName}</h1>
-          <p key={index} className="gr-display gr-slide-in relative z-[3] mt-6 text-[clamp(38px,10.5vw,64px)] md:text-[clamp(44px,5vw,80px)]">
+          <p key={index} className="gr-display gr-slide-in relative z-[3] mt-6 text-[clamp(38px,10.5vw,64px)] lg:text-[clamp(44px,5vw,80px)]">
             {slide.title.map((line) => (
               <span key={line} className="block">
                 {line}
@@ -81,12 +82,12 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
         </div>
 
         {/* HP: sajian di antara blok judul & blok kalimat (margin negatif = setengah tinggi sajian). */}
-        <div className="pointer-events-none relative z-[2] mx-auto -my-[min(39vw,180px)] w-[min(78vw,360px)] md:hidden">
+        <div className="pointer-events-none relative z-[2] mx-auto -my-[min(39vw,180px)] w-[min(78vw,360px)] lg:hidden">
           <Dish slides={slides} index={index} />
         </div>
 
         {/* Kanan atas: asap — kartu kaca status & data slide. */}
-        <div className="hidden flex-col items-end gap-3 px-6 pb-8 pt-32 md:flex lg:pr-12 xl:pr-20">
+        <div className="hidden flex-col items-end gap-3 px-6 pb-8 pt-32 lg:flex lg:pr-12 xl:pr-20">
           {hours && (
             <div className="gr-glass w-[260px] px-5 py-4">
               <p className="gr-caps text-[var(--gr-cream)]/60">Status hari ini</p>
@@ -108,8 +109,8 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
           </div>
         </div>
 
-        {/* Kiri bawah: asap — kalimat slide & tombol. */}
-        <div className="px-4 pb-12 pt-[calc(min(39vw,180px)+2rem)] sm:px-6 md:px-10 md:pb-12 md:pt-10 lg:pl-14 xl:pl-20">
+        {/* Kiri bawah: asap — kalimat slide & tombol. Desktop: ruang kanan = setengah sajian supaya teks tidak tertutup. */}
+        <div className="px-4 pb-12 pt-[calc(min(39vw,180px)+2rem)] sm:px-6 md:px-10 lg:pb-12 lg:pl-14 lg:pr-[calc(clamp(130px,14vw,250px)+2rem)] lg:pt-10 xl:pl-20">
           <p key={index} className="gr-slide-in max-w-[40ch] text-[17px] leading-relaxed text-[var(--gr-cream)]/85">
             {slide.body}
           </p>
@@ -123,10 +124,10 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
           </div>
         </div>
 
-        {/* Kanan bawah: daun pisang — harga mulai & navigasi slide. */}
-        <div className="flex flex-col justify-end gap-6 bg-[var(--gr-leaf)] px-4 pb-10 pt-10 sm:px-6 md:items-end md:pl-[18%] md:pr-6 lg:pr-12 xl:pr-20">
+        {/* Kanan bawah: daun pisang — harga mulai & navigasi slide (ruang kiri = setengah sajian). */}
+        <div className="flex flex-col justify-end gap-6 bg-[var(--gr-leaf)] px-4 pb-10 pt-10 sm:px-6 md:px-10 lg:items-end lg:pl-[calc(clamp(130px,14vw,250px)+2rem)] lg:pr-12 xl:pr-20">
           {startPrice && (
-            <div className="md:text-right">
+            <div className="lg:text-right">
               <p className="gr-caps text-[var(--gr-cream)]/70">Mulai dari</p>
               <p className="gr-display mt-2 text-[clamp(40px,4.4vw,64px)]">Rp {formatHarga(startPrice.price)}</p>
               <p className="mt-1 text-sm text-[var(--gr-cream)]/80">
@@ -171,8 +172,8 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
         </div>
       </div>
 
-      {/* Desktop: sajian melayang di kanan garis pembagi blok, sedikit menimpa ujung judul (seperti referensi). */}
-      <div className="pointer-events-none absolute left-[57%] top-[55%] z-[2] hidden w-[clamp(300px,32vw,520px)] -translate-x-1/2 -translate-y-1/2 md:block">
+      {/* Desktop: sajian melayang tepat di pertemuan empat blok (seperti referensi); lebar = 2 × ruang yang disisakan sel. */}
+      <div className="pointer-events-none absolute left-[48%] top-[60%] z-[2] hidden w-[clamp(260px,28vw,500px)] -translate-x-1/2 -translate-y-1/2 lg:block">
         <Dish slides={slides} index={index} />
       </div>
     </section>

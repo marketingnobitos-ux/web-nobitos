@@ -73,9 +73,9 @@ function FeaturedRow({ featured }: { featured: Featured[] }) {
             <div className="min-w-0 flex-1 md:w-full">
               <p className="gr-caps text-[var(--gr-cream)]/55">Unggulan {String(i + 1).padStart(2, "0")}</p>
               <h3 className="gr-display mt-2 text-[22px] leading-tight">{item.name}</h3>
-              <div className="mt-2 flex items-baseline justify-between gap-3">
+              <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 {item.portion && <p className="text-sm text-[var(--gr-cream)]/70">{item.portion}</p>}
-                <p className="text-[17px] font-semibold text-[var(--gr-gold)]">Rp {formatHarga(item.price)}</p>
+                <p className="whitespace-nowrap text-[17px] font-semibold text-[var(--gr-gold)]">Rp {formatHarga(item.price)}</p>
               </div>
             </div>
           </li>
