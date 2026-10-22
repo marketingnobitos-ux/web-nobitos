@@ -99,7 +99,7 @@ export async function restaurantJsonLd(brand: Brand): Promise<JsonLd | null> {
       image,
       // TODO: konfirmasi Fran — addressLocality, addressRegion & postalCode belum terstruktur (alamat masih satu teks).
       address: b.address ? { "@type": "PostalAddress", streetAddress: b.address, addressCountry: "ID" } : undefined,
-      // TODO: konfirmasi Fran — cabang tanpa lat/lng (Pak Joko, Aminoto) tidak punya `geo`.
+      // TODO: konfirmasi Fran — cabang tanpa lat/lng (Aminoto) tidak punya `geo`.
       geo: b.lat != null && b.lng != null ? { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng } : undefined,
       hasMap: b.mapsUrl,
       // TODO: konfirmasi Fran — jam buka terstruktur Aminoto belum ada, jadi tidak dirender.

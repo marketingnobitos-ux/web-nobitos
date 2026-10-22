@@ -85,7 +85,7 @@ export const BAKMI_PAK_JOKO = {
   },
 
   // 4.5 Halaman Cabang (WA & Maps dari lynk.id)
-  // TODO: konfirmasi Fran — lat/lng kedua cabang (untuk `geo` JSON-LD); belum ada, jadi tidak dirender.
+  // lat/lng (`geo` JSON-LD) = titik pin dari link Google Maps resmi tiap cabang (dicek 22 Okt 2026).
   branches: [
     {
       slug: "kartini",
@@ -93,6 +93,8 @@ export const BAKMI_PAK_JOKO = {
       address: "Jl. Kartini, belakang Masjid At-Taqwa, Kebonbaru, Kejaksan, Kota Cirebon",
       hours: "16.00 – 23.00, Rabu libur",
       openingHours: weeklyHours("16:00", "23:00", [DAY.RABU]),
+      lat: -6.7096251,
+      lng: 108.558381,
       whatsapp: "0851-9602-8889",
       mapsUrl: "https://maps.app.goo.gl/GGHteoTdiRDwydY57",
       showBuJoko: true,
@@ -105,6 +107,8 @@ export const BAKMI_PAK_JOKO = {
         "Komplek Ruko Taman Kota Ciperna, Jl. Jenderal Sudirman No.2 Blok A (samping Alfamart Taman Kota), Ciperna, Kec. Talun",
       hours: "16.00 – 23.00, Senin libur",
       openingHours: weeklyHours("16:00", "23:00", [DAY.SENIN]),
+      lat: -6.761148,
+      lng: 108.5318623,
       whatsapp: "0813-2472-6222",
       mapsUrl: "https://maps.app.goo.gl/rMm8BdsMNKPqSgUY9",
     },
