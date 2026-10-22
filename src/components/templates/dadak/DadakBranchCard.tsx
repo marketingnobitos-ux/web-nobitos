@@ -1,5 +1,4 @@
 import OpenBadge from "@/components/public/OpenBadge";
-import { ClockIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/templates/dadak/shared";
 import { mapsLink, telUrl, whatsappUrl } from "@/lib/format";
 import type { DayHours } from "@/lib/hours";
 import { waMessage } from "@/lib/site";
@@ -18,49 +17,53 @@ export type DadakBranch = {
   hours: DayHours[];
 };
 
-/** Kartu kaca satu cabang: nama, badge buka/tutup, alamat, jam, tombol Maps/WA/telepon (hanya kalau datanya ada). */
-export default function DadakBranchCard({ branch: b, brandName, headingLevel = "h3" }: { branch: DadakBranch; brandName: string; headingLevel?: "h2" | "h3" }) {
+/**
+ * Satu cabang sebagai baris bergaris atas: nama besar, badge buka/tutup, alamat, jam, tautan Maps/WA/telepon
+ * (hanya kalau datanya ada). `large` untuk halaman Cabang.
+ */
+export default function DadakBranchCard({
+  branch: b,
+  brandName,
+  headingLevel = "h3",
+  large = false,
+}: {
+  branch: DadakBranch;
+  brandName: string;
+  headingLevel?: "h2" | "h3";
+  large?: boolean;
+}) {
   const key = branchKey(b.name);
   const Heading = headingLevel;
+  const link = "dk-caps text-[13px] font-semibold underline decoration-current/30 underline-offset-4 hover:decoration-current";
+
   return (
-    <article id={key} aria-labelledby={`cabang-${key}`} className="dk-glass flex h-full flex-col p-6">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/55">Aminoto</p>
-      <Heading id={`cabang-${key}`} className="dk-title mt-1 text-3xl">
-        {b.name}
-      </Heading>
-      <OpenBadge hours={b.hours} className="mt-3 text-sm" />
-      <p className="mt-5 flex gap-3 text-[15px] leading-relaxed">
-        <PinIcon className="mt-0.5 h-5 w-5 shrink-0 text-ink/60" />
-        <span>{b.address}</span>
-      </p>
-      {b.openHours && (
-        <p className="mt-3 flex gap-3 text-[15px]">
-          <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-ink/60" />
-          <span>{b.openHours}</span>
-        </p>
-      )}
-      <div className="mt-6 flex flex-1 flex-wrap items-end gap-2">
-        {(b.mapsUrl || b.address) && (
-          <a href={mapsLink(b)} target="_blank" rel="noopener noreferrer" data-track={trackName("maps", key)} className="dk-btn !py-2.5 !pr-5 text-sm">
-            Buka Maps
-          </a>
-        )}
-        {b.whatsapp && (
-          <a
-            href={whatsappUrl(b.whatsapp, waMessage(brandName, b.name))}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track={trackName("wa", key)}
-            className="dk-btn dk-btn-ghost !py-2.5 text-sm"
-          >
-            <WhatsAppIcon /> WhatsApp
-          </a>
-        )}
-        {b.phone && (
-          <a href={telUrl(b.phone)} data-track={trackName("tel", key)} className="dk-btn dk-btn-ghost !py-2.5 text-sm">
-            <PhoneIcon /> Telepon
-          </a>
-        )}
+    <article id={key} aria-labelledby={`cabang-${key}`} className={`grid gap-4 border-t border-current/20 py-7 ${large ? "md:grid-cols-[0.8fr_1.2fr] md:gap-10 md:py-10" : ""}`}>
+      <div>
+        <Heading id={`cabang-${key}`} className={`dk-display ${large ? "text-[clamp(44px,6vw,72px)]" : "text-4xl"}`}>
+          {b.name}
+        </Heading>
+        <OpenBadge hours={b.hours} className="dk-caps mt-2 text-[13px]" />
+      </div>
+      <div>
+        <p className={`leading-relaxed ${large ? "text-lg" : "text-[15px]"}`}>{b.address}</p>
+        {b.openHours && <p className="dk-caps mt-2 text-[13px] font-medium opacity-70">{b.openHours}</p>}
+        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+          {(b.mapsUrl || b.address) && (
+            <a href={mapsLink(b)} target="_blank" rel="noopener noreferrer" data-track={trackName("maps", key)} className={link}>
+              Buka di Google Maps
+            </a>
+          )}
+          {b.whatsapp && (
+            <a href={whatsappUrl(b.whatsapp, waMessage(brandName, b.name))} target="_blank" rel="noopener noreferrer" data-track={trackName("wa", key)} className={link}>
+              WhatsApp
+            </a>
+          )}
+          {b.phone && (
+            <a href={telUrl(b.phone)} data-track={trackName("tel", key)} className={link}>
+              Telepon {b.phone}
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );

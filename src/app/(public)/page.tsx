@@ -72,8 +72,8 @@ export default async function HomePage() {
       prisma.menuItem.findMany({
         where: { brandId: brand.id, isFeatured: true, isAvailable: true },
         orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
-        take: 3,
-        select: { id: true, name: true, description: true, price: true, portion: true, imageUrl: true },
+        take: 4,
+        select: { id: true, name: true, price: true, imageUrl: true },
       }),
       prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, include: { hours: true } }),
     ]);

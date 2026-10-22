@@ -48,6 +48,24 @@ export default function BrandNotFound({ template }: { template: BrandTemplate })
     );
   }
 
+  if (template === "DADAK") {
+    return (
+      <section className="mx-auto w-full max-w-[1200px] px-4 pb-24 pt-40 sm:px-6 md:pb-32 md:pt-48 lg:px-10">
+        <p className="dk-caps text-[13px] font-medium">Error 404</p>
+        <h1 className="dk-display mt-4 max-w-[12ch] text-[clamp(52px,8vw,112px)]">{TITLE}</h1>
+        <p className="mt-6 max-w-xl text-lg leading-relaxed">{BODY}</p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link href="/" data-track={trackName("beranda")} className="dk-btn dk-btn-lime">
+            Ke Beranda
+          </Link>
+          <Link href="/menu" data-track={trackName("menu")} className="dk-btn dk-btn-line">
+            Lihat Menu
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
   if (template === "EDITORIAL") {
     return (
       <section className="bg-paper px-5 pb-24 pt-32 text-ink sm:px-8 md:px-12 md:pb-32 md:pt-44">

@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Courier_Prime, DM_Sans, Instrument_Sans, M_PLUS_Rounded_1c, Nunito_Sans, Outfit, Space_Mono } from "next/font/google";
+import { Anton, Bricolage_Grotesque, Courier_Prime, DM_Sans, Instrument_Sans, M_PLUS_Rounded_1c, Nunito_Sans, Oswald, Space_Mono } from "next/font/google";
 import { preload } from "react-dom";
 import MotionProvider from "@/components/animations/MotionProvider";
 import { NoScriptReveal } from "@/components/animations/Reveal";
@@ -63,9 +63,10 @@ const mplusRounded = M_PLUS_Rounded_1c({
 });
 const nunitoSans = Nunito_Sans({ subsets: ["latin"], weight: ["300", "400"], display: "swap", preload: false, variable: "--font-nunito-sans" });
 
-// Template Dadak (Aminoto): satu keluarga sans geometris (mirip referensi Fran), 400–700. Tidak di-preload supaya brand
-// lain tidak ikut mengunduh.
-const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap", preload: false, variable: "--font-outfit" });
+// Template Dadak (Aminoto, referensi "kado"): judul Anton (kondensed tebal), teks Oswald 400–600. Tidak di-preload supaya
+// brand lain tidak ikut mengunduh.
+const anton = Anton({ subsets: ["latin"], weight: "400", display: "swap", preload: false, variable: "--font-anton" });
+const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", preload: false, variable: "--font-oswald" });
 
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await getActiveBrand();
@@ -117,7 +118,7 @@ export default async function PublicLayout({ children }: { children: React.React
       : tungku
         ? `${mplusRounded.variable} ${nunitoSans.variable} tpl-tungku`
         : dadak
-          ? `${outfit.variable} tpl-dadak`
+          ? `${anton.variable} ${oswald.variable} tpl-dadak`
           : `${bricolage.variable} ${dmSans.variable}`;
 
   return (

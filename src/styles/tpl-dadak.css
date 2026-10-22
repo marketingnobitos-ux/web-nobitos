@@ -1,158 +1,127 @@
 /*
- * Template DADAK (Pecel Lele Sambel Dadak Aminoto): latar terang dengan semburat stabilo & hijau,
- * kartu kaca (glass) bersudut bulat, foto makanan dalam "piring" bulat, tombol pil hijau tua.
- * Semua aturan di bawah .tpl-dadak supaya tidak mengenai template lain. File terpisah dari globals.css.
- * Dibungkus @layer components supaya utilitas Tailwind (mis. `hidden`, `sm:inline-flex`) tetap menang.
+ * Template DADAK (Pecel Lele Sambel Dadak Aminoto), referensi Fran "kado" (Dribbble):
+ * huruf kondensed tebal kapital (Anton) + teks kondensed (Oswald), sudut siku, foto penuh, section krem & hijau tua
+ * bergantian, aksen hijau stabilo. Semua aturan di bawah .tpl-dadak supaya tidak mengenai template lain.
+ * Komponen dibungkus @layer components supaya utilitas Tailwind (hidden, sm:flex, dll.) tetap menang.
  */
-/* Akar template: di luar layer supaya latar & font ini mengalahkan utilitas bg-paper/font-sans di layout. */
+
+/* Akar template: di luar layer supaya warna latar & font ini mengalahkan utilitas bg-paper/font-sans di layout. */
 .tpl-dadak {
   --dk-green: var(--ink);
+  --dk-deep: #0a2219;
   --dk-lime: var(--accent, #ddf247);
-  --dk-glass: rgb(255 255 255 / 0.58);
-  --dk-line: rgb(255 255 255 / 0.75);
-  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  background:
-    radial-gradient(60rem 40rem at 8% -10%, rgb(221 242 71 / 0.55), transparent 60%),
-    radial-gradient(50rem 36rem at 105% 12%, rgb(14 59 44 / 0.16), transparent 62%),
-    radial-gradient(46rem 40rem at 20% 70%, rgb(221 242 71 / 0.28), transparent 60%),
-    radial-gradient(40rem 34rem at 95% 95%, rgb(31 110 78 / 0.18), transparent 60%),
-    var(--paper);
-  background-attachment: fixed;
-}
-@media (max-width: 767px) {
-  .tpl-dadak {
-    background-attachment: scroll;
-  }
+  --dk-cream: var(--paper);
+  font-family: var(--font-oswald), "Arial Narrow", sans-serif;
+  background: var(--dk-cream);
+  color: var(--dk-green);
 }
 
 @layer components {
-  /* Kartu kaca. backdrop-filter hanya kalau didukung; tanpa itu kartu tetap putih transparan. */
-  .tpl-dadak .dk-glass {
-    background: var(--dk-glass);
-    border: 1px solid var(--dk-line);
-    border-radius: 2rem;
-    box-shadow: 0 30px 60px -36px rgb(14 59 44 / 0.35);
-  }
-  @supports (backdrop-filter: blur(1px)) {
-    .tpl-dadak .dk-glass {
-      -webkit-backdrop-filter: blur(18px) saturate(1.25);
-      backdrop-filter: blur(18px) saturate(1.25);
-    }
+  /* Judul besar: kondensed tebal, kapital, rapat. */
+  .tpl-dadak .dk-display {
+    font-family: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: 0.005em;
   }
 
-  /* Judul: tebal, rapat. */
-  .tpl-dadak .dk-title {
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.04;
+  /* Label & teks pendek kapital. */
+  .tpl-dadak .dk-caps {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
-  /* Kata yang distabilo: blok warna stabilo di belakang separuh bawah huruf. */
-  .tpl-dadak .dk-mark {
-    background: linear-gradient(transparent 52%, var(--dk-lime) 52%, var(--dk-lime) 92%, transparent 92%);
-    padding: 0 0.08em;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
-
-  /* Tombol pil. */
   .tpl-dadak .dk-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    border-radius: 999px;
-    padding: 0.55rem 0.6rem 0.55rem 1.4rem;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 0.8rem 1.35rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    background: var(--dk-green);
-    color: #fff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.1;
+    border: 1px solid transparent;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
-  .tpl-dadak .dk-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 30px -16px rgb(14 59 44 / 0.7);
+  .tpl-dadak .dk-btn svg {
+    transition: transform 0.2s ease;
   }
-  .tpl-dadak .dk-btn-arrow {
-    display: grid;
-    place-items: center;
-    width: 2.1rem;
-    height: 2.1rem;
-    border-radius: 999px;
-    background: var(--dk-lime);
-    color: var(--dk-green);
-  }
-  .tpl-dadak .dk-btn-ghost {
-    background: rgb(255 255 255 / 0.7);
-    color: var(--dk-green);
-    border: 1px solid rgb(14 59 44 / 0.14);
-    padding: 0.7rem 1.4rem;
+  .tpl-dadak .dk-btn:hover svg {
+    transform: translateX(3px);
   }
   .tpl-dadak .dk-btn-lime {
     background: var(--dk-lime);
-    color: var(--dk-green);
+    color: var(--dk-deep);
   }
-
-  /* Chip kecil (pintasan kategori, label). */
-  .tpl-dadak .dk-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    border-radius: 999px;
-    padding: 0.45rem 0.95rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    background: rgb(255 255 255 / 0.72);
-    border: 1px solid rgb(14 59 44 / 0.1);
-    color: var(--dk-green);
-    transition: background-color 0.2s ease;
+  .tpl-dadak .dk-btn-lime:hover {
+    background: #e8f87a;
   }
-  .tpl-dadak a.dk-chip:hover {
+  .tpl-dadak .dk-btn-cream {
+    background: var(--dk-cream);
+    color: var(--dk-deep);
+  }
+  .tpl-dadak .dk-btn-cream:hover {
     background: var(--dk-lime);
   }
-
-  /* Piring: foto bulat dengan bibir piring hijau tua dan bayangan jatuh. */
-  .tpl-dadak .dk-plate {
-    border-radius: 999px;
-    border: clamp(6px, 1.4vw, 12px) solid var(--dk-green);
-    box-shadow:
-      0 40px 60px -30px rgb(0 0 0 / 0.55),
-      inset 0 0 0 2px rgb(255 255 255 / 0.25);
-    object-fit: cover;
-    aspect-ratio: 1;
+  /* Tombol garis: warna ikut teks sekitarnya (gelap di krem, terang di hijau tua). */
+  .tpl-dadak .dk-btn-line {
+    border-color: currentColor;
+  }
+  .tpl-dadak .dk-btn-line:hover {
+    background: var(--dk-lime);
+    border-color: var(--dk-lime);
+    color: var(--dk-deep);
   }
 
-  /* Lencana bulat stabilo (harga, "bisa dibakar"). */
-  .tpl-dadak .dk-badge {
-    display: grid;
-    place-items: center;
-    text-align: center;
-    border-radius: 999px;
-    background: var(--dk-lime);
-    color: var(--dk-green);
-    box-shadow: 0 18px 30px -18px rgb(14 59 44 / 0.7);
+  /* Bingkai garis tipis di dalam kartu foto (seperti kartu menu referensi). */
+  .tpl-dadak .dk-frame {
+    position: relative;
+  }
+  .tpl-dadak .dk-frame::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgb(255 255 255 / 0.45);
+    pointer-events: none;
+  }
+
+  /* Gradasi panel terang (pengganti gradasi pastel referensi, dalam keluarga hijau). */
+  .tpl-dadak .dk-wash-lime {
+    background: linear-gradient(180deg, #f3fbc8 0%, #e7f59a 100%);
+  }
+  .tpl-dadak .dk-wash-cream {
+    background: linear-gradient(180deg, var(--dk-cream) 0%, #e9f6b8 100%);
   }
 
   /* Baris harga menu: nama ..... harga. */
-  .tpl-dadak .dk-dots {
+  .tpl-dadak .dk-leader {
     flex: 1;
     min-width: 1.5rem;
-    border-bottom: 2px dotted rgb(14 59 44 / 0.22);
-    transform: translateY(-0.3rem);
+    border-bottom: 1px dashed rgb(10 34 25 / 0.28);
+    transform: translateY(-0.35em);
+  }
+
+  /* Strip foto: geser horizontal di HP, sebaris penuh di desktop. */
+  .tpl-dadak .dk-strip {
+    scrollbar-width: none;
+  }
+  .tpl-dadak .dk-strip::-webkit-scrollbar {
+    display: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .tpl-dadak .dk-btn {
+    .tpl-dadak .dk-btn,
+    .tpl-dadak .dk-btn svg {
       transition: none;
     }
-    .tpl-dadak .dk-btn:hover {
+    .tpl-dadak .dk-btn:hover svg {
       transform: none;
     }
-  }
-
-  /* Panel gelap (hijau tua): stabilo jadi blok penuh supaya teks tetap terbaca. */
-  .tpl-dadak .dk-dark .dk-mark {
-    background: var(--dk-lime);
-    color: var(--dk-green);
-    padding: 0 0.15em;
-    border-radius: 0.2em;
   }
 }

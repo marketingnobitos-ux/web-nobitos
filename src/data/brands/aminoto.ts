@@ -4,19 +4,28 @@
 // Web ini etalase: tidak ada keranjang, tombol pesan, atau link ojol. Menu, harga & cabang ada di DB (prisma/aminoto.ts).
 import { weeklyHours, type DayHours } from "@/lib/hours";
 
-/** Foto asli dari reel IG resmi @pecellele.aminoto (frame video, teks overlay dipotong). */
+/** Foto asli dari reel IG resmi @pecellele.aminoto (frame video tanpa teks overlay), dipotong portrait 3:4 untuk strip & kartu. */
+const F = "/brands/aminoto/foto";
 export const AMINOTO_IMAGES = {
-  hero: { src: "/brands/aminoto/foto/hero-pecel-lele.webp", alt: "Pecel lele goreng di atas daun pisang dengan nasi, lalapan, dan sambal dadak" },
-  pecelLele: { src: "/brands/aminoto/foto/menu-pecel-lele.webp", alt: "Sepiring pecel lele dengan nasi, lalapan, dan sambal" },
-  ayamBakar: { src: "/brands/aminoto/foto/menu-ayam-bakar.webp", alt: "Dua potong ayam bakar di atas piring" },
-  ayamSate: { src: "/brands/aminoto/foto/menu-ayam-sate.webp", alt: "Sate usus dan ayam bakar di atas piring" },
-  sambal: { src: "/brands/aminoto/foto/sambal-ulek.webp", alt: "Sambal dadak sedang diulek di cobek batu" },
-  bara: { src: "/brands/aminoto/foto/bara-panggang.webp", alt: "Ayam dibakar di atas bara" },
-  setMakan: { src: "/brands/aminoto/foto/set-makan.webp", alt: "Nasi, ayam, sambal di cobek, dan es teh di meja makan" },
-  suasana: { src: "/brands/aminoto/foto/suasana-warung.webp", alt: "Suasana makan ramai di warung Aminoto" },
-} as const;
+  hero: { src: `${F}/hero-bara.webp`, srcHp: `${F}/hero-bara-hp.webp`, alt: "Ayam dibakar di atas bara yang menyala" },
+  heroMenu: { src: `${F}/hero-menu.webp`, alt: "Pecel lele di atas daun pisang dengan nasi, lalapan, dan sambal" },
+  heroCerita: { src: `${F}/hero-cerita.webp`, alt: "Pembeli antre di depan papan menu Sambel Dadak Aminoto" },
+  heroCabang: { src: `${F}/hero-cabang.webp`, alt: "Warung tenda Aminoto di malam hari" },
+  panelBara: { src: `${F}/panel-bara.webp`, alt: "Ayam dibakar di atas bara" },
+  latar: { src: `${F}/latar-ramai.webp`, alt: "Papan nama Aminoto di atas ruang makan" },
+  ctaPiring: { src: `${F}/cta-piring.webp`, alt: "Sepiring pecel lele dengan sambal dadak" },
+  strip: [
+    { src: `${F}/strip-papan.webp`, alt: "Pembeli di depan papan menu Sambal Dadak Aminoto" },
+    { src: `${F}/strip-melayani.webp`, alt: "Kru Aminoto mengantar pesanan ke meja" },
+    { src: `${F}/strip-tenda.webp`, alt: "Meja makan di bawah tenda Aminoto" },
+    { src: `${F}/strip-malam.webp`, alt: "Warung Aminoto ramai di malam hari" },
+    { src: `${F}/strip-dalam.webp`, alt: "Pembeli antre di dalam ruang makan Aminoto" },
+    { src: `${F}/strip-spanduk.webp`, alt: "Spanduk Sambel Dadak: lele, ayam, bebek, nila" },
+    { src: `${F}/strip-ramai.webp`, alt: "Pembeli memesan di kasir Aminoto" },
+  ],
+};
 
-export type AminotoImage = (typeof AMINOTO_IMAGES)[keyof typeof AMINOTO_IMAGES];
+export type AminotoImage = { src: string; alt: string; srcHp?: string };
 
 /** Jam buka semua cabang (keputusan Fran 22 Okt 2026): setiap hari 10.00–22.00. */
 export const AMINOTO_HOURS: DayHours[] = weeklyHours("10:00", "22:00");
@@ -59,66 +68,77 @@ export const AMINOTO = {
   hoursShort: "10.00–22.00",
 
   hero: {
-    /** Kata di antara *...* diberi stabilo. */
-    title: "Sambalnya *diulek* pas kamu pesan.",
-    lead: "Lele garing, ayam & bebek per porsi, ikan bisa dibakar. Sambal dadaknya baru dibuat waktu pesananmu masuk, jadi selalu segar dan nendang.",
-    primary: "Lihat menu",
-    secondary: "Cari cabang",
-    price: { label: "Pecel Lele", value: "18rb" },
-    /** Pintasan kategori ke halaman menu. */
-    shortcuts: [
-      { label: "Lauk utama", href: "/menu#lauk-utama" },
-      { label: "Lauk tambahan", href: "/menu#lauk-tambahan" },
-      { label: "Sambal & sayur", href: "/menu#sambal-sayur" },
-      { label: "Minuman", href: "/menu#minuman" },
-    ],
+    title: "Sambalnya diulek pas kamu pesan.",
+    sub: "Pecel lele, ayam, bebek & ikan bakar · Tiga cabang di Cirebon",
+    cta: "Cari cabang terdekat",
+  },
+
+  intro: {
+    label: "Selamat datang di",
+    title: "Sambal dadak, diulek di cobek saat pesananmu masuk.",
+    body: "Bukan sambal yang disiapkan dari pagi. Cabai, tomat, dan bumbunya baru diulek waktu kamu pesan, dan sudah termasuk di harga menu.",
+    cta: "Kenalan dengan Aminoto",
   },
 
   featured: {
-    title: "Paling sering dipesan",
-    lead: "Yang ini jarang sisa sampai tutup.",
-  },
-
-  sambal: {
-    title: "Kenapa namanya *sambel dadak*?",
-    body: "Karena dibuat dadakan. Cabai, tomat, dan bumbu baru diulek di cobek saat pesananmu masuk, bukan disiapkan dari pagi. Sambalnya sudah termasuk di harga menu.",
-    points: [
-      "Sambal diulek dadakan, sudah termasuk harga",
-      "Ayam & bebek dijual per porsi, bukan per ekor",
-      "Gurame, nila, ayam & bebek bisa dibakar (+Rp2.000)",
-      "Nasi dihitung terpisah",
-    ],
-    badge: { top: "Bisa", bottom: "dibakar" },
-  },
-
-  branches: {
-    title: "Tiga cabang, buka tiap hari",
-    lead: "Datang langsung ke cabang terdekat. Buka setiap hari pukul 10.00–22.00.",
-    pageTitle: "Cabang & Kontak",
-    pageLead: "Tiga cabang di Cirebon, buka setiap hari pukul 10.00–22.00.",
+    label: "Menu andalan",
+    title: "Yang bikin orang balik lagi.",
+    cta: "Lihat semua menu",
   },
 
   catering: {
-    title: "Ada acara? Ada *catering* Aminoto.",
+    title: "Ada acara? Pesan catering Aminoto.",
     body: "Paket nasi box mulai 20 ribuan per box, minimal 10 box. Tanya menu dan harganya langsung ke admin catering.",
-    cta: "Tanya catering via WhatsApp",
+    cta: "Tanya via WhatsApp",
     whatsapp: "0882-1304-4259",
     message: "Halo Admin Catering Aminoto, saya mau tanya paket catering untuk acara.",
   },
 
+  bakar: {
+    label: "Gurame · Nila · Ayam · Bebek",
+    title: "Mau dibakar? Bisa.",
+    sub: "Bilang saja waktu pesan",
+    price: "Tambah Rp2.000",
+    cta: "Lihat menu",
+    body: "Semua lauk utama bisa digoreng atau dibakar di atas bara. Sambal dadaknya tetap ikut.",
+  },
+
+  branches: {
+    title: "Tiga cabang, buka tiap hari.",
+    lead: "Cipto, Sumber, dan Ciledug. Datang langsung, pesan di kasir, sambalnya diulek saat itu juga.",
+    cta: "Info lengkap cabang",
+    pageTitle: "Cabang & kontak",
+    pageSub: "Tiga cabang di Cirebon · Buka setiap hari 10.00–22.00",
+  },
+
+  /** Rating Google Maps tiap cabang (dicek 22 Okt 2026). Perbarui kalau angkanya sudah jauh berubah. */
+  ratings: {
+    title: "Kata pembeli di Google Maps",
+    note: "Rating Google Maps, Oktober 2026",
+    items: [
+      { branch: "Sumber", rating: "4,7", count: "453 ulasan" },
+      { branch: "Ciledug", rating: "4,7", count: "169 ulasan" },
+      { branch: "Cipto", rating: "4,5", count: "409 ulasan" },
+    ],
+  },
+
+  closing: { left: "Sambalnya", right: "lagi diulek.", cta: "Cari cabang terdekat" },
+
   menu: {
-    title: "Menu & Harga",
-    lead: "Harga sudah termasuk sambal dadak. Nasi dihitung terpisah.",
-    notes: ["Gurame, nila, ayam & bebek bisa dibakar, tambah Rp2.000.", "Ayam & bebek per porsi.", "Harga dapat berubah sewaktu-waktu."],
+    title: "Menu & harga",
+    sub: "Sambal dadak sudah termasuk · Nasi dihitung terpisah",
+    notes: ["Gurame, nila, ayam & bebek bisa dibakar, tambah Rp2.000.", "Ayam & bebek dijual per porsi.", "Harga dapat berubah sewaktu-waktu."],
   },
 
   story: {
-    title: "Sambal dadak, dari cobek langsung ke piringmu.",
+    title: "Sambal dadak, dari cobek ke piringmu.",
+    label: "Cerita kami",
     paragraphs: [
       "Pecel Lele Sambel Dadak Aminoto berangkat dari satu hal sederhana: sambal paling enak itu sambal yang baru diulek. Karena itu sambal kami dibuat dadakan, diulek di cobek saat pesananmu masuk.",
       "Lelenya digoreng sampai garing, ayam dan bebeknya dijual per porsi, dan gurame, nila, ayam, juga bebek bisa dibakar di atas bara kalau kamu lebih suka aroma panggang. Sambalnya sudah termasuk di harga menu, tinggal pilih lauk dan nasinya.",
       "Sekarang Aminoto ada di tiga tempat di Cirebon: Cipto, Sumber, dan Ciledug. Buka setiap hari dari pukul 10.00 sampai 22.00, buat makan siang, makan malam, atau ramai-ramai bareng keluarga dan teman.",
     ],
+    valuesTitle: "Yang kami jaga.",
     values: [
       { title: "Diulek dadakan", body: "Sambal dibuat saat pesanan masuk, bukan dari pagi." },
       { title: "Per porsi", body: "Ayam dan bebek dijual per porsi, pas buat sendiri." },
