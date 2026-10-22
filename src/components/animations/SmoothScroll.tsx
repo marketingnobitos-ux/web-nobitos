@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import type Lenis from "lenis";
+import { afterLoad } from "@/lib/after-load";
 
 /** Event untuk gsap.ts: Lenis siap (sinkron ScrollTrigger) & pindah halaman (hitung ulang posisi trigger). */
 export const LENIS_READY_EVENT = "lenis:ready";
@@ -11,9 +12,9 @@ export const ROUTE_CHANGE_EVENT = "route:change";
 type LenisWindow = Window & { __lenis?: Lenis };
 
 /**
- * Smooth scroll (Lenis), mati saat reduced-motion. Lenis diunduh belakangan dan berjalan dengan loop-nya sendiri,
- * jadi brand yang tidak memakai GSAP (mis. Anglo) tidak ikut mengunduh GSAP. Template yang memakai ScrollTrigger
- * menyinkronkan diri lewat gsap.ts.
+ * Smooth scroll (Lenis), mati saat reduced-motion. Lenis diunduh setelah halaman selesai dimuat (tidak menunda LCP)
+ * dan berjalan dengan loop-nya sendiri, jadi brand yang tidak memakai GSAP (mis. Anglo) tidak ikut mengunduh GSAP.
+ * Template yang memakai ScrollTrigger menyinkronkan diri lewat gsap.ts.
  */
 export default function SmoothScroll() {
   const pathname = usePathname();
@@ -23,15 +24,18 @@ export default function SmoothScroll() {
 
     let lenis: Lenis | undefined;
     let cancelled = false;
-    import("lenis").then(({ default: LenisClass }) => {
-      if (cancelled) return;
-      lenis = new LenisClass({ duration: 1.1, smoothWheel: true, autoRaf: true });
-      (window as LenisWindow).__lenis = lenis;
-      window.dispatchEvent(new Event(LENIS_READY_EVENT));
-    });
+    const cancelLoad = afterLoad(() =>
+      import("lenis").then(({ default: LenisClass }) => {
+        if (cancelled) return;
+        lenis = new LenisClass({ duration: 1.1, smoothWheel: true, autoRaf: true });
+        (window as LenisWindow).__lenis = lenis;
+        window.dispatchEvent(new Event(LENIS_READY_EVENT));
+      }),
+    );
 
     return () => {
       cancelled = true;
+      cancelLoad();
       lenis?.destroy();
       delete (window as LenisWindow).__lenis;
     };

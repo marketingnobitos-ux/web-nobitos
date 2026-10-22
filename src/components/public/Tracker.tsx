@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { afterLoad } from "@/lib/after-load";
 
 type Payload = { type: "pageview" | "click"; path: string; target?: string; referrer?: string; brandSlug: string };
 
@@ -31,13 +32,10 @@ export default function Tracker({ brandSlug }: { brandSlug: string }) {
     if (last.current?.path === pathname && now - last.current.at < 1000) return;
     last.current = { path: pathname, at: now };
 
-    send({
-      type: "pageview",
-      path: pathname,
-      referrer: first.current ? document.referrer || undefined : undefined,
-      brandSlug,
-    });
+    // Pageview dikirim setelah halaman selesai dimuat, jadi tidak ikut berebut jaringan dengan tampilan pertama.
+    const referrer = first.current ? document.referrer || undefined : undefined;
     first.current = false;
+    return afterLoad(() => send({ type: "pageview", path: pathname, referrer, brandSlug }));
   }, [pathname, brandSlug]);
 
   useEffect(() => {
