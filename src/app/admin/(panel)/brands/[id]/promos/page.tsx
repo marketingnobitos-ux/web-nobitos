@@ -6,7 +6,7 @@ import { imageVariant } from "@/lib/image";
 import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES, TEMPLATE_LABEL } from "@/lib/template-features";
 
-export const metadata = { title: "Promo" };
+export const metadata = { title: "Promo & Event" };
 
 function promoStatus(p: { isActive: boolean; startsAt: Date | null; endsAt: Date | null }) {
   const now = new Date();
@@ -30,7 +30,7 @@ export default async function BrandPromosAdmin({ params }: { params: Promise<{ i
       <Card
         title="Promo"
         actions={
-          <Link href={`/admin/brands/${brand.id}/promos/new`} className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+          <Link href={`/admin/brands/${brand.id}/promos/new`} className="adm-btn">
             + Tambah promo
           </Link>
         }
@@ -38,7 +38,7 @@ export default async function BrandPromosAdmin({ params }: { params: Promise<{ i
         {promos.length === 0 ? (
           <p className="text-sm text-gray-500">Belum ada promo.</p>
         ) : (
-          <ul className="divide-y divide-gray-100 rounded-md border border-gray-200">
+          <ul className="divide-y divide-gray-200 overflow-hidden rounded-[20px] bg-white">
             {promos.map((p) => {
               const status = promoStatus(p);
               return (

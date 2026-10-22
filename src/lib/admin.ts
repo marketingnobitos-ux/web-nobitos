@@ -65,7 +65,7 @@ export const listAccessibleBrands = cache((admin: AdminIdentity) =>
   prisma.brand.findMany({
     where: admin.role === "SUPER_ADMIN" ? {} : { admins: { some: { adminId: admin.id } } },
     orderBy: { name: "asc" },
-    select: { id: true, name: true, slug: true },
+    select: { id: true, name: true, slug: true, template: true },
   }),
 );
 

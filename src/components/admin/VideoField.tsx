@@ -40,7 +40,7 @@ export default function VideoField({ name, label, brandId, defaultValue, hint }:
             Belum ada video
           </div>
         )}
-        <label className="cursor-pointer rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50">
+        <label className="cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold hover:border-gray-900">
           {busy ? "Mengunggah..." : url ? "Ganti video" : "Pilih video MP4"}
           <input type="file" accept="video/mp4" className="sr-only" onChange={onFile} disabled={busy} />
         </label>

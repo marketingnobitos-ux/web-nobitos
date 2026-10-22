@@ -97,7 +97,7 @@ export const PAGE_SECTIONS: {
     label: "Footer — Sosial media lain",
     fields: ["items"],
     itemsHint:
-      "Instagram & TikTok diisi di Info Brand. Di sini akun lain, satu per baris: Nama | link. Contoh: Facebook | https://facebook.com/namaakun",
+      "Instagram & TikTok diisi di Profil Brand. Di sini akun lain, satu per baris: Nama | link. Contoh: Facebook | https://facebook.com/namaakun",
   },
   {
     pageKey: "gallery",

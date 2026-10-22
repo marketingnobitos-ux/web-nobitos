@@ -1,0 +1,305 @@
+/*
+ * Gaya khusus Admin Nobitos (hanya dimuat di /admin lewat app/admin/layout.tsx).
+ * Token warna dari mockup "Mockup Admin Nobitos" (23 Okt 2026). Jangan pindahkan ke globals.css.
+ *
+ * Cara kerja: halaman Admin lama masih memakai class Tailwind abu-abu (text-gray-600, border-gray-200, ...).
+ * Variabel warna Tailwind v4 (--color-gray-*) ditimpa per konteks:
+ *  - .adm            = latar hijau zaitun, teks krem
+ *  - .adm-light      = permukaan krem/putih (kartu, form), teks arang
+ *  - .adm-dark       = kartu hitam, teks krem
+ * Jadi class lama otomatis ikut warna baru tanpa ditulis ulang satu per satu.
+ */
+
+.adm {
+  --adm-olive: #45593c;
+  --adm-olive-deep: #2f3d29;
+  --adm-ink: #141414;
+  --adm-card-dark: #232323;
+  --adm-row-dark: #2a2a2a;
+  --adm-cream: #eef0e2;
+  --adm-cream-2: #e3e6d4;
+  --adm-text: #f4f3ea;
+  --adm-lime: #a6d27a;
+  --adm-gold: #f5d58a;
+  --adm-muted-green: #d4dcc8;
+  --adm-muted-cream: #5b6157;
+  --adm-muted-dark: #a9aca3;
+  --adm-line-dark: #3a3a3a;
+  --adm-outline: rgba(244, 243, 234, 0.45);
+
+  /* Abu-abu Tailwind di atas latar hijau */
+  --color-gray-50: rgba(20, 20, 20, 0.12);
+  --color-gray-100: rgba(20, 20, 20, 0.2);
+  --color-gray-200: rgba(244, 243, 234, 0.22);
+  --color-gray-300: rgba(244, 243, 234, 0.42);
+  --color-gray-400: #b9c2ad;
+  --color-gray-500: #d4dcc8;
+  --color-gray-600: #d4dcc8;
+  --color-gray-700: #e6e9dc;
+  --color-gray-800: #f4f3ea;
+  --color-gray-900: #f4f3ea;
+
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  min-height: 100vh;
+  background: var(--adm-olive);
+  color: var(--adm-text);
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+}
+.adm ::selection {
+  background: var(--adm-lime);
+  color: var(--adm-ink);
+}
+.adm :focus-visible {
+  outline: 2px solid var(--adm-lime);
+  outline-offset: 2px;
+}
+
+/* Permukaan terang: kartu krem, form, baris putih */
+.adm-light,
+.adm .bg-white {
+  --color-gray-50: #f6f7ee;
+  --color-gray-100: #e3e6d4;
+  --color-gray-200: #d8dcc9;
+  --color-gray-300: #c9ccbc;
+  --color-gray-400: #8e9386;
+  --color-gray-500: #6b7065;
+  --color-gray-600: #5b6157;
+  --color-gray-700: #3a3f36;
+  --color-gray-800: #26291f;
+  --color-gray-900: #141414;
+  color: var(--adm-ink);
+}
+.adm .bg-white {
+  background-color: var(--adm-cream);
+}
+/* Kartu krem di dalam kartu krem: baris putih seperti mockup */
+.adm-light .bg-white,
+.adm .bg-white .bg-white {
+  background-color: #fff;
+}
+
+/* Kartu hitam */
+.adm-dark {
+  --color-gray-50: #2a2a2a;
+  --color-gray-100: #2e2e2e;
+  --color-gray-200: #3a3a3a;
+  --color-gray-300: #4a4a4a;
+  --color-gray-400: #8e918a;
+  --color-gray-500: #a9aca3;
+  --color-gray-600: #a9aca3;
+  --color-gray-700: #c9ccc2;
+  --color-gray-800: #f4f3ea;
+  --color-gray-900: #f4f3ea;
+  background: var(--adm-ink);
+  color: var(--adm-text);
+}
+
+/* ---------- Komponen ---------- */
+/* Di layer "components" supaya class utilitas Tailwind (hidden, !h-11, ...) tetap bisa menimpa. */
+@layer components {
+
+  .adm-card {
+    border-radius: 32px;
+    padding: 20px;
+  }
+  @media (min-width: 640px) {
+    .adm-card {
+      padding: 24px;
+    }
+  }
+  .adm-card.adm-light {
+    background: var(--adm-cream);
+  }
+  .adm-card-green {
+    background: var(--adm-olive-deep);
+    color: var(--adm-text);
+  }
+
+  /* Tombol pil */
+  .adm-btn,
+  .adm-btn-dark,
+  .adm-btn-outline,
+  .adm-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s,
+      color 0.15s,
+      border-color 0.15s;
+  }
+  .adm-btn {
+    background: var(--adm-lime);
+    color: var(--adm-ink);
+  }
+  .adm-btn:hover {
+    background: #b8de92;
+  }
+  .adm-btn-dark {
+    background: var(--adm-ink);
+    color: var(--adm-text);
+  }
+  .adm-btn-dark:hover {
+    background: #2a2a2a;
+  }
+  .adm-btn-outline {
+    border: 1px solid var(--adm-outline);
+    color: var(--adm-text);
+    font-weight: 600;
+  }
+  .adm-btn-outline:hover {
+    border-color: var(--adm-text);
+  }
+  .adm-light .adm-btn-outline {
+    border-color: #c9ccbc;
+    color: var(--adm-ink);
+  }
+  .adm-light .adm-btn-outline:hover {
+    border-color: var(--adm-ink);
+  }
+  .adm-btn-ghost {
+    background: rgba(20, 20, 20, 0.28);
+    color: var(--adm-text);
+  }
+  .adm-btn-ghost:hover {
+    background: rgba(20, 20, 20, 0.4);
+  }
+  .adm-btn:disabled,
+  .adm-btn-dark:disabled {
+    opacity: 0.5;
+  }
+
+  /* Filter pil (rentang tanggal, kategori). aria-current / aria-pressed = aktif. */
+  .adm-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(244, 243, 234, 0.6);
+    color: var(--adm-text);
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  @media (min-width: 1024px) {
+    .adm-chip {
+      height: 52px;
+      padding: 0 24px;
+      font-size: 16px;
+    }
+  }
+  .adm-chip:hover {
+    border-color: var(--adm-text);
+  }
+  .adm-chip[aria-current],
+  .adm-chip[aria-pressed="true"] {
+    background: var(--adm-ink);
+    border-color: var(--adm-ink);
+  }
+
+  /* Input form */
+  .adm-input {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 14px;
+    border: 1px solid #c9ccbc;
+    background: #fff;
+    padding: 10px 14px;
+    font-size: 15px;
+    color: var(--adm-ink);
+  }
+  .adm-input:focus {
+    outline: none;
+    border-color: var(--adm-olive);
+    box-shadow: 0 0 0 2px rgba(69, 89, 60, 0.35);
+  }
+  textarea.adm-input {
+    min-height: 0;
+  }
+  .adm-dark .adm-input {
+    background: var(--adm-card-dark);
+    border-color: var(--adm-line-dark);
+    color: var(--adm-text);
+  }
+
+  /* Angka KPI besar */
+  .adm-kpi-label {
+    font-size: 13px;
+    color: var(--adm-muted-green);
+  }
+  .adm-kpi-value {
+    margin-top: 4px;
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 1024px) {
+    .adm-kpi-label {
+      font-size: 14px;
+    }
+    .adm-kpi-value {
+      margin-top: 6px;
+      font-size: 56px;
+    }
+  }
+
+  .adm-title {
+    margin: 0;
+    font-size: 40px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+  @media (min-width: 1024px) {
+    .adm-title {
+      font-size: 60px;
+    }
+  }
+
+  /* Drawer HP */
+  .adm-drawer[data-open="false"] {
+    pointer-events: none;
+  }
+  .adm-drawer[data-open="false"] > .adm-drawer-panel {
+    transform: translateX(-104%);
+  }
+  .adm-drawer[data-open="false"] > .adm-drawer-scrim {
+    opacity: 0;
+  }
+  .adm-drawer-panel {
+    transition: transform 0.25s ease;
+  }
+  .adm-drawer-scrim {
+    transition: opacity 0.25s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .adm-drawer-panel,
+    .adm-drawer-scrim {
+      transition: none;
+    }
+  }
+
+  .adm-scroll-x {
+    scrollbar-width: none;
+  }
+  .adm-scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+}

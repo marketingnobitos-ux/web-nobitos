@@ -5,7 +5,7 @@ import { isCompleteWeek } from "@/lib/hours";
 import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES } from "@/lib/template-features";
 
-export const metadata = { title: "Cabang" };
+export const metadata = { title: "Lokasi & Jam Buka" };
 
 function Flag({ ok, children }: { ok: boolean; children: React.ReactNode }) {
   return (
@@ -31,7 +31,7 @@ export default async function BrandBranchesAdmin({ params }: { params: Promise<{
       <Card
         title={`Cabang (${branches.length})`}
         actions={
-          <Link href={`/admin/brands/${brand.id}/branches/new`} className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+          <Link href={`/admin/brands/${brand.id}/branches/new`} className="adm-btn">
             + Tambah cabang
           </Link>
         }
@@ -39,7 +39,7 @@ export default async function BrandBranchesAdmin({ params }: { params: Promise<{
         {branches.length === 0 ? (
           <p className="text-sm text-gray-500">Belum ada cabang. Tambahkan minimal satu supaya alamat & tombol Maps muncul di situs.</p>
         ) : (
-          <ul className="divide-y divide-gray-100 rounded-md border border-gray-200">
+          <ul className="divide-y divide-gray-200 overflow-hidden rounded-[20px] bg-white">
             {branches.map((b) => {
               const fullWeek = isCompleteWeek(b.hours);
               return (

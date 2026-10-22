@@ -12,7 +12,7 @@ const toRows = (hours: DayHours[]): Row[] =>
   });
 
 const timeInput =
-  "w-full min-w-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm tabular-nums focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-100 disabled:text-gray-400";
+  "w-full min-w-0 rounded-xl border border-gray-300 bg-white px-2 py-2 text-sm tabular-nums focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-100 disabled:text-gray-400";
 
 /** Editor jam buka Senin–Minggu (menulis ke tabel BranchHours). Field: hours.<1-7>.opens|closes|closed. */
 export default function HoursEditor({ defaultValue = [] }: { defaultValue?: DayHours[] }) {
@@ -42,7 +42,7 @@ export default function HoursEditor({ defaultValue = [] }: { defaultValue?: DayH
           {complete ? "Lengkap" : empty ? "Belum diisi" : "Belum lengkap"}
         </span>
       </div>
-      <div className="overflow-hidden rounded-md border border-gray-200">
+      <div className="overflow-hidden rounded-[20px] bg-white">
         <div className="hidden grid-cols-[6rem_1fr_1fr_4.5rem] gap-3 bg-gray-50 px-3 py-2 text-xs font-medium text-gray-500 sm:grid">
           <span>Hari</span>
           <span>Buka</span>

@@ -1,59 +1,72 @@
 import Link from "next/link";
 import AdminNav from "@/components/admin/AdminNav";
 import BrandSwitcher from "@/components/admin/BrandSwitcher";
-import { ROLE_LABEL, listAccessibleBrands, requireAdmin } from "@/lib/admin";
+import MobileDrawer, { Logo } from "@/components/admin/MobileDrawer";
+import { ROLE_LABEL, listAccessibleBrands, requireAdmin, type AdminIdentity } from "@/lib/admin";
+import { mutedBrandTabs } from "@/lib/template-features";
 import { logoutAction } from "./actions";
 
-function LogoutButton({ className }: { className: string }) {
+function initials(name: string) {
+  const parts = name.replace(/@.*/, "").split(/[\s._-]+/).filter(Boolean);
+  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "A";
+}
+
+/** Profil akun + tombol Keluar di bawah panel hitam. */
+function ProfileCard({ admin }: { admin: AdminIdentity }) {
+  const who = admin.name ?? ROLE_LABEL[admin.role];
   return (
-    <form action={logoutAction}>
-      <button type="submit" className={className}>
-        Keluar
-      </button>
-    </form>
+    <div className="mt-auto flex items-center gap-3 rounded-[22px] bg-[#232323] p-3.5">
+      <Link href="/admin/settings" className="flex min-w-0 flex-1 items-center gap-3" title="Akun & Akses">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#eef0e2] font-extrabold text-[#141414]">{initials(admin.name ?? admin.email)}</span>
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-bold">{who}</span>
+          <span className="block truncate text-xs text-[#b5b8ae]" title={admin.email}>
+            {admin.name ? ROLE_LABEL[admin.role] : admin.email}
+          </span>
+        </span>
+      </Link>
+      <form action={logoutAction}>
+        <button
+          type="submit"
+          aria-label="Keluar"
+          title="Keluar"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-[#3a3a3a] hover:border-[#f4f3ea]"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10" />
+          </svg>
+        </button>
+      </form>
+    </div>
   );
 }
 
-// Layout panel admin. Desktop (≥ 1024px): sidebar kiri. HP/tablet: bar atas ringkas (menu bisa digeser, "Keluar" di kanan).
+// Layout panel admin. Desktop (≥ 1024px): panel hitam di kiri. HP/tablet: bar atas + menu samping (drawer).
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const admin = await requireAdmin();
   const brands = await listAccessibleBrands(admin);
-  const who = admin.name ?? admin.email;
+  const muted = Object.fromEntries(brands.map((b) => [b.id, mutedBrandTabs(b.template)]));
+  const panel = (
+    <>
+      <AdminNav muted={muted} />
+      <ProfileCard admin={admin} />
+    </>
+  );
 
   return (
-    <div className="min-h-screen lg:flex">
-      <aside className="hidden bg-gray-900 p-4 text-gray-100 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:gap-6">
-        <Link href="/admin" className="px-3 pt-1 text-lg font-bold tracking-tight">
-          Nobitos Admin
+    <div className="flex min-h-screen gap-6 p-3 sm:p-4 lg:p-5">
+      <aside className="adm-dark sticky top-5 hidden h-[calc(100vh-40px)] w-[248px] shrink-0 flex-col gap-7 overflow-y-auto rounded-[28px] px-4 py-6 lg:flex">
+        <Link href="/admin" className="flex items-center gap-3 px-2">
+          <Logo size={40} />
+          <span className="text-lg font-extrabold tracking-tight">Nobitos Admin</span>
         </Link>
-        <AdminNav />
-        <div className="mt-auto border-t border-white/10 pt-4">
-          <p className="truncate px-3 text-sm font-medium text-white" title={admin.email}>
-            {who}
-          </p>
-          <p className="px-3 text-xs text-gray-400">{ROLE_LABEL[admin.role]}</p>
-          <LogoutButton className="mt-2 w-full rounded-md px-3 py-2 text-left text-sm text-gray-300 hover:bg-white/10 hover:text-white" />
-        </div>
+        {panel}
       </aside>
 
-      <div className="min-w-0 flex-1">
-        <div className="sticky top-0 z-30 bg-gray-900 text-gray-100 shadow-sm lg:hidden">
-          <div className="flex items-center justify-between gap-3 px-4 py-2">
-            <Link href="/admin" className="font-bold tracking-tight">
-              Nobitos Admin
-            </Link>
-            <LogoutButton className="rounded-md px-2 py-1 text-sm text-gray-300 hover:bg-white/10 hover:text-white" />
-          </div>
-          <AdminNav bar />
-        </div>
-
-        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-2.5 lg:px-8 lg:py-3">
-          <BrandSwitcher brands={brands} />
-          <span className="hidden truncate text-sm text-gray-600 sm:inline" title={admin.email}>
-            {who}
-          </span>
-        </header>
-        <main className="mx-auto max-w-6xl p-4 pb-16 lg:p-8">{children}</main>
+      <div className="flex min-w-0 flex-1 flex-col gap-5 lg:gap-6 lg:px-2 lg:py-3">
+        <MobileDrawer>{panel}</MobileDrawer>
+        <BrandSwitcher brands={brands.map(({ id, name }) => ({ id, name }))} />
+        <main className="min-w-0 pb-16">{children}</main>
       </div>
     </div>
   );

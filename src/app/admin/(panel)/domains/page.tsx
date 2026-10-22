@@ -7,7 +7,7 @@ import { serverIp } from "@/lib/domain";
 import { prisma } from "@/lib/prisma";
 import { checkDomainStatus, createDomain, deleteDomain, setDomainActive, updateDomain } from "./actions";
 
-export const metadata = { title: "Domain" };
+export const metadata = { title: "Domain & SSL" };
 
 const STATUS: Record<DomainStatus, { label: string; cls: string; hint: string }> = {
   PENDING: { label: "PENDING", cls: "bg-amber-100 text-amber-800", hint: "DNS belum mengarah ke server." },
@@ -30,7 +30,7 @@ export default async function AdminDomainsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Kelola Domain" description="Hubungkan domain ke brand, cek DNS, lalu tandai aktif setelah SSL terpasang." />
+      <PageHeader title="Domain & SSL" description="Hubungkan domain ke brand, cek DNS, lalu tandai aktif setelah SSL terpasang." />
 
       <Card title="Instruksi DNS">
         {ip ? (
@@ -93,7 +93,7 @@ export default async function AdminDomainsPage() {
         >
           {!brand.isPublished && brand.domains.length > 0 && (
             <p className="mb-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              Brand masih Draft: domain belum menampilkan situs sampai brand dicentang &quot;Tayangkan&quot; di Info Brand.
+              Brand masih Draft: domain belum menampilkan situs sampai brand dicentang &quot;Tayangkan&quot; di Profil Brand.
             </p>
           )}
           {brand.domains.length === 0 ? (
@@ -130,21 +130,21 @@ export default async function AdminDomainsPage() {
                       )}
                       {d.status === "VERIFIED" && (
                         <form action={setDomainActive.bind(null, d.id, true)}>
-                          <button type="submit" className="rounded-md border border-green-600 px-3 py-2 text-sm text-green-700 hover:bg-green-50">
+                          <button type="submit" className="rounded-full border border-green-700 px-4 py-2 text-sm font-semibold text-green-800 hover:bg-green-50">
                             Tandai aktif (SSL terpasang)
                           </button>
                         </form>
                       )}
                       {d.status === "ACTIVE" && (
                         <form action={setDomainActive.bind(null, d.id, false)}>
-                          <button type="submit" className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                          <button type="submit" className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-gray-900">
                             Batalkan status aktif
                           </button>
                         </form>
                       )}
                     </div>
 
-                    <details className="rounded-md border border-gray-200 p-3">
+                    <details className="rounded-[20px] bg-white p-3">
                       <summary className="cursor-pointer text-sm text-gray-700">Ubah / hapus</summary>
                       <div className="mt-3 space-y-4">
                         <ActionForm action={updateDomain.bind(null, d.id)}>

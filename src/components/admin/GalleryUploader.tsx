@@ -43,7 +43,7 @@ export default function GalleryUploader({ brandId, onUploaded }: Props) {
 
   return (
     <div>
-      <label className={`inline-block cursor-pointer rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 ${busy ? "opacity-50" : ""}`}>
+      <label className={`inline-block cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold hover:border-gray-900 ${busy ? "opacity-50" : ""}`}>
         {busy ? "Mengunggah..." : "+ Upload foto (bisa banyak)"}
         <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" onChange={onFiles} disabled={busy} />
       </label>

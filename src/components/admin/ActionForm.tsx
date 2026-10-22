@@ -28,16 +28,16 @@ export default function ActionForm({ action, children, submitLabel = "Simpan", c
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+          className="adm-btn-dark"
         >
           {pending ? "Menyimpan..." : submitLabel}
         </button>
         {state?.error && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm font-semibold text-red-700">
             {state.error}
           </p>
         )}
-        {state?.ok && <p className="text-sm text-green-700">{state.message ?? "Tersimpan."}</p>}
+        {state?.ok && <p role="status" className="text-sm font-semibold text-[#2f5a1c]">{state.message ?? "Tersimpan."}</p>}
       </div>
     </form>
   );

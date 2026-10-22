@@ -53,7 +53,7 @@ Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fonda
 **Dikerjakan Claude (urut, setelah keputusan di atas)**
 1. ~~Platform F2.7 sisa~~ — selesai & live 23 Okt (`8e720c8`, deploy `3d215c3`).
 2. ~~Sayur Lodeh Bu Joko: F3.2–F3.6~~ — ditahan 23 Okt sampai Fran menyatakan operasional brand siap.
-3. ~~Admin F6.1–F6.11~~ — selesai & live 23 Okt (`6ce5ac7`, deploy `3d215c3`). Sisa: F6.4 & F6.8b (🙋 Fran).
+3. ~~Admin F6.1–F6.11~~ — selesai & live 23 Okt (`6ce5ac7`, deploy `3d215c3`). F6.12 desain baru (Fase A) selesai lokal 23 Okt, menunggu izin push/deploy. Berikutnya F6.13 (🙋 Fran) & F6.14. Sisa: F6.4 (🙋 Fran).
 4. QA akhir & serah terima F7.
 
 ---
@@ -147,6 +147,12 @@ Sumber: IG @sayurlodeh.bujoko · Lokasi: Jl. Kartini No.4, Kebonbaru (sama denga
 - [x] **F6.9** Menu harian lebih cepat: di daftar menu, tombol langsung "Tersedia/Habis" dan "Andalan" tanpa buka form per item; urutan item lewat tombol naik/turun (bukan isi angka). Gambar thumbnail daftar pakai `loading="lazy"`. — 23 Okt 2026, `6ce5ac7` (tombol status & ▲▼ untuk item dan kategori; field Urutan dihapus dari form menu (item baru masuk paling bawah))
 - [x] **F6.10** Kelengkapan data per brand: di kartu daftar Brand dan header brand, tampilkan badge kekurangan (IG/TikTok kosong, jam 7 hari belum lengkap, cabang tanpa WA/Maps, menu tanpa foto, domain belum ACTIVE). Bisa digabung dengan F6.2 bila dikerjakan bersamaan. — 23 Okt 2026, `6ce5ac7` (`src/lib/brand-health.ts` + badge di daftar Brand & header brand; hanya cek data yang dipakai template (mis. logo tidak dicek untuk Anglo/Dadak, foto hanya menu andalan))
 - [x] **F6.11** Admin di HP: di layar < 1024px sidebar jadi blok ±200px (menu + "Keluar" 2 baris) sebelum konten. Jadikan bar atas ringkas (menu bisa digeser, "Keluar" pindah ke header kanan). Cek di 375px. — 23 Okt 2026, `6ce5ac7` (bar atas HP ±84px (menu geser + Keluar kanan), cek 375px tanpa geser horizontal di 12 halaman admin)
+
+**Desain baru Admin (mockup "Mockup Admin Nobitos", disetujui Fran 23 Okt 2026: https://claude.ai/artifact/FwVYsmMMQ6RNnX8FWipswx)**
+
+- [x] **F6.12** Fase A: terapkan desain baru ke semua halaman Admin, tanpa migrasi DB. — 23 Okt 2026 (commit lokal, belum push/deploy). Token & komponen di `src/app/admin/admin.css` (hanya dimuat di `/admin`; `globals.css` tidak disentuh), font Manrope lewat next/font di `app/admin/layout.tsx`. Panel hitam kiri (aktif = pil hijau muda, sub-menu brand di bawah "Brand & Outlet", profil + Keluar di bawah); HP: bar atas + drawer. Nama menu baru: Ringkasan, Brand & Outlet, Performa SEO, Domain & SSL, Akun & Akses (rute tetap `/admin/settings`); sub-menu: Profil Brand, Isi Halaman, Daftar Menu, Galeri Foto, Promo & Event, Lokasi & Jam Buka. Ringkasan: KPI besar, cincin rasio klik/pengunjung, pil 7/30/90 hari + pilih tanggal, kartu tren (Pengunjung/Pageview/Klik), klik per jenis & per cabang, tabel brand, top halaman; pil "Brand aktif" di Ringkasan = filter. Daftar Menu: KPI, pil kategori + cari menu, kartu hitam. Masuk: desain baru, tombol lihat password. Halaman lain ikut lewat pemetaan ulang warna Tailwind di `admin.css`. Dicek: typecheck & `next build` (salinan HEAD + perubahan Admin, tanpa draf TUNGKU) lolos, CSS Admin hanya di rute `/admin`, 17 halaman Admin di 375px tanpa geser horizontal, toggle Tersedia/Habis, filter brand, Keluar & Masuk. Tidak dibuat: "Ingat saya" & "Unduh laporan" di mockup (belum ada fungsinya).
+- [ ] **F6.13** 🙋 Fase B: Akun & Akses penuh (kelola staf, peran Super Admin/Admin Brand/Editor/Pemantau, brand per akun, menu & aksi dibatasi peran, log aktivitas staf = tabel baru) + F6.8b (teks Anglo/Dadak/Gerabah ke DB, Promo & Galeri di template yang belum punya, cabang Pak Joko ke DB, ubah harga cepat, unggah banyak foto, urut seret galeri, cek SSL otomatis). Butuh migrasi + backup DB VPS sebelum deploy.
+- [ ] **F6.14** Fase C: audit SEO 4 domain live (seo-audit, technical, schema, local, content, images, geo), perbaiki, field SEO per halaman di Admin.
 
 ## F7 — QA akhir & serah terima · 14 – 18 Des
 

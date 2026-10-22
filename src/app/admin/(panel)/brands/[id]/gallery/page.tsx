@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES, TEMPLATE_LABEL } from "@/lib/template-features";
 import { addPhotos, createAlbum, deleteAlbum, deletePhoto, updateAlbum, updatePhoto } from "./actions";
 
-export const metadata = { title: "Galeri" };
+export const metadata = { title: "Galeri Foto" };
 
 export default async function BrandGalleryAdmin({ params }: { params: Promise<{ id: string }> }) {
   const brand = await getBrandForAdmin((await params).id);
@@ -61,7 +61,7 @@ export default async function BrandGalleryAdmin({ params }: { params: Promise<{ 
           ) : (
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {album.photos.map((photo) => (
-                <div key={photo.id} className="rounded-md border border-gray-200 p-3">
+                <div key={photo.id} className="rounded-[20px] bg-white p-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imageVariant(photo.imageUrl, 400)}

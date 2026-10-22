@@ -4,7 +4,7 @@ import { getBrandForAdmin, requireAdmin } from "@/lib/admin";
 import { deleteBrand, updateBrand } from "../actions";
 import BrandForm from "../BrandForm";
 
-export const metadata = { title: "Info Brand" };
+export const metadata = { title: "Profil Brand" };
 
 export default async function BrandInfoPage({ params }: { params: Promise<{ id: string }> }) {
   const brand = await getBrandForAdmin((await params).id);

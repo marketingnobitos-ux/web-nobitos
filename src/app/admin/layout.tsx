@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { Manrope } from "next/font/google";
+import "./admin.css";
+
+// Font Admin saja (tidak ikut situs brand).
+const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "Admin Nobitos", template: "%s · Admin Nobitos" },
@@ -6,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen bg-gray-100 text-gray-900">{children}</div>;
+  return <div className={`adm ${manrope.variable}`}>{children}</div>;
 }

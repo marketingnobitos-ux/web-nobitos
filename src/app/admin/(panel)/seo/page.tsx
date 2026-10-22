@@ -7,7 +7,7 @@ import { getBrandGaps, type Gap } from "@/lib/brand-health";
 import { prisma } from "@/lib/prisma";
 import { checkSite, type Check } from "@/lib/seo-health";
 
-export const metadata = { title: "Kesehatan SEO" };
+export const metadata = { title: "Performa SEO" };
 export const dynamic = "force-dynamic";
 
 // Data yang ikut menentukan tampilan di Google (JSON-LD, Maps, sosial).
@@ -72,7 +72,7 @@ export default async function SeoHealthPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Kesehatan SEO"
+        title="Performa SEO"
         description="Cek langsung situs live tiap brand: beranda, meta, data terstruktur, sitemap, robots, dan domain. Muat ulang halaman untuk cek ulang."
       />
       <Notice tone="muted">

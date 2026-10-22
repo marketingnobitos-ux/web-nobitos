@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES, TEMPLATE_LABEL } from "@/lib/template-features";
 import { saveSection } from "./actions";
 
-export const metadata = { title: "Konten Halaman" };
+export const metadata = { title: "Isi Halaman" };
 
 // Urutan kunci = urutan tampil.
 const PAGE_TITLE: Record<string, string> = { home: "Beranda", story: "Cerita", gallery: "Galeri", site: "Semua halaman (footer)" };
@@ -33,7 +33,7 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
           <ul className="space-y-2 text-sm">
             <li>
               <Link href={base} className="font-medium hover:underline">
-                Info Brand
+                Profil Brand
               </Link>{" "}
               <span className="text-gray-600">— nama, tagline, logo, favicon, link Instagram & TikTok, jenis masakan.</span>
             </li>
