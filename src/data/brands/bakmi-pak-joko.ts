@@ -1,7 +1,7 @@
 // Konten halaman Bakmi Jowo Anglo Pak Joko (template ANGLO), ditulis di kode.
 // Sumber: BRIEF-Bakmi-Pak-Joko.md Bagian 4. Brand, warna & menu ada di database (prisma/bakmi-pak-joko.ts).
 // Web ini etalase, bukan untuk pesan: tidak ada keranjang, tombol order, atau link GrabFood/GoFood.
-// TODO: konfirmasi Fran — info GrabFood/GoFood ditampilkan sebagai teks ("Tersedia di GrabFood & GoFood") atau tidak sama sekali.
+// GrabFood/GoFood tidak disebut sama sekali: untuk sementara pembeli datang langsung (keputusan Fran 22 Okt 2026).
 import { DAY, weeklyHours, type DayHours } from "@/lib/hours";
 
 export type AngloBranch = {
@@ -77,10 +77,11 @@ export const BAKMI_PAK_JOKO = {
   story: {
     title: "Rasa Temanggung di tengah Kota Udang.",
     paragraphs: [
-      "Bakmi Jowo Anglo Pak Joko membawa cara masak bakmi khas Temanggung ke Cirebon. Resepnya sederhana dan caranya tetap tradisional: wajan, arang, dan anglo.",
+      // Asal-usul dikonfirmasi Fran 22 Okt 2026: Pak Joko asli Temanggung, jualan sejak 2026. Alasan ke Cirebon = narasi yang diminta Fran.
+      "Pak Joko asli Temanggung, Jawa Tengah. Di sana, bakmi jowo dimasak satu per satu di atas anglo arang, dan cara itulah yang ia bawa ke Cirebon. Resepnya sederhana dan caranya tetap tradisional: wajan, arang, dan anglo.",
+      "Sejak 2026 warungnya buka di Kota Udang, karena Pak Joko ingin orang Cirebon bisa merasakan bakmi jowo seperti di kampung halamannya, tanpa harus jauh-jauh ke Temanggung.",
       "Karena dimasak di atas bara, setiap porsi butuh waktu. Tapi dari situ datang aroma *smoky* yang nggak bisa ditiru kompor biasa, bercampur bumbu medok yang bikin nagih.",
       "Tempatnya dibuat buat santai. Datang sore bareng teman, makan malam sama keluarga, atau mampir sendiri habis kerja. Yang datang dari anak muda sampai orang tua.",
-      // TODO: konfirmasi Fran — cerita asal-usul (sejak kapan, siapa Pak Joko, kenapa dari Temanggung ke Cirebon). Sengaja tidak dikarang.
     ],
   },
 
@@ -102,7 +103,7 @@ export const BAKMI_PAK_JOKO = {
     {
       slug: "ciperna",
       name: "Ciperna",
-      // TODO: konfirmasi Fran — alamat dari video TikTok @rute.kuliner, bukan akun resmi.
+      // Alamat dari video TikTok @rute.kuliner, dikonfirmasi benar oleh Fran 22 Okt 2026.
       address:
         "Komplek Ruko Taman Kota Ciperna, Jl. Jenderal Sudirman No.2 Blok A (samping Alfamart Taman Kota), Ciperna, Kec. Talun",
       hours: "16.00 – 23.00, Senin libur",
@@ -116,9 +117,9 @@ export const BAKMI_PAK_JOKO = {
 
   // 4.6 Notice Dapur Bu Joko (Beranda & kartu Cabang Kartini)
   buJoko: {
-    title: "Pagi di tempat yang sama: Dapur Bu Joko.",
-    // TODO: konfirmasi Fran — "Mulai 7 ribuan" dari thumbnail post, dan apakah benar satu lokasi dengan Bakmi Kartini (Jl. Kartini No.4).
-    body: "Sebelum bakmi buka sore, pagi harinya ada sarapan rumahan: nasi sayur lodeh, sayur asem, sayur sabrang, dan lauk pilihan. Mulai 7 ribuan. Websitenya menyusul.",
+    // Dikonfirmasi Fran 22 Okt 2026: nama brand Sayur Lodeh Bu Joko, satu lokasi dengan Kartini, mulai 7 ribuan, buka 06.00–12.00.
+    title: "Pagi di tempat yang sama: Sayur Lodeh Bu Joko.",
+    body: "Sebelum bakmi buka sore, pagi harinya ada sarapan rumahan: nasi sayur lodeh, sayur asem, sayur sabrang, dan lauk pilihan. Mulai 7 ribuan, buka 06.00–12.00. Websitenya menyusul.",
     cta: "Instagram @sayurlodeh.bujoko",
     url: "https://www.instagram.com/sayurlodeh.bujoko",
   },

@@ -193,7 +193,7 @@ export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
       )}
 
       {/* 4. Strip Dapur Bu Joko — blok hijau */}
-      <section aria-label="Dapur Bu Joko" className="ag-noise border-y-2 border-ink bg-daun py-12 md:py-14">
+      <section aria-label="Sayur Lodeh Bu Joko" className="ag-noise border-y-2 border-ink bg-daun py-12 md:py-14">
         <div className={WRAP}>
           <BuJokoNotice track={trackName("ig_bujoko")} />
         </div>

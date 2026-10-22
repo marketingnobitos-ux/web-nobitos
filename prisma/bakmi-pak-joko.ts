@@ -8,7 +8,7 @@ export const BAKMI_PAK_JOKO_SLUG = "bakmi-pak-joko";
 
 export const BAKMI_PAK_JOKO_BRAND = {
   slug: BAKMI_PAK_JOKO_SLUG,
-  // TODO: konfirmasi Fran — nama tampil "Pak Joko" vs "Mas Joko TMG" (logo & menu memakai "Mas Joko TMG").
+  // Nama tampil "Pak Joko" (dikonfirmasi Fran 22 Okt 2026); logo & menu tetap "Mas Joko TMG".
   name: "Bakmi Jowo Anglo Pak Joko",
   tagline: "Rasa Asli Temanggung, Hadir di Kota Udang",
   // Brief Bagian 6.2 (revisi): tinta hitam, kertas krem, aksen oranye bara. Blok pastel ada di tema brand (globals.css).
@@ -18,6 +18,7 @@ export const BAKMI_PAK_JOKO_BRAND = {
   fontHeading: "Caveat Brush",
   fontBody: "Courier Prime",
   template: "ANGLO" as const,
+  faviconUrl: "/brands/bakmi-pak-joko/favicon.png",
   // Sosial & jenis masakan untuk JSON-LD (ROADMAP F0.4). TikTok dikonfirmasi Fran 29 Sep 2026 (AUDIT-F0.1.md).
   instagramUrl: "https://www.instagram.com/bakmi.pakjoko",
   tiktokUrl: "https://www.tiktok.com/@bakmi.pakjoko",
@@ -90,11 +91,12 @@ export async function seedBakmiPakJoko(prisma: PrismaClient, { publish = false }
     create: { ...BAKMI_PAK_JOKO_BRAND, isPublished: publish },
   });
 
-  // Kolom JSON-LD (F0.4) untuk brand yang sudah ada: hanya diisi kalau masih kosong, isian Admin tidak ditimpa.
+  // Kolom JSON-LD (F0.4) + favicon (F1.1) untuk brand yang sudah ada: hanya diisi kalau masih kosong, isian Admin tidak ditimpa.
   const jsonLdFill = {
     ...(!brand.instagramUrl && { instagramUrl: BAKMI_PAK_JOKO_BRAND.instagramUrl }),
     ...(!brand.tiktokUrl && { tiktokUrl: BAKMI_PAK_JOKO_BRAND.tiktokUrl }),
     ...(brand.servesCuisine.length === 0 && { servesCuisine: BAKMI_PAK_JOKO_BRAND.servesCuisine }),
+    ...(!brand.faviconUrl && { faviconUrl: BAKMI_PAK_JOKO_BRAND.faviconUrl }),
   };
   if (Object.keys(jsonLdFill).length) await prisma.brand.update({ where: { id: brand.id }, data: jsonLdFill });
 
