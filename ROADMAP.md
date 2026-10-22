@@ -55,7 +55,11 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 - [ ] **F1.1** 🙋 Isi jawaban [CEK] dari Fran: nama tampil (Pak/Mas Joko), ~~jam Ciperna, Rabu libur di kedua cabang~~ (beres 29 Sep: 16.00–23.00, Kartini libur Rabu, Ciperna libur Senin), cerita asal-usul, harga sarapan Bu Joko.
 - [ ] **F1.2** 🙋 Foto asli (6–10) dari tim konten → cut-out ala stiker, ganti ilustrasi pengganti.
 - [x] **F1.3** Pengaman animasi + slot foto asli + preload font — `37da924`.
-- [ ] **F1.3b** Cek Lighthouse mobile Beranda, perbaiki kalau < 85.
+- [ ] **F1.3b** 🙋 Cek Lighthouse mobile Beranda, perbaiki kalau < 85. — Dicek 22 Okt 2026: **masih < 85**, menunggu keputusan Fran.
+  - Hasil (build produksi lokal, median 7 run, Perf/A11y/BP/SEO): **83/100/76/91** → setelah `52bfe64` (font judul di-subset 51,9 → 20,5 KB) **84**. LCP 3,8 s, FCP 2,0 s, TBT ±200 ms. Situs live (HTTPS) ±60–72, tapi diukur saat CPU laptop sibuk. BP 76 lokal karena HTTP (di live hilang); SEO 91 karena meta description ter-stream ke `<body>` (catatan F0.7).
+  - Penyebab: elemen LCP = judul hero (teks). Lighthouse menghitung LCP setelah semua JS halaman, dan Beranda Anglo ikut mengunduh JS template lain: GSAP + ScrollTrigger (±48 KB gzip) dan Lenis, karena Next memuat semua komponen client yang di-import `(public)/layout.tsx` & `(public)/page.tsx` untuk semua brand. Anglo sendiri tidak memakai GSAP. CSS global 62 KB (semua template) juga render-blocking.
+  - Sudah dicoba, tidak menolong: `next/dynamic` di server component (chunk tetap ikut), smooth scroll Anglo tanpa GSAP (GSAP tetap terbawa `page.tsx`), `loading.tsx` dipindah ke sub-halaman (SEO 100 tapi FCP naik, skor sama).
+  - Perbaikan yang tersisa = tugas platform lintas template (melanggar aturan 3 kalau dikerjakan di sini): GSAP di-`import()` saat dipakai di komponen BOLD/EDITORIAL/TUNGKU, atau Beranda tiap template dipisah jadi pulau client sendiri; CSS per template dipecah dari `globals.css`. Perkiraan: LCP turun ±0,3–0,5 s, skor ≥ 85.
 - [ ] **F1.4** Terapkan F0 (meta, sitemap, JSON-LD 2 cabang, Buka sekarang, tracking).
 - [ ] **F1.5** Deploy + cek live.
 
