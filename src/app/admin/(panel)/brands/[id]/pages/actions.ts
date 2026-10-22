@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
-import { requireBrandAdmin } from "@/lib/admin";
+import { logActivity, requireBrandAdmin } from "@/lib/admin";
 import { actionError } from "@/lib/admin-action";
 import { PAGE_SECTIONS, type SectionData } from "@/lib/content";
 import { deleteReplacedImage } from "@/lib/media";
@@ -17,7 +17,7 @@ export async function saveSection(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    await requireBrandAdmin(brandId);
+    const admin = await requireBrandAdmin(brandId);
     const index = PAGE_SECTIONS.findIndex((s) => s.pageKey === pageKey && s.sectionKey === sectionKey);
     if (index < 0) return { error: "Section tidak dikenal." };
 
@@ -43,6 +43,7 @@ export async function saveSection(
     const oldImage = (old?.data as SectionData | null)?.imageUrl;
     await deleteReplacedImage(oldImage, data.imageUrl);
     await deleteReplacedImage((old?.data as SectionData | null)?.videoUrl, data.videoUrl);
+    await logActivity(admin, brandId, `mengubah isi halaman "${PAGE_SECTIONS[index].label}"`);
 
     revalidatePath(`/admin/brands/${brandId}/pages`);
     return { ok: true, message: "Section disimpan." };

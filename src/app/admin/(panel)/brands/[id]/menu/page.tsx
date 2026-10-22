@@ -3,13 +3,13 @@ import ActionForm from "@/components/admin/ActionForm";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
 import PendingButton from "@/components/admin/PendingButton";
 import MenuFilter from "@/components/admin/MenuFilter";
+import PriceEdit from "@/components/admin/PriceEdit";
 import { Card, TextField } from "@/components/admin/fields";
 import { getBrandForAdmin } from "@/lib/admin";
-import { formatRupiah } from "@/lib/format";
 import { imageVariant } from "@/lib/image";
 import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES } from "@/lib/template-features";
-import { createCategory, deleteCategory, moveCategory, moveMenuItem, toggleMenuItem, updateCategory } from "./actions";
+import { createCategory, deleteCategory, moveCategory, moveMenuItem, toggleMenuItem, updateCategory, updateMenuPrice } from "./actions";
 
 export const metadata = { title: "Daftar Menu" };
 
@@ -103,31 +103,35 @@ export default async function BrandMenuAdmin({ params }: { params: Promise<{ id:
                       data-item={item.name.toLowerCase()}
                       className="flex flex-col gap-2.5 rounded-[20px] bg-[#232323] p-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3.5 sm:rounded-[22px] sm:px-3.5"
                     >
-                      <Link href={`/admin/brands/${brand.id}/menu/${item.id}`} className="group flex min-w-0 items-center gap-3 sm:flex-[1_1_180px]">
-                        {item.imageUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={imageVariant(item.imageUrl, 400)}
-                            alt=""
-                            loading="lazy"
-                            decoding="async"
-                            width={56}
-                            height={56}
-                            className={`h-12 w-12 shrink-0 rounded-[14px] object-cover sm:h-14 sm:w-14 sm:rounded-2xl ${item.isAvailable ? "" : "opacity-50 grayscale"}`}
-                          />
-                        ) : (
-                          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-[#2e2e2e] text-center text-[9px] leading-tight text-[#a9aca3] sm:h-14 sm:w-14 sm:rounded-2xl sm:text-[10px]">
-                            Tanpa foto
-                          </span>
-                        )}
-                        <span className="min-w-0">
-                          <span className="block truncate text-[15px] font-bold group-hover:underline sm:text-base">{item.name}</span>
-                          <span className="block truncate text-[13px] text-[#a9aca3]">
-                            {formatRupiah(item.price)}
+                      <div className="flex min-w-0 items-center gap-3 sm:flex-[1_1_180px]">
+                        <Link href={`/admin/brands/${brand.id}/menu/${item.id}`} className="shrink-0" tabIndex={-1} aria-hidden>
+                          {item.imageUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={imageVariant(item.imageUrl, 400)}
+                              alt=""
+                              loading="lazy"
+                              decoding="async"
+                              width={56}
+                              height={56}
+                              className={`h-12 w-12 shrink-0 rounded-[14px] object-cover sm:h-14 sm:w-14 sm:rounded-2xl ${item.isAvailable ? "" : "opacity-50 grayscale"}`}
+                            />
+                          ) : (
+                            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-[#2e2e2e] text-center text-[9px] leading-tight text-[#a9aca3] sm:h-14 sm:w-14 sm:rounded-2xl sm:text-[10px]">
+                              Tanpa foto
+                            </span>
+                          )}
+                        </Link>
+                        <div className="min-w-0">
+                          <Link href={`/admin/brands/${brand.id}/menu/${item.id}`} className="block truncate text-[15px] font-bold hover:underline sm:text-base">
+                            {item.name}
+                          </Link>
+                          <div className="truncate text-[13px] text-[#a9aca3]">
+                            <PriceEdit price={item.price} label={item.name} action={updateMenuPrice.bind(null, brand.id, item.id)} />
                             {item.portion && ` · ${item.portion}`}
-                          </span>
-                        </span>
-                      </Link>
+                          </div>
+                        </div>
+                      </div>
                       <div className="flex items-center gap-1.5 sm:shrink-0">
                         <Toggle
                           action={toggleMenuItem.bind(null, brand.id, item.id, "isAvailable")}

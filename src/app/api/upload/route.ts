@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdmin, hasBrandAccess } from "@/lib/admin";
+import { can, getAdmin, hasBrandAccess } from "@/lib/admin";
 import {
   ALLOWED_IMAGE_TYPES,
   ALLOWED_VIDEO_TYPES,
@@ -17,6 +17,7 @@ export const runtime = "nodejs";
 export async function POST(req: Request) {
   const admin = await getAdmin();
   if (!admin) return NextResponse.json({ error: "Belum login." }, { status: 401 });
+  if (!can(admin.role, "content")) return NextResponse.json({ error: "Peran akun Anda tidak boleh mengunggah file." }, { status: 403 });
 
   // Batas kasar untuk seluruh request (video paling besar); dicek lagi per jenis file di bawah.
   const hardMax = Math.max(maxUploadBytes(), maxVideoBytes());

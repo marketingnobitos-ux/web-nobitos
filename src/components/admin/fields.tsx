@@ -24,12 +24,14 @@ export function TextField({
   required,
   defaultValue,
   type = "text",
+  id: idProp,
   ...rest
 }: Base & { defaultValue?: string | number | null; type?: string } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     "defaultValue" | "name" | "type"
   >) {
-  const id = `f-${name}`;
+  // id bisa diberikan bila field yang sama muncul lebih dari sekali di satu halaman.
+  const id = idProp ?? `f-${name}`;
   return (
     <div>
       <Label label={label} htmlFor={id} required={required} />

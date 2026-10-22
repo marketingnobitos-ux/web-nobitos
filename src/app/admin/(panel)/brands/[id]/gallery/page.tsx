@@ -1,12 +1,13 @@
 import ActionForm from "@/components/admin/ActionForm";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
 import GalleryUploader from "@/components/admin/GalleryUploader";
+import SortableGrid from "@/components/admin/SortableGrid";
 import { Card, Notice, TextField } from "@/components/admin/fields";
 import { getBrandForAdmin } from "@/lib/admin";
 import { imageVariant } from "@/lib/image";
 import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES, TEMPLATE_LABEL } from "@/lib/template-features";
-import { addPhotos, createAlbum, deleteAlbum, deletePhoto, updateAlbum, updatePhoto } from "./actions";
+import { addPhotos, createAlbum, deleteAlbum, deletePhoto, reorderPhotos, updateAlbum, updatePhoto } from "./actions";
 
 export const metadata = { title: "Galeri Foto" };
 
@@ -59,26 +60,34 @@ export default async function BrandGalleryAdmin({ params }: { params: Promise<{ 
           {album.photos.length === 0 ? (
             <p className="mt-4 text-sm text-gray-500">Belum ada foto.</p>
           ) : (
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {album.photos.map((photo) => (
-                <div key={photo.id} className="rounded-[20px] bg-white p-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={imageVariant(photo.imageUrl, 400)}
-                    alt={photo.caption ?? ""}
-                    loading="lazy"
-                    decoding="async"
-                    className="aspect-[4/3] w-full rounded object-cover"
-                  />
-                  <ActionForm action={updatePhoto.bind(null, brand.id, photo.id)} className="mt-3 space-y-2">
-                    <TextField label="Keterangan" name="caption" defaultValue={photo.caption} />
-                    <TextField label="Urutan" name="order" type="number" min={0} defaultValue={photo.order} />
-                  </ActionForm>
-                  <form action={deletePhoto.bind(null, brand.id, photo.id)} className="mt-2">
-                    <ConfirmSubmit message="Hapus foto ini?">Hapus foto</ConfirmSubmit>
-                  </form>
-                </div>
-              ))}
+            <div className="mt-4">
+              <SortableGrid
+                className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                onSave={reorderPhotos.bind(null, brand.id, album.id)}
+                items={album.photos.map((photo) => ({
+                  id: photo.id,
+                  node: (
+                    <div className="rounded-[20px] bg-white p-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imageVariant(photo.imageUrl, 400)}
+                        alt={photo.caption ?? ""}
+                        loading="lazy"
+                        decoding="async"
+                        draggable={false}
+                        className="aspect-[4/3] w-full rounded-[14px] object-cover"
+                      />
+                      <ActionForm action={updatePhoto.bind(null, brand.id, photo.id)} className="mt-3 space-y-2">
+                        <TextField label="Keterangan" name="caption" defaultValue={photo.caption} id={`caption-${photo.id}`} />
+                        <input type="hidden" name="order" value={photo.order} />
+                      </ActionForm>
+                      <form action={deletePhoto.bind(null, brand.id, photo.id)} className="mt-2">
+                        <ConfirmSubmit message="Hapus foto ini?">Hapus foto</ConfirmSubmit>
+                      </form>
+                    </div>
+                  ),
+                }))}
+              />
             </div>
           )}
         </Card>

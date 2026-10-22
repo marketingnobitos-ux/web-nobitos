@@ -1,7 +1,8 @@
 import { BrandTabs } from "@/components/admin/AdminNav";
 import GapBadges from "@/components/admin/GapBadges";
 import BrandHeader from "@/components/admin/BrandHeader";
-import { getBrandForAdmin } from "@/lib/admin";
+import PermissionGate from "@/components/admin/PermissionGate";
+import { can, getBrandForAdmin, requireAdmin } from "@/lib/admin";
 import { getBrandGaps } from "@/lib/brand-health";
 import { TEMPLATE_LABEL, mutedBrandTabs } from "@/lib/template-features";
 
@@ -14,6 +15,7 @@ export default async function BrandAdminLayout({
   params: Promise<{ id: string }>;
 }) {
   const brand = await getBrandForAdmin((await params).id);
+  const admin = await requireAdmin();
   const gaps = (await getBrandGaps([brand.id])).get(brand.id) ?? [];
   const primaryDomain = brand.domains.find((d) => d.isPrimary) ?? brand.domains[0];
   // Brand tayang + punya domain: buka situs aslinya. Draft / tanpa domain (atau di dev): preview admin (F6.7).
@@ -40,7 +42,9 @@ export default async function BrandAdminLayout({
           </div>
         </details>
       )}
-      {children}
+      <PermissionGate brandId={brand.id} canContent={can(admin.role, "content")} canBrand={can(admin.role, "brand")}>
+        {children}
+      </PermissionGate>
     </div>
   );
 }

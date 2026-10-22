@@ -40,7 +40,8 @@ model Brand {
   promos      Promo[]
   branches    Branch[]
   events      AnalyticsEvent[]
-  admins      AdminBrand[]              // untuk masa depan (admin per brand)
+  admins      AdminBrand[]              // akun non-Super Admin yang boleh mengelola brand ini
+  activities  AdminActivity[]
 }
 
 model Domain {
@@ -181,6 +182,8 @@ model AdminUser {
   brands       AdminBrand[]                      // relasi untuk admin-per-brand (masa depan)
   resetToken   String?
   resetExpires DateTime?
+  lastSeenAt   DateTime?                         // terakhir membuka Admin (diperbarui paling sering tiap 5 menit)
+  activities   AdminActivity[]
 }
 
 enum AdminRole {
@@ -196,6 +199,22 @@ model AdminBrand {
   admin   AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
   brand   Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
   @@id([adminId, brandId])
+}
+
+// Log perubahan yang dibuat akun Admin (F6.13). Nama disalin supaya log tetap terbaca setelah akun/brand dihapus.
+model AdminActivity {
+  id        String     @id @default(cuid())
+  adminId   String?
+  adminName String
+  brandId   String?
+  brandName String?
+  action    String     // kalimat pendek, mis. "mengubah Tempe jadi Habis"
+  createdAt DateTime   @default(now())
+  admin     AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  brand     Brand?     @relation(fields: [brandId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([brandId, createdAt])
 }
 
 // ---- ANALYTICS ----

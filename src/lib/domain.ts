@@ -72,3 +72,33 @@ export async function checkDns(hostname: string, expectedIp: string): Promise<Dn
     return { status: "ERROR", addresses: [], message: `Gagal resolve DNS (${reason}).` };
   }
 }
+
+export type SslCheck = { ok: boolean; message: string; validTo?: Date };
+
+const sslDate = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" });
+
+/** Cek sertifikat HTTPS langsung ke domain (port 443): sah untuk nama itu & belum kedaluwarsa. */
+export async function checkSsl(hostname: string, timeoutMs = 8000): Promise<SslCheck> {
+  const tls = await import("node:tls");
+  return new Promise((resolve) => {
+    const socket = tls.connect({ host: hostname, port: 443, servername: hostname, timeout: timeoutMs }, () => {
+      const cert = socket.getPeerCertificate();
+      const authorized = socket.authorized;
+      const reason = socket.authorizationError ? String(socket.authorizationError) : null;
+      socket.end();
+      const validTo = cert?.valid_to ? new Date(cert.valid_to) : undefined;
+      if (!authorized) return resolve({ ok: false, message: `Sertifikat SSL tidak sah (${reason ?? "tidak dikenal"}).`, validTo });
+      const days = validTo ? Math.floor((validTo.getTime() - Date.now()) / 86_400_000) : null;
+      resolve({
+        ok: true,
+        validTo,
+        message: validTo ? `SSL aktif, berlaku sampai ${sslDate.format(validTo)} (${days} hari lagi).` : "SSL aktif.",
+      });
+    });
+    socket.on("timeout", () => {
+      socket.destroy();
+      resolve({ ok: false, message: "HTTPS tidak merespons (port 443)." });
+    });
+    socket.on("error", (e: NodeJS.ErrnoException) => resolve({ ok: false, message: `HTTPS belum bisa dibuka (${e.code ?? e.message}).` }));
+  });
+}

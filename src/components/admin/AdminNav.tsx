@@ -53,15 +53,18 @@ function isActive(pathname: string, href: string, exact?: boolean) {
   return exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Menu utama di panel hitam (sidebar desktop & drawer HP). `muted` = bagian brand yang tidak dipakai template, per id brand. */
-export default function AdminNav({ muted = {} }: { muted?: Record<string, string[]> }) {
+/**
+ * Menu utama di panel hitam (sidebar desktop & drawer HP). `muted` = bagian brand yang tidak dipakai template, per id brand.
+ * `canDomains` = peran boleh membuka Domain & SSL (Super Admin).
+ */
+export default function AdminNav({ muted = {}, canDomains = true }: { muted?: Record<string, string[]>; canDomains?: boolean }) {
   const pathname = usePathname();
   const m = pathname.match(BRAND_RE);
   const brandId = m && m[1] !== "new" ? m[1] : null;
 
   return (
     <nav aria-label="Menu admin" className="flex flex-col gap-1.5">
-      {ITEMS.map((item) => {
+      {ITEMS.filter((item) => canDomains || item.icon !== "domain").map((item) => {
         const active = isActive(pathname, item.href, item.exact);
         return (
           <div key={item.href}>

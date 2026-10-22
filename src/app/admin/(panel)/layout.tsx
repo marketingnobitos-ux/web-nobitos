@@ -2,14 +2,9 @@ import Link from "next/link";
 import AdminNav from "@/components/admin/AdminNav";
 import BrandSwitcher from "@/components/admin/BrandSwitcher";
 import MobileDrawer, { Logo } from "@/components/admin/MobileDrawer";
-import { ROLE_LABEL, listAccessibleBrands, requireAdmin, type AdminIdentity } from "@/lib/admin";
+import { ROLE_LABEL, can, initials, listAccessibleBrands, requireAdmin, type AdminIdentity } from "@/lib/admin";
 import { mutedBrandTabs } from "@/lib/template-features";
 import { logoutAction } from "./actions";
-
-function initials(name: string) {
-  const parts = name.replace(/@.*/, "").split(/[\s._-]+/).filter(Boolean);
-  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "A";
-}
 
 /** Profil akun + tombol Keluar di bawah panel hitam. */
 function ProfileCard({ admin }: { admin: AdminIdentity }) {
@@ -48,7 +43,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const muted = Object.fromEntries(brands.map((b) => [b.id, mutedBrandTabs(b.template)]));
   const panel = (
     <>
-      <AdminNav muted={muted} />
+      <AdminNav muted={muted} canDomains={can(admin.role, "super")} />
       <ProfileCard admin={admin} />
     </>
   );

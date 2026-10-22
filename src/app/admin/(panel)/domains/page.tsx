@@ -2,7 +2,8 @@ import type { DomainStatus } from "@prisma/client";
 import ActionForm from "@/components/admin/ActionForm";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
 import { Card, Checkbox, PageHeader, PublishBadge, Select, TextField } from "@/components/admin/fields";
-import { listAccessibleBrands, requireAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
+import { can, listAccessibleBrands, requireAdmin } from "@/lib/admin";
 import { serverIp } from "@/lib/domain";
 import { prisma } from "@/lib/prisma";
 import { checkDomainStatus, createDomain, deleteDomain, setDomainActive, updateDomain } from "./actions";
@@ -11,7 +12,7 @@ export const metadata = { title: "Domain & SSL" };
 
 const STATUS: Record<DomainStatus, { label: string; cls: string; hint: string }> = {
   PENDING: { label: "PENDING", cls: "bg-amber-100 text-amber-800", hint: "DNS belum mengarah ke server." },
-  VERIFIED: { label: "VERIFIED", cls: "bg-blue-100 text-blue-800", hint: "DNS sudah benar. Pasang SSL lalu tandai aktif." },
+  VERIFIED: { label: "VERIFIED", cls: "bg-blue-100 text-blue-800", hint: "DNS sudah benar, SSL belum terbaca. Pasang Certbot di server lalu klik \"Cek DNS & SSL\"." },
   ACTIVE: { label: "ACTIVE", cls: "bg-green-100 text-green-800", hint: "Tayang dengan HTTPS." },
   ERROR: { label: "ERROR", cls: "bg-red-100 text-red-800", hint: "Domain gagal di-resolve." },
 };
@@ -19,6 +20,7 @@ const STATUS: Record<DomainStatus, { label: string; cls: string; hint: string }>
 // Kelola domain per brand (PRD Bagian 10.4).
 export default async function AdminDomainsPage() {
   const admin = await requireAdmin();
+  if (!can(admin.role, "super")) redirect("/admin");
   const accessible = await listAccessibleBrands(admin);
   const brands = await prisma.brand.findMany({
     where: { id: { in: accessible.map((b) => b.id) } },
@@ -124,7 +126,7 @@ export default async function AdminDomainsPage() {
 
                     <div className="flex flex-wrap items-start gap-3">
                       {ip && (
-                        <ActionForm action={checkDomainStatus.bind(null, d.id)} submitLabel="Cek status" className="flex flex-wrap items-center gap-3">
+                        <ActionForm action={checkDomainStatus.bind(null, d.id)} submitLabel="Cek DNS & SSL" className="flex flex-wrap items-center gap-3">
                           {null}
                         </ActionForm>
                       )}

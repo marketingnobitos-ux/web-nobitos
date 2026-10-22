@@ -1,14 +1,21 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { assertBrandAccess, requireAdmin, type AdminIdentity } from "@/lib/admin";
+import { assertBrandAccess, logActivity, requireAdmin, requirePermission, type AdminIdentity } from "@/lib/admin";
 import { actionError } from "@/lib/admin-action";
 import { invalidateBrandCache } from "@/lib/brand";
-import { checkDns, cleanHostname, hostnameError, serverIp } from "@/lib/domain";
+import { checkDns, checkSsl, cleanHostname, hostnameError, serverIp } from "@/lib/domain";
 import { prisma } from "@/lib/prisma";
 import type { ActionState } from "@/lib/validation";
 
 const PATH = "/admin/domains";
+
+/** Domain & SSL hanya untuk Super Admin. */
+async function requireSuper(): Promise<AdminIdentity> {
+  const admin = await requireAdmin();
+  requirePermission(admin, "super");
+  return admin;
+}
 
 function done(message?: string): ActionState {
   invalidateBrandCache(); // pemetaan domain -> brand langsung berlaku
@@ -45,7 +52,7 @@ async function saveDomain(domainId: string | null, data: { hostname: string; bra
 
 export async function createDomain(_prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
-    const admin = await requireAdmin();
+    const admin = await requireSuper();
     const data = readForm(formData);
     const invalid = hostnameError(data.hostname);
     if (invalid) return { error: invalid };
@@ -58,7 +65,8 @@ export async function createDomain(_prev: ActionState, formData: FormData): Prom
     // Domain pertama sebuah brand otomatis jadi domain utama.
     const count = await prisma.domain.count({ where: { brandId: data.brandId } });
     await saveDomain(null, { ...data, isPrimary: data.isPrimary || count === 0 });
-    return done(`${data.hostname} ditambahkan (status PENDING). Arahkan DNS lalu klik "Cek status".`);
+    await logActivity(admin, data.brandId, `menambah domain ${data.hostname}`);
+    return done(`${data.hostname} ditambahkan (status PENDING). Arahkan DNS lalu klik "Cek DNS & SSL".`);
   } catch (e) {
     return actionError(e);
   }
@@ -66,7 +74,7 @@ export async function createDomain(_prev: ActionState, formData: FormData): Prom
 
 export async function updateDomain(domainId: string, _prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
-    const admin = await requireAdmin();
+    const admin = await requireSuper();
     const old = await findDomain(admin, domainId);
     const data = readForm(formData);
     const invalid = hostnameError(data.hostname);
@@ -81,6 +89,7 @@ export async function updateDomain(domainId: string, _prev: ActionState, formDat
     const reset = old.hostname !== data.hostname ? { status: "PENDING" as const, sslIssued: false } : {};
     await saveDomain(domainId, data);
     if (Object.keys(reset).length) await prisma.domain.update({ where: { id: domainId }, data: reset });
+    await logActivity(admin, data.brandId, `mengubah domain ${data.hostname}`);
     return done("Domain disimpan.");
   } catch (e) {
     return actionError(e);
@@ -88,28 +97,30 @@ export async function updateDomain(domainId: string, _prev: ActionState, formDat
 }
 
 export async function deleteDomain(domainId: string): Promise<void> {
-  const admin = await requireAdmin();
-  await findDomain(admin, domainId);
+  const admin = await requireSuper();
+  const domain = await findDomain(admin, domainId);
   await prisma.domain.delete({ where: { id: domainId } });
+  await logActivity(admin, domain.brandId, `menghapus domain ${domain.hostname}`);
   done();
 }
 
 export async function checkDomainStatus(domainId: string, _prev: ActionState): Promise<ActionState> {
   try {
-    const admin = await requireAdmin();
+    const admin = await requireSuper();
     const domain = await findDomain(admin, domainId);
     const ip = serverIp();
     if (!ip) return { error: "SERVER_IP belum diisi di .env." };
 
     const result = await checkDns(domain.hostname, ip);
-    // ACTIVE tetap ACTIVE selama DNS masih mengarah ke server.
-    const status = domain.status === "ACTIVE" && result.status === "VERIFIED" ? "ACTIVE" : result.status;
-    await prisma.domain.update({
-      where: { id: domainId },
-      data: { status, ...(status !== "ACTIVE" ? { sslIssued: false } : {}) },
-    });
+    // DNS benar -> cek SSL otomatis: sertifikat sah = ACTIVE, belum = VERIFIED (pasang Certbot dulu).
+    const ssl = result.status === "VERIFIED" ? await checkSsl(domain.hostname) : null;
+    const status = ssl?.ok ? "ACTIVE" : result.status;
+    await prisma.domain.update({ where: { id: domainId }, data: { status, sslIssued: !!ssl?.ok } });
+    if (status !== domain.status) await logActivity(admin, domain.brandId, `cek domain ${domain.hostname}: ${domain.status} → ${status}`);
+    invalidateBrandCache();
     revalidatePath(PATH);
-    return result.status === "ERROR" ? { error: `${status}: ${result.message}` } : { ok: true, message: `${status}: ${result.message}` };
+    const message = `${status}: ${result.message}${ssl ? ` ${ssl.message}` : ""}`;
+    return result.status === "ERROR" ? { error: message } : { ok: true, message };
   } catch (e) {
     return actionError(e);
   }
@@ -117,12 +128,13 @@ export async function checkDomainStatus(domainId: string, _prev: ActionState): P
 
 /** Tandai ACTIVE (SSL sudah terpasang di server) atau kembalikan ke VERIFIED. */
 export async function setDomainActive(domainId: string, active: boolean): Promise<void> {
-  const admin = await requireAdmin();
+  const admin = await requireSuper();
   const domain = await findDomain(admin, domainId);
   if (active && domain.status !== "VERIFIED") return; // harus lolos cek DNS dulu
   await prisma.domain.update({
     where: { id: domainId },
     data: active ? { status: "ACTIVE", sslIssued: true } : { status: "VERIFIED", sslIssued: false },
   });
+  await logActivity(admin, domain.brandId, `menandai domain ${domain.hostname} ${active ? "ACTIVE" : "VERIFIED"}`);
   done();
 }

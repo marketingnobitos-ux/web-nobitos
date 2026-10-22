@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireBrandAdmin } from "@/lib/admin";
+import { logActivity, requireBrandAdmin } from "@/lib/admin";
 import { actionError } from "@/lib/admin-action";
 import { summarizeWeek } from "@/lib/hours";
 import { prisma } from "@/lib/prisma";
@@ -22,10 +22,11 @@ function parseBranch(formData: FormData) {
 
 export async function createBranch(brandId: string, _prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
-    await requireBrandAdmin(brandId);
+    const admin = await requireBrandAdmin(brandId, "brand");
     const parsed = parseBranch(formData);
     if (!parsed.success) return { error: parsed.error };
     await prisma.branch.create({ data: { ...parsed.data, brandId, hours: { create: parsed.hours } } });
+    await logActivity(admin, brandId, `menambah cabang "${parsed.data.name}"`);
     revalidatePath(branchesPath(brandId));
   } catch (e) {
     return actionError(e);
@@ -35,7 +36,7 @@ export async function createBranch(brandId: string, _prev: ActionState, formData
 
 export async function updateBranch(brandId: string, branchId: string, _prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
-    await requireBrandAdmin(brandId);
+    const admin = await requireBrandAdmin(brandId, "brand");
     const parsed = parseBranch(formData);
     if (!parsed.success) return { error: parsed.error };
     // Jam diganti utuh: hari yang dikosongkan di form ikut terhapus.
@@ -44,6 +45,7 @@ export async function updateBranch(brandId: string, branchId: string, _prev: Act
       prisma.branchHours.deleteMany({ where: { branchId } }),
       prisma.branchHours.createMany({ data: parsed.hours.map((h) => ({ ...h, branchId })) }),
     ]);
+    await logActivity(admin, brandId, `mengubah lokasi/jam cabang "${parsed.data.name}"`);
     revalidatePath(branchesPath(brandId));
     return { ok: true, message: "Cabang disimpan." };
   } catch (e) {
@@ -52,8 +54,9 @@ export async function updateBranch(brandId: string, branchId: string, _prev: Act
 }
 
 export async function deleteBranch(brandId: string, branchId: string): Promise<void> {
-  await requireBrandAdmin(brandId);
-  await prisma.branch.delete({ where: { id: branchId, brandId } });
+  const admin = await requireBrandAdmin(brandId, "brand");
+  const branch = await prisma.branch.delete({ where: { id: branchId, brandId } });
+  await logActivity(admin, brandId, `menghapus cabang "${branch.name}"`);
   revalidatePath(branchesPath(brandId));
   redirect(branchesPath(brandId));
 }
