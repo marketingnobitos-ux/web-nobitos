@@ -29,7 +29,7 @@
 
 | # | Halaman | Domain | Template | Status 22 Okt 2026 | Fase |
 |---|---|---|---|---|---|
-| 1 | Admin | nobitos.web.id | — | **Live, lengkap** (Dashboard, Brand, Konten, Menu, Galeri, Promo, Cabang, Domain, Pengaturan). Perbaikan F6 dikerjakan setelah semua web brand selesai (keputusan Fran 22 Okt) | F6 |
+| 1 | Admin | nobitos.web.id | — | **Live, lengkap**. Perbaikan F6.1–F6.11 selesai 23 Okt di `6ce5ac7` (lokal, **belum deploy**); sisa F6.4 & F6.8b menunggu Fran | F6 |
 | 2 | Pecel Lele Sambel Dadak Aminoto | pecelleleaminoto.web.id | DADAK | **Live, selesai** 22 Okt (template baru + isi asli) | F4 ✓ |
 | 3 | Bolu Sunyaragi | bolusunyaragi.web.id | EDITORIAL | **Live, selesai** 22 Okt (SEO, alamat lengkap, Lighthouse) | F5 ✓ |
 | 4 | Bakmi Jowo Anglo Pak Joko | bakmijowopakjoko.web.id | ANGLO | **Live, selesai** 22 Okt (F1.2 foto dibatalkan, tetap ilustrasi) | F1 ✓ |
@@ -41,6 +41,7 @@
 Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fondasi F0. F2.7 (platform: JS 22 Okt, CSS/font per template + tanpa `loading.tsx` 23 Okt) selesai di lokal, belum deploy. Halaman status untuk dibagikan: artifact "Progres Web Nobitos" https://claude.ai/artifact/FyjRejwbC5L5ep5URSRpik (perbarui setiap ada task selesai).
 
 **Menunggu Fran 🙋**
+- Admin F6 (`6ce5ac7`): ikut push bersama F2.7, tanpa migrasi/seed. Sesudah deploy: buka Admin di HP, coba Preview brand Draft (harus ada banner "Mode preview"), cek halaman Kesehatan SEO.
 - F2.7: izin push `8e720c8` lalu rumus update di VPS (tanpa migrasi/seed). Sesudah deploy: cek live Beranda 5 domain + 1 URL `/menu/<id-salah>` di Bolu harus 404.
 - APW: Lighthouse 84 (target 85). Sisa penyebab = animasi masuk foto sajian hero (`gr-dish-in`, LCP menunggu animasi). Opsi: foto pertama langsung tampil tanpa animasi masuk (tampilan berubah sedikit) atau biarkan.
 - APW: putuskan perubahan TUNGKU yang belum di-commit di folder kerja (APW sudah pindah ke GERABAH, jadi kemungkinan dibuang); kirim file foto/video asli tanpa watermark & foto bebek panggang ([CEK] di `BRIEF-APW.md`).
@@ -53,7 +54,7 @@ Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fonda
 **Dikerjakan Claude (urut, setelah keputusan di atas)**
 1. ~~Platform F2.7 sisa~~ — selesai 23 Okt (`8e720c8`), tinggal deploy.
 2. ~~Sayur Lodeh Bu Joko: F3.2–F3.6~~ — ditahan 23 Okt sampai Fran menyatakan operasional brand siap.
-3. Admin F6.1–F6.11 (rincian klik, kesehatan SEO, form IG/TikTok & jam 7 hari, preview draf, dll).
+3. ~~Admin F6.1–F6.11~~ — selesai 23 Okt (`6ce5ac7`), tinggal deploy (tanpa migrasi DB). Sisa: F6.4 & F6.8b (🙋 Fran).
 4. QA akhir & serah terima F7.
 
 ---
@@ -131,22 +132,22 @@ Sumber: IG @sayurlodeh.bujoko · Lokasi: Jl. Kartini No.4, Kebonbaru (sama denga
 > Keputusan Fran 22 Okt 2026: selesaikan web semua brand dulu (F1–F5), baru Admin.
 
 - [x] Dashboard analitik, kelola Brand/Konten/Menu/Galeri/Promo/Cabang/Domain, Pengaturan — sudah ada (Milestone 4–6).
-- [ ] **F6.1** Dashboard: tambah rincian klik per jenis (WA / Maps / telepon / IG) dan per cabang, memakai penamaan F0.6. Sekarang baru "Top klik" gabungan.
-- [ ] **F6.2** Halaman "Kesehatan SEO" (read-only) per brand: meta ada?, sitemap bisa diakses?, JSON-LD valid?, domain ACTIVE + SSL, skor Lighthouse terakhir.
+- [x] **F6.1** Dashboard: tambah rincian klik per jenis (WA / Maps / telepon / IG) dan per cabang, memakai penamaan F0.6. Sekarang baru "Top klik" gabungan. — 23 Okt 2026, `6ce5ac7` (kartu "Klik per jenis" kontak/navigasi + "Klik kontak per cabang" WA/Maps/Telp, tombol rentang 7/30/90 hari)
+- [x] **F6.2** Halaman "Kesehatan SEO" (read-only) per brand: meta ada?, sitemap bisa diakses?, JSON-LD valid?, domain ACTIVE + SSL, skor Lighthouse terakhir. — 23 Okt 2026, `6ce5ac7` (`/admin/seo`: cek live beranda/title/description/canonical/og:image/noindex/JSON-LD/sitemap/robots + domain & SSL dari DB. Lighthouse tidak diukur otomatis: tombol "Ukur di PageSpeed")
 - [x] **F6.3** `noindex` admin, rate-limit login, script `npm run admin:set-password` — sudah ada.
-- [ ] **F6.3b** Tulis cara reset password di README (1 perintah VPS).
+- [x] **F6.3b** Tulis cara reset password di README (1 perintah VPS). — 23 Okt 2026, `6ce5ac7` (`README.md` baru)
 - [ ] **F6.4** 🙋 Panduan singkat untuk Fran: daftar Google Search Console per domain + submit sitemap, hubungkan ke Google Business Profile tiap cabang.
 
 **Hasil audit Admin 22 Okt 2026** (preview lokal, login Super Admin, semua halaman panel dibuka; tidak ada error console, tidak ada scroll horizontal). Satu task = satu sesi, urut prioritas:
 
-- [ ] **F6.5** Form Brand (`brands/BrandForm.tsx` + `lib/validation.ts`): tambah field `instagramUrl`, `tiktokUrl`, `servesCuisine` (satu per baris). Sekarang kolom F0.4 ini hanya bisa diisi lewat script seed, jadi Aminoto/APW tidak bisa melengkapi link sosial & JSON-LD dari Admin. Simpan → `invalidateBrandCache()`.
-- [ ] **F6.6** Form Cabang (`branches/BranchForm.tsx` + actions): editor jam buka 7 hari (Senin–Minggu: jam buka, jam tutup, centang libur) yang menulis ke tabel `BranchHours`. Sekarang Admin hanya punya teks bebas `openHours`, sedangkan badge "Buka sekarang" dan JSON-LD membaca `BranchHours`. Teks `openHours` tetap ada sebagai keterangan tampilan. Daftar cabang menampilkan tanda "Jam 7 hari belum lengkap".
-- [ ] **F6.7** Preview brand draft di produksi: brand yang belum publish atau belum punya domain (contoh APW) tidak bisa dilihat sama sekali di produksi (preview `?brand=` / `/preview/<slug>` mati saat `NODE_ENV=production`, dan `resolveBrandSlugByHost` hanya brand `isPublished`). Buat preview khusus admin yang sudah login (mis. `/preview/<slug>` diizinkan bila sesi admin valid, halaman diberi `noindex` + banner "Mode preview"). Tombol "Lihat situs ↗" di header brand jadi "Preview ↗" saat draft/tanpa domain.
-- [ ] **F6.8** Konten Halaman sesuai template: tab ini menampilkan semua section (termasuk "template Editorial") untuk semua brand. Tampilkan hanya section yang dipakai template brand itu. Untuk ANGLO (Pak Joko) & TUNGKU (APW), teks hero/cerita masih dikunci di `src/data/brands/*.ts`: tampilkan catatan "Teks halaman ini diatur di kode" supaya admin tidak mengisi form yang tidak berpengaruh.
+- [x] **F6.5** Form Brand (`brands/BrandForm.tsx` + `lib/validation.ts`): tambah field `instagramUrl`, `tiktokUrl`, `servesCuisine` (satu per baris). Sekarang kolom F0.4 ini hanya bisa diisi lewat script seed, jadi Aminoto/APW tidak bisa melengkapi link sosial & JSON-LD dari Admin. Simpan → `invalidateBrandCache()`. — 23 Okt 2026, `6ce5ac7` (Form Brand dikelompokkan (Identitas, Logo, Tampilan, Sosial & data Google, Status); validasi link https instagram.com/tiktok.com)
+- [x] **F6.6** Form Cabang (`branches/BranchForm.tsx` + actions): editor jam buka 7 hari (Senin–Minggu: jam buka, jam tutup, centang libur) yang menulis ke tabel `BranchHours`. Sekarang Admin hanya punya teks bebas `openHours`, sedangkan badge "Buka sekarang" dan JSON-LD membaca `BranchHours`. Teks `openHours` tetap ada sebagai keterangan tampilan. Daftar cabang menampilkan tanda "Jam 7 hari belum lengkap". — 23 Okt 2026, `6ce5ac7` (`HoursEditor` + simpan ulang `BranchHours` dalam satu transaksi; teks jam otomatis bila kosong & jamnya seragam; daftar cabang menandai jam/WA/Maps)
+- [x] **F6.7** Preview brand draft di produksi: brand yang belum publish atau belum punya domain (contoh APW) tidak bisa dilihat sama sekali di produksi (preview `?brand=` / `/preview/<slug>` mati saat `NODE_ENV=production`, dan `resolveBrandSlugByHost` hanya brand `isPublished`). Buat preview khusus admin yang sudah login (mis. `/preview/<slug>` diizinkan bila sesi admin valid, halaman diberi `noindex` + banner "Mode preview"). Tombol "Lihat situs ↗" di header brand jadi "Preview ↗" saat draft/tanpa domain. — 23 Okt 2026, `6ce5ac7` (middleware: preview `/preview/<slug>` & cookie preview di host admin hanya untuk sesi admin, `X-Robots-Tag: noindex`, banner "Mode preview", tanpa Tracker. Belum diuji di produksi (perlu deploy))
+- [x] **F6.8** Konten Halaman sesuai template: tab ini menampilkan semua section (termasuk "template Editorial") untuk semua brand. Tampilkan hanya section yang dipakai template brand itu. Untuk ANGLO (Pak Joko) & TUNGKU (APW), teks hero/cerita masih dikunci di `src/data/brands/*.ts`: tampilkan catatan "Teks halaman ini diatur di kode" supaya admin tidak mengisi form yang tidak berpengaruh. — 23 Okt 2026, `6ce5ac7` (peta pemakaian per template di `src/lib/template-features.ts`; tab yang tidak dipakai template tampil redup + catatan di Galeri/Promo/Cabang Anglo)
 - [ ] **F6.8b** 🙋 Fran putuskan: perlukah teks ANGLO/TUNGKU dipindah dari `src/data/brands/*.ts` ke DB supaya bisa diubah dari Admin? (Lebih besar: perlu section baru per template + migrasi isi.)
-- [ ] **F6.9** Menu harian lebih cepat: di daftar menu, tombol langsung "Tersedia/Habis" dan "Andalan" tanpa buka form per item; urutan item lewat tombol naik/turun (bukan isi angka). Gambar thumbnail daftar pakai `loading="lazy"`.
-- [ ] **F6.10** Kelengkapan data per brand: di kartu daftar Brand dan header brand, tampilkan badge kekurangan (IG/TikTok kosong, jam 7 hari belum lengkap, cabang tanpa WA/Maps, menu tanpa foto, domain belum ACTIVE). Bisa digabung dengan F6.2 bila dikerjakan bersamaan.
-- [ ] **F6.11** Admin di HP: di layar < 1024px sidebar jadi blok ±200px (menu + "Keluar" 2 baris) sebelum konten. Jadikan bar atas ringkas (menu bisa digeser, "Keluar" pindah ke header kanan). Cek di 375px.
+- [x] **F6.9** Menu harian lebih cepat: di daftar menu, tombol langsung "Tersedia/Habis" dan "Andalan" tanpa buka form per item; urutan item lewat tombol naik/turun (bukan isi angka). Gambar thumbnail daftar pakai `loading="lazy"`. — 23 Okt 2026, `6ce5ac7` (tombol status & ▲▼ untuk item dan kategori; field Urutan dihapus dari form menu (item baru masuk paling bawah))
+- [x] **F6.10** Kelengkapan data per brand: di kartu daftar Brand dan header brand, tampilkan badge kekurangan (IG/TikTok kosong, jam 7 hari belum lengkap, cabang tanpa WA/Maps, menu tanpa foto, domain belum ACTIVE). Bisa digabung dengan F6.2 bila dikerjakan bersamaan. — 23 Okt 2026, `6ce5ac7` (`src/lib/brand-health.ts` + badge di daftar Brand & header brand; hanya cek data yang dipakai template (mis. logo tidak dicek untuk Anglo/Dadak, foto hanya menu andalan))
+- [x] **F6.11** Admin di HP: di layar < 1024px sidebar jadi blok ±200px (menu + "Keluar" 2 baris) sebelum konten. Jadikan bar atas ringkas (menu bisa digeser, "Keluar" pindah ke header kanan). Cek di 375px. — 23 Okt 2026, `6ce5ac7` (bar atas HP ±84px (menu geser + Keluar kanan), cek 375px tanpa geser horizontal di 12 halaman admin)
 
 ## F7 — QA akhir & serah terima · 14 – 18 Des
 
