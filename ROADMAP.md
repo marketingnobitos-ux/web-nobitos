@@ -34,7 +34,7 @@
 | 3 | Bolu Sunyaragi | bolusunyaragi.web.id | EDITORIAL | **Live, selesai** 22 Okt (SEO, alamat lengkap, Lighthouse) | F5 ✓ |
 | 4 | Bakmi Jowo Anglo Pak Joko | bakmijowopakjoko.web.id | ANGLO | **Live, selesai** 22 Okt (F1.2 foto dibatalkan, tetap ilustrasi) | F1 ✓ |
 | 5 | Ayam Panggang Wicaksono | ayampanggangwicaksono.web.id | GERABAH | **Live** 22 Okt (template baru referensi Daily Dishes Lab, foto TikTok resmi, menu 20 item, hanya cabang Kesambi). F2.7 (platform) selesai 23 Okt di `8e720c8`, **belum deploy**; draf TUNGKU yang belum di-commit menunggu keputusan Fran | F2 |
-| 6 | Sayur Lodeh Bu Joko | belum ada 🙋 | baru | Belum mulai; fakta awal: satu lokasi dengan Bakmi Kartini, buka 06.00–12.00, mulai 7 ribuan | F3 |
+| 6 | Sayur Lodeh Bu Joko | belum ada 🙋 | baru | **Ditahan** sejak 23 Okt (keputusan Fran: operasional brand masih dibenahi). Riset IG selesai di `BRIEF-Bu-Joko.md`, [CEK] jam/harga/nama belum dijawab | F3 ⏸ |
 
 ## PR — yang belum selesai (diperbarui 22 Okt 2026)
 
@@ -52,7 +52,7 @@ Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fonda
 
 **Dikerjakan Claude (urut, setelah keputusan di atas)**
 1. ~~Platform F2.7 sisa~~ — selesai 23 Okt (`8e720c8`), tinggal deploy.
-2. Sayur Lodeh Bu Joko: F3.2–F3.6.
+2. ~~Sayur Lodeh Bu Joko: F3.2–F3.6~~ — ditahan 23 Okt sampai Fran menyatakan operasional brand siap.
 3. Admin F6.1–F6.11 (rincian klik, kesehatan SEO, form IG/TikTok & jam 7 hari, preview draf, dll).
 4. QA akhir & serah terima F7.
 
@@ -106,7 +106,9 @@ Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampangg
 Sumber: IG @sayurlodeh.bujoko · Lokasi: Jl. Kartini No.4, Kebonbaru (sama dengan Bakmi Pak Joko Kartini, beda jam).
 
 - [ ] **F3.1** 🙋 Fran beli domain (usulan: `dapurbujoko.web.id`) + A record ke 43.129.49.26.
-- [ ] **F3.2** Riset IG → `BRIEF-Bu-Joko.md`. 🙋 Konfirmasi jam buka pagi & harga.
+> **Ditahan sejak 23 Okt 2026** (Fran: operasional brand masih dibenahi). Lanjut hanya setelah Fran menyatakan brand siap.
+
+- [ ] **F3.2** Riset IG → `BRIEF-Bu-Joko.md`. 🙋 Konfirmasi jam buka pagi & harga. — Riset selesai 23 Okt (`BRIEF-Bu-Joko.md`): jam bentrok antar sumber (lokasi 06.00–14.00, bio IG 05.00–12.00, Fran 06.00–12.00), harga resmi baru paket Nasi + Sayur Lodeh + Gorengan Rp7.000. Konfirmasi Fran ditunda bersama hold.
 - [ ] **F3.3** Usulkan 2–3 referensi desain (nuansa pagi, rumahan). 🙋 Fran pilih.
 - [ ] **F3.4** Template + halaman → screenshot → 🙋 cek.
 - [ ] **F3.5** Animasi + F0 + notice timbal balik: Bu Joko ↔ Bakmi Pak Joko ("sore di tempat yang sama").
