@@ -118,6 +118,58 @@ export function Card({ title, children, actions }: { title?: string; children: R
   );
 }
 
+/** Kelompok field dalam satu form, dengan judul kecil & garis pemisah. */
+export function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
+  return (
+    // first-of-type, bukan first: server action menyisipkan <input hidden> di awal form.
+    <fieldset className="space-y-4 border-t border-gray-100 pt-6 first-of-type:border-0 first-of-type:pt-0">
+      <legend className="sr-only">{title}</legend>
+      <div aria-hidden>
+        <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">{title}</p>
+        {description && <p className="mt-1 text-sm text-gray-600">{description}</p>}
+      </div>
+      {children}
+    </fieldset>
+  );
+}
+
+const NOTICE_TONE = {
+  info: "border-sky-200 bg-sky-50 text-sky-900",
+  warn: "border-amber-200 bg-amber-50 text-amber-900",
+  muted: "border-gray-200 bg-gray-50 text-gray-700",
+};
+
+/** Kotak catatan (mis. "bagian ini diatur di kode"). */
+export function Notice({
+  tone = "info",
+  title,
+  children,
+}: {
+  tone?: keyof typeof NOTICE_TONE;
+  title?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div role="note" className={`rounded-lg border px-4 py-3 text-sm ${NOTICE_TONE[tone]}`}>
+      {title && <p className="font-semibold">{title}</p>}
+      <div className={title ? "mt-1 space-y-1" : "space-y-1"}>{children}</div>
+    </div>
+  );
+}
+
+/** Judul halaman + aksi di kanan (tombol tambah, dll). */
+export function PageHeader({ title, description, actions }: { title: string; description?: React.ReactNode; actions?: React.ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="min-w-0">
+        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+        {description && <p className="mt-1 text-sm text-gray-600">{description}</p>}
+      </div>
+      {actions}
+    </div>
+  );
+}
+
 export function PublishBadge({ published }: { published: boolean }) {
   return published ? (
     <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Tayang</span>

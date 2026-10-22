@@ -165,25 +165,70 @@ export async function getTopPages(brandIds: string[], range: DateRange, limit = 
   return rows.map((r) => ({ label: r.label, count: n(r.count) }));
 }
 
-// Nama event lama (sebelum F0.6) diterjemahkan ke nama baru lalu dijumlah ulang, jadi limit dipotong setelahnya.
-export async function getTopClicks(brandIds: string[], range: DateRange, limit = 10) {
+type ClickCount = { brandId: string; label: string; count: number };
+
+/** Semua klik per brand & nama event, nama lama (sebelum F0.6) sudah diterjemahkan ke nama baru lalu dijumlah ulang. */
+async function getClickCounts(brandIds: string[], range: DateRange): Promise<ClickCount[]> {
   if (!brandIds.length) return [];
   const [rows, branches] = await Promise.all([
-    prisma.$queryRaw<{ label: string; count: bigint }[]>`
-      SELECT target AS label, COUNT(*) AS count
+    prisma.$queryRaw<{ brandId: string; label: string; count: bigint }[]>`
+      SELECT "brandId", target AS label, COUNT(*) AS count
       FROM "AnalyticsEvent"
       WHERE type = 'click' AND target IS NOT NULL AND ${brandSql(brandIds)} AND ${rangeSql(range)}
-      GROUP BY target`,
+      GROUP BY "brandId", target`,
     prisma.branch.findMany({ where: { brandId: { in: brandIds } }, select: { id: true, name: true } }),
   ]);
   const slugById = new Map(branches.map((b) => [b.id, branchKey(b.name)]));
-  const totals = new Map<string, number>();
+  const totals = new Map<string, ClickCount>();
   for (const r of rows) {
     const label = normalizeTarget(r.label, slugById);
-    totals.set(label, (totals.get(label) ?? 0) + n(r.count));
+    const key = `${r.brandId}\u0000${label}`;
+    const prev = totals.get(key);
+    totals.set(key, { brandId: r.brandId, label, count: (prev?.count ?? 0) + n(r.count) });
   }
+  return [...totals.values()];
+}
+
+const byCountDesc = <T extends { count: number; label: string }>(a: T, b: T) => b.count - a.count || a.label.localeCompare(b.label);
+
+export async function getTopClicks(brandIds: string[], range: DateRange, limit = 10) {
+  const totals = new Map<string, number>();
+  for (const c of await getClickCounts(brandIds, range)) totals.set(c.label, (totals.get(c.label) ?? 0) + c.count);
   return [...totals]
     .map(([label, count]) => ({ label, count }))
-    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+    .sort(byCountDesc)
     .slice(0, limit);
+}
+
+/** Jenis klik yang menghubungi cabang (dipecah per cabang di Dashboard). */
+export const CONTACT_KINDS = ["wa", "maps", "tel"] as const;
+type ContactKind = (typeof CONTACT_KINDS)[number];
+
+export type BranchClicks = { brandId: string; branch: string; wa: number; maps: number; tel: number; total: number };
+
+/**
+ * Rincian klik (ROADMAP F6.1): total per jenis (`wa`, `maps`, `ig`, `menu`, ...) dan klik kontak per cabang.
+ * Nama event mengikuti F0.6: `<jenis>_click[:<slug cabang>]`. Klik kontak tanpa cabang (tombol level brand) masuk cabang "".
+ */
+export async function getClickBreakdown(brandIds: string[], range: DateRange) {
+  const counts = await getClickCounts(brandIds, range);
+  const kinds = new Map<string, number>();
+  const branches = new Map<string, BranchClicks>();
+  for (const { brandId, label, count } of counts) {
+    const m = label.match(/^([a-z_]+?)_click(?::(.+))?$/);
+    const kind = m?.[1] ?? "lainnya";
+    kinds.set(kind, (kinds.get(kind) ?? 0) + count);
+    if (m && (CONTACT_KINDS as readonly string[]).includes(kind)) {
+      const branch = m[2] ?? "";
+      const key = `${brandId}\u0000${branch}`;
+      const row = branches.get(key) ?? { brandId, branch, wa: 0, maps: 0, tel: 0, total: 0 };
+      row[kind as ContactKind] += count;
+      row.total += count;
+      branches.set(key, row);
+    }
+  }
+  return {
+    byKind: [...kinds].map(([label, count]) => ({ label, count })).sort(byCountDesc),
+    byBranch: [...branches.values()].sort((a, b) => b.total - a.total || a.branch.localeCompare(b.branch)),
+  };
 }

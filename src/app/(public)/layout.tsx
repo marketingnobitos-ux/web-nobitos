@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import MotionProvider from "@/components/animations/MotionProvider";
 import { NoScriptReveal } from "@/components/animations/Reveal";
 import SmoothScroll from "@/components/animations/SmoothScroll";
@@ -18,8 +19,10 @@ import GerabahHeader from "@/components/templates/gerabah/GerabahHeader";
 import TungkuFooter from "@/components/templates/tungku/TungkuFooter";
 import TungkuHeader from "@/components/templates/tungku/TungkuHeader";
 import EditorialHeader from "@/components/templates/editorial/EditorialHeader";
+import PreviewBanner from "@/components/public/PreviewBanner";
 import Tracker from "@/components/public/Tracker";
 import { getActiveBrand, requireActiveBrand } from "@/lib/active-brand";
+import { ADMIN_PREVIEW_HEADER } from "@/lib/brand";
 import { darkTones } from "@/lib/color";
 import { isCompleteWeek } from "@/lib/hours";
 import { prisma } from "@/lib/prisma";
@@ -48,6 +51,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // Layout situs publik: menerapkan identitas brand aktif sebagai CSS variables.
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const brand = await requireActiveBrand();
+  // Preview admin di produksi (F6.7): tampilkan banner, jangan rekam analitik.
+  const adminPreview = (await headers()).get(ADMIN_PREVIEW_HEADER) === "1";
 
   const editorial = brand.template === "EDITORIAL";
   const anglo = brand.template === "ANGLO";
@@ -129,7 +134,7 @@ export default async function PublicLayout({ children }: { children: React.React
         <BackToTop />
       </MotionProvider>
       <SmoothScroll />
-      <Tracker brandSlug={brand.slug} />
+      {adminPreview ? <PreviewBanner brandName={brand.name} published={brand.isPublished} /> : <Tracker brandSlug={brand.slug} />}
     </TemplateFrame>
   );
 }

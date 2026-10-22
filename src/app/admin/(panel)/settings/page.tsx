@@ -1,6 +1,6 @@
 import ActionForm from "@/components/admin/ActionForm";
-import { Card, TextField } from "@/components/admin/fields";
-import { requireAdmin } from "@/lib/admin";
+import { Card, PageHeader, TextField } from "@/components/admin/fields";
+import { ROLE_LABEL, requireAdmin } from "@/lib/admin";
 import { changePassword, updateProfile } from "./actions";
 
 export const metadata = { title: "Pengaturan" };
@@ -10,11 +10,11 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Pengaturan</h1>
+      <PageHeader title="Pengaturan" description="Profil & password akun admin Anda." />
 
       <Card title="Profil">
         <p className="mb-4 text-sm text-gray-600">
-          Email: <strong>{admin.email}</strong> · Peran: {admin.role}
+          Email: <strong>{admin.email}</strong> · Peran: {ROLE_LABEL[admin.role]}
         </p>
         <ActionForm action={updateProfile}>
           <TextField label="Nama" name="name" defaultValue={admin.name} />

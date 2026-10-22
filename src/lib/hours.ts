@@ -10,7 +10,10 @@ export const DAY = { SENIN: 1, SELASA: 2, RABU: 3, KAMIS: 4, JUMAT: 5, SABTU: 6,
 export const SCHEMA_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
 
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
-const DAY_LABEL = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+/** Nama hari Indonesia, indeks = dayOfWeek - 1. */
+export const DAY_LABEL = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+export const isTime = (t: string) => TIME.test(t);
 
 /** Ketujuh hari terisi & jam yang buka valid. Jam belum lengkap tidak boleh dipakai (JSON-LD, status buka). */
 export function isCompleteWeek(hours: DayHours[]): boolean {
@@ -63,6 +66,25 @@ export function openStatus(hours: DayHours[], now: Date): OpenStatus | null {
     return { open: false, label: "Tutup", detail: `buka ${when} ${show(next.opens!)}` };
   }
   return { open: false, label: "Tutup", detail: "" };
+}
+
+/**
+ * Teks ringkas dari jam 7 hari, mis. "16.00 – 23.00, Rabu libur" atau "08.00 – 21.00 setiap hari".
+ * Null kalau jam belum lengkap atau jam buka berbeda antar hari (tulis manual).
+ */
+export function summarizeWeek(hours: DayHours[]): string | null {
+  if (!isCompleteWeek(hours)) return null;
+  const open = hours.filter((h) => !h.isClosed);
+  if (!open.length) return "Tutup sementara";
+  const [first] = open;
+  if (open.some((h) => h.opens !== first.opens || h.closes !== first.closes)) return null;
+  const range = `${show(first.opens!)} – ${show(first.closes!)}`;
+  const closed = hours
+    .filter((h) => h.isClosed)
+    .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
+    .map((h) => DAY_LABEL[h.dayOfWeek - 1]);
+  if (!closed.length) return `${range} setiap hari`;
+  return `${range}, ${closed.join(" & ")} libur`;
 }
 
 /** Jam sama setiap hari kecuali hari libur -> 7 baris (Senin..Minggu). */

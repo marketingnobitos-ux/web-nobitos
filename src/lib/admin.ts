@@ -7,6 +7,13 @@ import { prisma } from "@/lib/prisma";
 
 export type AdminIdentity = { id: string; email: string; name: string | null; role: AdminRole };
 
+export const ROLE_LABEL: Record<AdminRole, string> = {
+  SUPER_ADMIN: "Super Admin",
+  BRAND_ADMIN: "Admin Brand",
+  EDITOR: "Editor",
+  VIEWER: "Viewer",
+};
+
 /** Admin yang sedang login (dicek ulang ke DB), atau null. */
 export const getAdmin = cache(async (): Promise<AdminIdentity | null> => {
   const session = await auth();

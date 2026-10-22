@@ -12,7 +12,7 @@ export const metadata = { title: "Ubah Cabang" };
 export default async function EditBranchPage({ params }: { params: Promise<{ id: string; branchId: string }> }) {
   const { id, branchId } = await params;
   const brand = await getBrandForAdmin(id);
-  const branch = await prisma.branch.findFirst({ where: { id: branchId, brandId: brand.id } });
+  const branch = await prisma.branch.findFirst({ where: { id: branchId, brandId: brand.id }, include: { hours: true } });
   if (!branch) notFound();
 
   return (

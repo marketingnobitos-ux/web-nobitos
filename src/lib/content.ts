@@ -94,9 +94,10 @@ export const PAGE_SECTIONS: {
   {
     pageKey: "site",
     sectionKey: "social",
-    label: "Footer — Sosial media",
+    label: "Footer — Sosial media lain",
     fields: ["items"],
-    itemsHint: "Satu akun per baris: Nama | link. Contoh: Instagram | https://instagram.com/namaakun",
+    itemsHint:
+      "Instagram & TikTok diisi di Info Brand. Di sini akun lain, satu per baris: Nama | link. Contoh: Facebook | https://facebook.com/namaakun",
   },
   {
     pageKey: "gallery",

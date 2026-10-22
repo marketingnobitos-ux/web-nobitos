@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import type { BrandTemplate } from "@prisma/client";
 import {
+  ADMIN_PREVIEW_HEADER,
   BRAND_HEADER,
   PREVIEW_COOKIE,
   getBrandBySlugCached,
@@ -64,9 +65,10 @@ function isAdminPath(pathname: string): boolean {
 export const middleware = auth(async (req) => {
   const { pathname, searchParams } = req.nextUrl;
 
-  // Jangan percaya header brand kiriman klien.
+  // Jangan percaya header brand/preview kiriman klien.
   const headers = new Headers(req.headers);
   headers.delete(BRAND_HEADER);
+  headers.delete(ADMIN_PREVIEW_HEADER);
 
   const host = req.headers.get("host") ?? req.nextUrl.host;
   const adminHost = process.env.ADMIN_HOST;
@@ -85,10 +87,14 @@ export const middleware = auth(async (req) => {
     if (req.auth && isLogin) return NextResponse.redirect(new URL("/admin", req.nextUrl));
     return NextResponse.next({ request: { headers } });
   }
-  if (onAdminHost) return NextResponse.redirect(new URL("/admin", req.nextUrl));
+  // Preview di produksi (ROADMAP F6.7): hanya di host admin & hanya untuk admin yang sudah login, supaya brand
+  // Draft / tanpa domain bisa dicek sebelum tayang. Diberi noindex + banner "Mode preview".
+  const adminPreview = !PREVIEW_ENABLED && onAdminHost && !!req.auth;
+  if (adminPreview) headers.set(ADMIN_PREVIEW_HEADER, "1");
+  if (onAdminHost && !adminPreview) return NextResponse.redirect(new URL("/admin", req.nextUrl));
 
-  // --- Mode dev: ?brand=slug, /preview/slug/..., atau cookie preview ---
-  if (PREVIEW_ENABLED) {
+  // --- Mode preview: ?brand=slug, /preview/slug/..., atau cookie preview (dev, atau admin login di host admin) ---
+  if (PREVIEW_ENABLED || adminPreview) {
     const previewMatch = pathname.match(/^\/preview\/([^/]+)(\/.*)?$/);
     const querySlug = searchParams.get("brand");
     const overrideSlug = querySlug ?? previewMatch?.[1] ?? null;
@@ -105,8 +111,8 @@ export const middleware = auth(async (req) => {
       } else {
         res = NextResponse.next({ request: { headers } });
       }
-      res.cookies.set(PREVIEW_COOKIE, overrideSlug, { path: "/", sameSite: "lax", httpOnly: true });
-      return res;
+      res.cookies.set(PREVIEW_COOKIE, overrideSlug, { path: "/", sameSite: "lax", httpOnly: true, secure: adminPreview });
+      return noindex(res, adminPreview);
     }
 
     const cookieSlug = req.cookies.get(PREVIEW_COOKIE)?.value;
@@ -114,8 +120,10 @@ export const middleware = auth(async (req) => {
       const redirect = await templateRedirect(req, cookieSlug);
       if (redirect) return redirect;
       headers.set(BRAND_HEADER, cookieSlug);
-      return NextResponse.next({ request: { headers } });
+      return noindex(NextResponse.next({ request: { headers } }), adminPreview);
     }
+    // Host admin tanpa brand preview: kembali ke panel.
+    if (adminPreview) return NextResponse.redirect(new URL("/admin", req.nextUrl));
   }
 
   // --- Produksi: hostname -> brand ---
@@ -127,6 +135,12 @@ export const middleware = auth(async (req) => {
   headers.set(BRAND_HEADER, slug);
   return NextResponse.next({ request: { headers } });
 });
+
+/** Preview admin di produksi tidak boleh diindeks. */
+function noindex(res: NextResponse, on: boolean): NextResponse {
+  if (on) res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  return res;
+}
 
 function notFound(req: NextRequest, headers: Headers, clearPreview: boolean) {
   const url = req.nextUrl.clone();

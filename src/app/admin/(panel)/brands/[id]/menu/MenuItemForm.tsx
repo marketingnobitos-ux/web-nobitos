@@ -27,10 +27,9 @@ export default function MenuItemForm({ action, brandId, categories, item, defaul
         />
       </div>
       <TextArea label="Deskripsi" name="description" defaultValue={item?.description} rows={3} />
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <TextField label="Harga (Rp)" name="price" type="number" min={0} step={500} required defaultValue={item?.price} hint="Angka saja, mis. 25000" />
-        <TextField label="Porsi" name="portion" defaultValue={item?.portion} placeholder="1 porsi / 500 gr" />
-        <TextField label="Urutan" name="order" type="number" min={0} defaultValue={item?.order ?? 0} hint="Kecil tampil lebih dulu." />
+        <TextField label="Porsi" name="portion" defaultValue={item?.portion} placeholder="1 porsi / 500 gr" hint="Urutan diatur dengan tombol ▲▼ di daftar menu." />
       </div>
       <ImageField name="imageUrl" label="Foto menu" brandId={brandId} defaultValue={item?.imageUrl} />
       <div className="flex flex-wrap gap-6">

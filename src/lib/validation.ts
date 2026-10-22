@@ -1,5 +1,6 @@
 // Skema Zod untuk form admin + helper parsing FormData.
 import { z } from "zod";
+import { DAY_LABEL, isTime, type DayHours } from "@/lib/hours";
 
 export type ActionState = { ok?: boolean; error?: string; message?: string } | undefined;
 
@@ -39,6 +40,35 @@ export const imageUrl = z.preprocess(
     .nullable(),
 );
 
+/** Link profil sosial resmi: harus https di host yang diizinkan, mis. instagram.com. */
+const socialUrl = (label: string, hosts: RegExp, example: string) =>
+  z.preprocess(
+    emptyToNull,
+    z
+      .string()
+      .max(300)
+      .url(`${label} harus link lengkap, mis. ${example}`)
+      .refine((v) => {
+        try {
+          const u = new URL(v);
+          return u.protocol === "https:" && hosts.test(u.hostname);
+        } catch {
+          return false;
+        }
+      }, `${label} harus link https ke profil, mis. ${example}`)
+      .nullable(),
+  );
+
+/** Satu nilai per baris -> array tanpa baris kosong / duplikat. */
+const lines = (label: string, maxItems: number, maxLen: number) =>
+  z.preprocess(
+    (v) =>
+      typeof v === "string"
+        ? [...new Set(v.split("\n").map((s) => s.trim()).filter(Boolean))]
+        : [],
+    z.array(z.string().max(maxLen, `${label}: tiap baris maksimal ${maxLen} karakter.`)).max(maxItems, `${label} maksimal ${maxItems} baris.`),
+  );
+
 const hexColor = (label: string) => z.preprocess(trimmed, z.string().regex(/^#[0-9a-fA-F]{6}$/, `${label} harus format #RRGGBB.`));
 
 // Tanggal dari <input type="date"> ditafsirkan sebagai zona WIB.
@@ -67,6 +97,9 @@ export const brandSchema = z.object({
   fontHeading: nullableText("Font judul", 100),
   fontBody: nullableText("Font isi", 100),
   template: z.enum(["BOLD", "EDITORIAL", "ANGLO", "TUNGKU", "DADAK", "GERABAH"], { message: "Template tampilan tidak dikenal." }),
+  instagramUrl: socialUrl("Link Instagram", /^(www\.)?instagram\.com$/i, "https://www.instagram.com/namaakun"),
+  tiktokUrl: socialUrl("Link TikTok", /^(www\.)?tiktok\.com$/i, "https://www.tiktok.com/@namaakun"),
+  servesCuisine: lines("Jenis masakan", 10, 60),
   isPublished: checkbox,
 });
 
@@ -125,6 +158,31 @@ export const branchSchema = z.object({
   phone: phone("Nomor telepon"),
   order: intField("Urutan"),
 });
+
+/**
+ * Jam 7 hari dari editor cabang (field `hours.<1-7>.opens|closes|closed`).
+ * Hari tanpa jam & tanpa centang libur tidak disimpan (= belum dikonfirmasi).
+ */
+export function parseWeekHours(formData: FormData): { success: true; data: DayHours[] } | { success: false; error: string } {
+  const data: DayHours[] = [];
+  for (let dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
+    const get = (k: string) => String(formData.get(`hours.${dayOfWeek}.${k}`) ?? "").trim();
+    const day = DAY_LABEL[dayOfWeek - 1];
+    if (get("closed") === "on") {
+      data.push({ dayOfWeek, isClosed: true, opens: null, closes: null });
+      continue;
+    }
+    const opens = get("opens");
+    const closes = get("closes");
+    if (!opens && !closes) continue;
+    if (!isTime(opens) || !isTime(closes)) {
+      return { success: false, error: `Jam ${day} belum lengkap: isi jam buka dan jam tutup, atau centang Libur.` };
+    }
+    if (opens === closes) return { success: false, error: `Jam buka dan jam tutup hari ${day} tidak boleh sama.` };
+    data.push({ dayOfWeek, isClosed: false, opens, closes });
+  }
+  return { success: true, data };
+}
 
 export const sectionSchema = z.object({
   title: nullableText("Judul", 200),

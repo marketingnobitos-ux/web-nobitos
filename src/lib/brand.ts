@@ -9,6 +9,9 @@ export const BRAND_HEADER = "x-brand-slug";
 /** Cookie untuk mode preview (dev) agar brand tetap terpilih saat pindah halaman. */
 export const PREVIEW_COOKIE = "nobitos-preview-brand";
 
+/** Header internal: halaman dibuka lewat preview admin di produksi (banner + tanpa analitik). */
+export const ADMIN_PREVIEW_HEADER = "x-nobitos-admin-preview";
+
 const TTL_MS = Number(process.env.BRAND_CACHE_TTL_MS ?? 5 * 60 * 1000);
 
 type BrandMap = {

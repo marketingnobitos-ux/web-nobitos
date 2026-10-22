@@ -1,7 +1,7 @@
 import type { DomainStatus } from "@prisma/client";
 import ActionForm from "@/components/admin/ActionForm";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
-import { Card, Checkbox, PublishBadge, Select, TextField } from "@/components/admin/fields";
+import { Card, Checkbox, PageHeader, PublishBadge, Select, TextField } from "@/components/admin/fields";
 import { listAccessibleBrands, requireAdmin } from "@/lib/admin";
 import { serverIp } from "@/lib/domain";
 import { prisma } from "@/lib/prisma";
@@ -30,7 +30,7 @@ export default async function AdminDomainsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Kelola Domain</h1>
+      <PageHeader title="Kelola Domain" description="Hubungkan domain ke brand, cek DNS, lalu tandai aktif setelah SSL terpasang." />
 
       <Card title="Instruksi DNS">
         {ip ? (

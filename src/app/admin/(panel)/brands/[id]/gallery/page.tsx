@@ -1,10 +1,11 @@
 import ActionForm from "@/components/admin/ActionForm";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
 import GalleryUploader from "@/components/admin/GalleryUploader";
-import { Card, TextField } from "@/components/admin/fields";
+import { Card, Notice, TextField } from "@/components/admin/fields";
 import { getBrandForAdmin } from "@/lib/admin";
 import { imageVariant } from "@/lib/image";
 import { prisma } from "@/lib/prisma";
+import { TEMPLATE_FEATURES, TEMPLATE_LABEL } from "@/lib/template-features";
 import { addPhotos, createAlbum, deleteAlbum, deletePhoto, updateAlbum, updatePhoto } from "./actions";
 
 export const metadata = { title: "Galeri" };
@@ -19,6 +20,11 @@ export default async function BrandGalleryAdmin({ params }: { params: Promise<{ 
 
   return (
     <div className="space-y-6">
+      {!TEMPLATE_FEATURES[brand.template].gallery && (
+        <Notice tone="warn" title="Galeri tidak tampil di situs brand ini">
+          <p>Template {TEMPLATE_LABEL[brand.template]} tidak punya halaman Galeri. Foto yang diunggah di sini tersimpan, tapi belum dipakai di situs.</p>
+        </Notice>
+      )}
       <Card title="Buat album">
         <ActionForm action={createAlbum.bind(null, brand.id)} className="flex flex-wrap items-end gap-3" submitLabel="Buat album" resetOnSuccess>
           <div className="min-w-48 flex-1">
@@ -57,7 +63,13 @@ export default async function BrandGalleryAdmin({ params }: { params: Promise<{ 
               {album.photos.map((photo) => (
                 <div key={photo.id} className="rounded-md border border-gray-200 p-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imageVariant(photo.imageUrl, 400)} alt={photo.caption ?? ""} className="aspect-[4/3] w-full rounded object-cover" />
+                  <img
+                    src={imageVariant(photo.imageUrl, 400)}
+                    alt={photo.caption ?? ""}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[4/3] w-full rounded object-cover"
+                  />
                   <ActionForm action={updatePhoto.bind(null, brand.id, photo.id)} className="mt-3 space-y-2">
                     <TextField label="Keterangan" name="caption" defaultValue={photo.caption} />
                     <TextField label="Urutan" name="order" type="number" min={0} defaultValue={photo.order} />
