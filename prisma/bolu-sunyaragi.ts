@@ -173,11 +173,14 @@ export const BOLU_SOCIAL = [
   "Threads | https://www.threads.com/@bolu_sunyaragi",
 ];
 
-/** Jam buka per outlet (nama = BOLU_BRANCHES.name). Dikonfirmasi Fran 29 Sep 2026 (AUDIT-F0.1.md): tanpa hari libur. */
+/**
+ * Jam buka per outlet (nama = BOLU_BRANCHES.name). Dikonfirmasi Fran 29 Sep 2026 (AUDIT-F0.1.md): tanpa hari libur.
+ * Kedawung dikoreksi Fran 22 Okt 2026: tutup 20.00 (bukan 21.00).
+ */
 export const BOLU_HOURS: Record<string, DayHours[]> = {
   "Stasiun Kejaksan": weeklyHours("06:00", "21:00"),
   Kartini: weeklyHours("08:00", "21:00"),
-  Kedawung: weeklyHours("08:00", "21:00"),
+  Kedawung: weeklyHours("08:00", "20:00"),
 };
 
 /** Akun resmi untuk `sameAs` JSON-LD; sama dengan BOLU_SOCIAL yang tampil di footer live (dicek 29 Sep 2026). */
