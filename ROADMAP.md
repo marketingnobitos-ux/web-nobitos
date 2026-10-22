@@ -16,7 +16,7 @@
 
 1. Kerjakan **satu task per sesi**, urut sesuai ID. Jangan loncat fase kecuali Fran minta.
 2. Sebelum mulai, baca task + dokumen acuannya. Kalau ada yang ambigu atau butuh keputusan Fran (ditandai 🙋), **berhenti dan tanya**.
-3. Setiap brand punya **template sendiri**. Saat ini: BOLD (Aminoto, APW), EDITORIAL (Bolu), ANGLO (Pak Joko). APW dan Bu Joko akan dapat template baru. Jangan ubah template/brand lain saat mengerjakan satu brand.
+3. Setiap brand punya **template sendiri**. Saat ini: DADAK (Aminoto), EDITORIAL (Bolu), ANGLO (Pak Joko), TUNGKU (APW, draf); BOLD tidak dipakai lagi. APW akan diganti template baru, Bu Joko dapat template baru. Jangan ubah template/brand lain saat mengerjakan satu brand.
 4. **Admin sudah lengkap** (lihat Ringkasan). Jangan hapus modul Admin yang ada; tambah fitur hanya jika tercantum di task.
 5. Selesai task: centang `[x]`, tulis tanggal + hash commit di baris task, commit. **Jangan push** tanpa izin Fran.
 6. Data brand ke DB VPS **selalu lewat seed khusus per brand** (upsert, idempoten, tidak menyentuh brand lain). Jangan jalankan `prisma db seed` penuh di VPS.
@@ -27,14 +27,33 @@
 
 ## Ringkasan status
 
-| # | Halaman | Domain | Template | Status 26 Sep | Fase |
+| # | Halaman | Domain | Template | Status 22 Okt 2026 | Fase |
 |---|---|---|---|---|---|
-| 1 | Admin | nobitos.web.id | — | **Live, lengkap**: Dashboard analitik (tren, per brand, top halaman, top klik), Brand, Konten Halaman, Menu, Galeri (upload), Promo, Cabang, Domain, Pengaturan, login ber-rate-limit, noindex | F6 (tambahan kecil) |
-| 2 | Pecel Lele Aminoto | pecelleleaminoto.web.id | BOLD | Live, data seed masih contoh (alamat umum) · scope diputuskan 30 Okt 🙋 | F4 |
-| 3 | Bolu Sunyaragi | bolusunyaragi.web.id | EDITORIAL/byshape | Live, beres | F5 (SEO saja) |
-| 4 | Bakmi Pak Joko | bakmijowopakjoko.web.id | ANGLO | Live 26 Sep | F1 |
-| 5 | Ayam Panggang Wicaksono | belum ada | BOLD → baru | Sudah ada di DB dengan **data contoh**, belum ada domain | F2 |
-| 6 | Dapur Bu Joko | belum ada | baru | Belum ada di DB sama sekali | F3 |
+| 1 | Admin | nobitos.web.id | — | **Live, lengkap** (Dashboard, Brand, Konten, Menu, Galeri, Promo, Cabang, Domain, Pengaturan). Perbaikan F6 dikerjakan setelah semua web brand selesai (keputusan Fran 22 Okt) | F6 |
+| 2 | Pecel Lele Sambel Dadak Aminoto | pecelleleaminoto.web.id | DADAK | **Live, selesai** 22 Okt (template baru + isi asli) | F4 ✓ |
+| 3 | Bolu Sunyaragi | bolusunyaragi.web.id | EDITORIAL | **Live, selesai** 22 Okt (SEO, alamat lengkap, Lighthouse) | F5 ✓ |
+| 4 | Bakmi Jowo Anglo Pak Joko | bakmijowopakjoko.web.id | ANGLO | **Live, selesai** 22 Okt (F1.2 foto dibatalkan, tetap ilustrasi) | F1 ✓ |
+| 5 | Ayam Panggang Wicaksono | belum ada 🙋 | TUNGKU (draf) → diganti | Draf template TUNGKU ada di repo (sebagian belum di-commit); Fran mau template diganti; belum ada domain | F2 |
+| 6 | Sayur Lodeh Bu Joko | belum ada 🙋 | baru | Belum mulai; fakta awal: satu lokasi dengan Bakmi Kartini, buka 06.00–12.00, mulai 7 ribuan | F3 |
+
+## PR — yang belum selesai (diperbarui 22 Okt 2026)
+
+Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), fondasi F0, bagian JS F2.7. Halaman status untuk dibagikan: artifact "Progres Web Nobitos" https://claude.ai/artifact/FyjRejwbC5L5ep5URSRpik (perbarui setiap ada task selesai).
+
+**Menunggu Fran 🙋**
+- APW: beli domain + A record ke 43.129.49.26 (F2.1); kirim referensi desain baru (template diganti); putuskan perubahan TUNGKU yang belum di-commit di folder kerja (pakai/buang).
+- Sayur Lodeh Bu Joko: beli domain + A record (F3.1); referensi desain (F3.3); menu & harga sarapan (F3.2).
+- Bolu: cek alamat 3 cabang hasil pin Google Maps (F5.1).
+- Aminoto: jam pesan online dibereskan di web delivery (deliveryaminoto.my.id) setelah pekerjaan ini.
+- Google Search Console + Google Business Profile semua domain (F6.4).
+- Keputusan F6.8b: teks halaman ANGLO/TUNGKU pindah ke DB atau tetap di kode.
+
+**Dikerjakan Claude (urut, setelah keputusan di atas)**
+1. APW: F2.2–F2.6 (riset & brief, template baru, F0, seed hanya cabang Kesambi, deploy).
+2. Sayur Lodeh Bu Joko: F3.2–F3.6.
+3. Platform F2.7 sisa: pecah CSS per template dari `globals.css`; atasi kerangka `loading.tsx` yang menunda LCP.
+4. Admin F6.1–F6.11 (rincian klik, kesehatan SEO, form IG/TikTok & jam 7 hari, preview draf, dll).
+5. QA akhir & serah terima F7.
 
 ---
 
