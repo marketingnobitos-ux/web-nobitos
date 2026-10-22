@@ -16,7 +16,7 @@
 
 1. Kerjakan **satu task per sesi**, urut sesuai ID. Jangan loncat fase kecuali Fran minta.
 2. Sebelum mulai, baca task + dokumen acuannya. Kalau ada yang ambigu atau butuh keputusan Fran (ditandai 🙋), **berhenti dan tanya**.
-3. Setiap brand punya **template sendiri**. Saat ini: DADAK (Aminoto), EDITORIAL (Bolu), ANGLO (Pak Joko), TUNGKU (APW, draf); BOLD tidak dipakai lagi. APW akan diganti template baru, Bu Joko dapat template baru. Jangan ubah template/brand lain saat mengerjakan satu brand.
+3. Setiap brand punya **template sendiri**. Saat ini: DADAK (Aminoto), EDITORIAL (Bolu), ANGLO (Pak Joko), GERABAH (APW); TUNGKU (draf APW lama) & BOLD tidak dipakai brand mana pun. Bu Joko dapat template baru. Jangan ubah template/brand lain saat mengerjakan satu brand.
 4. **Admin sudah lengkap** (lihat Ringkasan). Jangan hapus modul Admin yang ada; tambah fitur hanya jika tercantum di task.
 5. Selesai task: centang `[x]`, tulis tanggal + hash commit di baris task, commit. **Jangan push** tanpa izin Fran.
 6. Data brand ke DB VPS **selalu lewat seed khusus per brand** (upsert, idempoten, tidak menyentuh brand lain). Jangan jalankan `prisma db seed` penuh di VPS.
@@ -33,15 +33,15 @@
 | 2 | Pecel Lele Sambel Dadak Aminoto | pecelleleaminoto.web.id | DADAK | **Live, selesai** 22 Okt (template baru + isi asli) | F4 ✓ |
 | 3 | Bolu Sunyaragi | bolusunyaragi.web.id | EDITORIAL | **Live, selesai** 22 Okt (SEO, alamat lengkap, Lighthouse) | F5 ✓ |
 | 4 | Bakmi Jowo Anglo Pak Joko | bakmijowopakjoko.web.id | ANGLO | **Live, selesai** 22 Okt (F1.2 foto dibatalkan, tetap ilustrasi) | F1 ✓ |
-| 5 | Ayam Panggang Wicaksono | belum ada 🙋 | TUNGKU (draf) → diganti | Draf template TUNGKU ada di repo (sebagian belum di-commit); Fran mau template diganti; belum ada domain | F2 |
+| 5 | Ayam Panggang Wicaksono | ayampanggangwicaksono.web.id | GERABAH | **Live** 22 Okt (template baru referensi Daily Dishes Lab, foto TikTok resmi, menu 20 item, hanya cabang Kesambi). Sisa: F2.7 platform; draf TUNGKU yang belum di-commit menunggu keputusan Fran | F2 |
 | 6 | Sayur Lodeh Bu Joko | belum ada 🙋 | baru | Belum mulai; fakta awal: satu lokasi dengan Bakmi Kartini, buka 06.00–12.00, mulai 7 ribuan | F3 |
 
 ## PR — yang belum selesai (diperbarui 22 Okt 2026)
 
-Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), fondasi F0, bagian JS F2.7. Halaman status untuk dibagikan: artifact "Progres Web Nobitos" https://claude.ai/artifact/FyjRejwbC5L5ep5URSRpik (perbarui setiap ada task selesai).
+Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fondasi F0, bagian JS F2.7. Halaman status untuk dibagikan: artifact "Progres Web Nobitos" https://claude.ai/artifact/FyjRejwbC5L5ep5URSRpik (perbarui setiap ada task selesai).
 
 **Menunggu Fran 🙋**
-- APW: beli domain + A record ke 43.129.49.26 (F2.1); kirim referensi desain baru (template diganti); putuskan perubahan TUNGKU yang belum di-commit di folder kerja (pakai/buang).
+- APW: putuskan perubahan TUNGKU yang belum di-commit di folder kerja (APW sudah pindah ke GERABAH, jadi kemungkinan dibuang); kirim file foto/video asli tanpa watermark & foto bebek panggang ([CEK] di `BRIEF-APW.md`).
 - Sayur Lodeh Bu Joko: beli domain + A record (F3.1); referensi desain (F3.3); menu & harga sarapan (F3.2).
 - Bolu: cek alamat 3 cabang hasil pin Google Maps (F5.1).
 - Aminoto: jam pesan online dibereskan di web delivery (deliveryaminoto.my.id) setelah pekerjaan ini.
@@ -49,11 +49,10 @@ Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), fondasi F0, bagian JS F2
 - Keputusan F6.8b: teks halaman ANGLO/TUNGKU pindah ke DB atau tetap di kode.
 
 **Dikerjakan Claude (urut, setelah keputusan di atas)**
-1. APW: F2.2–F2.6 (riset & brief, template baru, F0, seed hanya cabang Kesambi, deploy).
+1. Platform F2.7 sisa: pecah CSS per template dari `globals.css`; atasi kerangka `loading.tsx` yang menunda LCP.
 2. Sayur Lodeh Bu Joko: F3.2–F3.6.
-3. Platform F2.7 sisa: pecah CSS per template dari `globals.css`; atasi kerangka `loading.tsx` yang menunda LCP.
-4. Admin F6.1–F6.11 (rincian klik, kesehatan SEO, form IG/TikTok & jam 7 hari, preview draf, dll).
-5. QA akhir & serah terima F7.
+3. Admin F6.1–F6.11 (rincian klik, kesehatan SEO, form IG/TikTok & jam 7 hari, preview draf, dll).
+4. QA akhir & serah terima F7.
 
 ---
 
@@ -86,15 +85,15 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 
 Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: **hanya Kesambi** (dikonfirmasi Fran 29 Sep). Cabang **Cipto** di DB lokal & `prisma/seed.ts` adalah **data contoh**: bukan cabang APW, jangan dipakai untuk pengecekan tampilan/JSON-LD/screenshot.
 
-- [ ] **F2.1** 🙋 Fran beli domain (usulan: `ayampanggangwicaksono.web.id`) + arahkan A record ke 43.129.49.26.
-> ⏳ Cek 22 Okt: F2.2–F2.5 sudah ada commit (`32ba000`, `94bb0e0`, `5596e63`, `55797d3`) tapi belum dicentang, dan masih ada perubahan template TUNGKU yang belum di-commit. 🙋 Fran konfirmasi dulu hasil F2.3–F2.5 sebelum dicentang.
+- [x] **F2.1** 🙋 Fran beli domain (usulan: `ayampanggangwicaksono.web.id`) + arahkan A record ke 43.129.49.26. — 22 Okt 2026: domain `ayampanggangwicaksono.web.id` dibeli Fran, A record apex & www → 43.129.49.26 (dicek lewat 1.1.1.1 & 8.8.8.8), sudah terdaftar di Admin.
+> Catatan 22 Okt: draf TUNGKU (`32ba000`, `94bb0e0`, `5596e63`, `55797d3` + perubahan yang belum di-commit) diganti template GERABAH atas referensi baru dari Fran. F2.2 & F2.3 dikerjakan ulang di sesi yang sama: brief ditambah di `BRIEF-APW.md` bagian 4b (fakta baru dari caption TikTok resmi), referensi dipilih Fran: https://dribbble.com/shots/27744577-Daily-Dishes-Lab-Culinary-Web-Experience.
 
 - [ ] **F2.2** Catatan: brand `apw` sudah ada di DB dengan data contoh (tagline, harga, cabang). Semua diganti data asli. Riset IG/TikTok → `BRIEF-APW.md` (format sama dengan brief Pak Joko): fakta brand, cerita, menu + harga dari sumber resmi, 1 cabang Kesambi (alamat, jam, WA, Maps), tone, daftar [CEK].
 - [ ] **F2.3** Usulkan 2–3 referensi desain yang **beda** dari Aminoto/Bolu/Pak Joko. 🙋 Fran pilih satu.
-- [ ] **F2.4** Template baru + halaman (Beranda, Menu, Cerita, Cabang), tanpa animasi dulu → screenshot → 🙋 cek Fran.
-- [ ] **F2.5** Animasi + F0 → screenshot → 🙋 cek Fran.
-- [ ] **F2.6** Seed khusus APW (upsert, **menimpa data contoh brand `apw` saja**): cabang akhir **hanya Kesambi**, cabang contoh Cipto dihapus dari brand `apw`. Lalu deploy (nginx, certbot, seed, build, restart) + cek live: halaman Cabang & JSON-LD hanya berisi 1 cabang (Kesambi).
-- [ ] **F2.7** Platform (lintas template, disetujui Fran 22 Okt, kerjakan **setelah F2.6**): pisahkan JS & CSS per template. **Bagian JS sudah 22 Okt** (`72e3aee`, `c5bd625`): GSAP lewat `withGsap()` (`import()` di efek, karena `next/dynamic` di server component ternyata tidak memecah chunk), Lenis & tracking lewat `afterLoad()`. First Load JS Beranda 186 → 142 kB. **Sisa: CSS** (`globals.css` ±62 KB, masih dipakai bersama; tunggu perubahan TUNGKU di-commit). **Temuan 22 Okt (Aminoto):** HTML awal semua brand berisi kerangka `(public)/loading.tsx` lalu konten asli di-stream belakangan, jadi foto/judul hero baru tergambar ±400 ms setelah FCP (LCP Pak Joko & Aminoto). Opsi: hapus `loading.tsx` atau buat kerangka per template; ukur sebelum/sesudah. Teks awal: supaya tiap brand hanya mengunduh aset template-nya sendiri. Latar belakang di catatan F1.3b: Next memuat semua komponen client yang di-import `(public)/layout.tsx` & `(public)/page.tsx`, jadi Anglo ikut mengunduh GSAP + ScrollTrigger + Lenis, dan `globals.css` (semua template, ±62 KB) render-blocking di semua brand.
+- [x] **F2.4** Template baru + halaman (Beranda, Menu, Cerita, Cabang), tanpa animasi dulu → screenshot → 🙋 cek Fran. — 22 Okt 2026, `6ea5035` + perbaikan hero 1024 px `b429163`: template **GERABAH** (enum + migrasi `f2_brand_template_gerabah`): papan blok warna gerabah/asap/daun pisang bergaris grid, sajian bulat melayang, kartu kaca berisi data asli (harga mulai, jumlah menu, cincin jam buka, batang jam per hari, status buka), rail ikon kiri. Teks di `src/data/brands/apw-gerabah.ts`; 15 foto dari 8 video TikTok resmi di `public/brands/apw/tiktok/` (576 px, watermark dipotong/dihaluskan). Screenshot dicek Fran di preview lokal `ayampanggangwicaksono.localhost:3000`.
+- [x] **F2.5** Animasi + F0 → screenshot → 🙋 cek Fran. — 22 Okt 2026, `6ea5035`: slide hero ganti otomatis 7 detik (berhenti saat hover/fokus & `prefers-reduced-motion`), sajian berputar pelan, asap naik; F0 lewat komponen platform: meta & canonical per halaman, sitemap/robots, JSON-LD `Restaurant` Kesambi, badge buka/tutup, `data-track` standar, 404 ber-brand, semua `img` ber-`alt`. HP 375 px tanpa scroll horizontal.
+- [x] **F2.6** Seed khusus APW (upsert, **menimpa data contoh brand `apw` saja**): cabang akhir **hanya Kesambi**, cabang contoh Cipto dihapus dari brand `apw`. Lalu deploy (nginx, certbot, seed, build, restart) + cek live: halaman Cabang & JSON-LD hanya berisi 1 cabang (Kesambi). — 22 Okt 2026, deploy `b429163` (2 commit di-push atas izin Fran; backup DB `~/backups/web-nobitos-pre-f2-apw-20261022-2102.dump`; rumus update + migrasi `f2_brand_template_gerabah`; `npm run apw:seed`: template GERABAH, 20 menu, Cipto + 4 menu, 5 konten, 1 promo & 1 album contoh dihapus; brand dipublish; nginx `sites-available/ayampanggangwicaksono.web.id` apex + www, sertifikat certbot; Domain ACTIVE + SSL). Cek live: Beranda/Menu/Cerita/Cabang/robots/sitemap 200, `/galeri` & `/menu/[id]` 307, 404 ber-brand, http → https 301, www 200, canonical `https://ayampanggangwicaksono.web.id`, JSON-LD 1 `Restaurant` (Kesambi, tanpa Cipto), console bersih. Aminoto, Bolu & Pak Joko tetap 200.
+- [ ] **F2.7** Platform (lintas template, disetujui Fran 22 Okt, kerjakan **setelah F2.6**): pisahkan JS & CSS per template. **Bagian JS sudah 22 Okt** (`72e3aee`, `c5bd625`): GSAP lewat `withGsap()` (`import()` di efek, karena `next/dynamic` di server component ternyata tidak memecah chunk), Lenis & tracking lewat `afterLoad()`. First Load JS Beranda 186 → 142 kB. **Sisa: CSS** (`globals.css` ±62 KB, masih dipakai bersama; tunggu keputusan Fran soal draf TUNGKU yang belum di-commit. GERABAH sudah di file sendiri `src/styles/tpl-gerabah.css`). **Temuan 22 Okt (Aminoto):** HTML awal semua brand berisi kerangka `(public)/loading.tsx` lalu konten asli di-stream belakangan, jadi foto/judul hero baru tergambar ±400 ms setelah FCP (LCP Pak Joko & Aminoto). Opsi: hapus `loading.tsx` atau buat kerangka per template; ukur sebelum/sesudah. Teks awal: supaya tiap brand hanya mengunduh aset template-nya sendiri. Latar belakang di catatan F1.3b: Next memuat semua komponen client yang di-import `(public)/layout.tsx` & `(public)/page.tsx`, jadi Anglo ikut mengunduh GSAP + ScrollTrigger + Lenis, dan `globals.css` (semua template, ±62 KB) render-blocking di semua brand.
   - JS: GSAP/ScrollTrigger tidak lagi masuk entry route untuk template yang tidak memakainya (mis. `import()` di dalam efek komponen BOLD/EDITORIAL/TUNGKU, atau Beranda & header tiap template dijadikan pulau client lewat `next/dynamic` di komponen client). `next/dynamic` di server component **tidak** memisah chunk (sudah dicoba).
   - CSS: gaya khusus template dipecah dari `globals.css` ke file per template yang hanya dimuat brand terkait.
   - Syarat: tampilan & animasi semua brand tidak berubah (screenshot sebelum/sesudah), tidak ada kedip saat GSAP dimuat belakangan.
