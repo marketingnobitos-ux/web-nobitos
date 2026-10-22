@@ -6,10 +6,8 @@ import GerabahStory from "@/components/templates/gerabah/GerabahStory";
 import TungkuStory from "@/components/templates/tungku/TungkuStory";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
-import { AMINOTO } from "@/data/brands/aminoto";
 import { APW } from "@/data/brands/apw";
-import { GR } from "@/data/brands/apw-gerabah";
-import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { angloText, dadakText, gerabahText } from "@/lib/template-text";
 import { brandPageMetadata } from "@/lib/seo";
 import { altText } from "@/lib/site";
 
@@ -18,13 +16,13 @@ export function generateMetadata() {
     // Paragraf pembuka cerita brand; tagline kalau cerita belum diisi.
     const intro =
       brand.template === "ANGLO"
-        ? BAKMI_PAK_JOKO.story.paragraphs[0]
+        ? (await angloText()).story.paragraphs[0]
         : brand.template === "TUNGKU"
           ? `${APW.slogan} ${APW.intro.body}`
           : brand.template === "DADAK"
-            ? AMINOTO.story.paragraphs[0]
+            ? (await dadakText()).story.paragraphs[0]
             : brand.template === "GERABAH"
-              ? `${GR.story.lead} ${GR.slogan}`
+              ? await gerabahText().then((gr) => `${gr.story.lead} ${gr.slogan}`)
             : (await getSections(brand.id, "story")).find((s) => s.key === "profile")?.data.body;
     return {
       title: "Cerita",

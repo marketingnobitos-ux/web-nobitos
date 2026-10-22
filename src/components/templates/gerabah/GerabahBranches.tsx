@@ -2,7 +2,8 @@ import type { Branch, BranchHours } from "@prisma/client";
 import OpenBadge from "@/components/public/OpenBadge";
 import { HoursRing, HoursTable } from "@/components/templates/gerabah/HoursViz";
 import { BoardHero, InstagramIcon, Kicker, Photo, Pill, TikTokIcon, WRAP } from "@/components/templates/gerabah/shared";
-import { GR, GR_PHOTOS } from "@/data/brands/apw-gerabah";
+import { GR_PHOTOS } from "@/data/brands/apw-gerabah";
+import { gerabahText } from "@/lib/template-text";
 import { mapsLink, telUrl, whatsappUrl } from "@/lib/format";
 import { isCompleteWeek } from "@/lib/hours";
 import { waMessage } from "@/lib/site";
@@ -16,7 +17,8 @@ type Props = {
 };
 
 /** Halaman Cabang Gerabah (APW hanya punya Kesambi): kartu alamat & kontak, tabel jam, foto tampak depan. */
-export default function GerabahBranches({ brandName, branches, instagramUrl, tiktokUrl }: Props) {
+export default async function GerabahBranches({ brandName, branches, instagramUrl, tiktokUrl }: Props) {
+  const GR = await gerabahText();
   const [main] = branches;
   return (
     <>

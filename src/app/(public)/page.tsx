@@ -8,6 +8,7 @@ import Marquee from "@/components/public/home/Marquee";
 import MenuPicker from "@/components/public/home/MenuPicker";
 import PromoPoster from "@/components/public/home/PromoPoster";
 import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
+import TemplateExtras from "@/components/public/TemplateExtras";
 import StoryPinned from "@/components/public/home/StoryPinned";
 import AngloHome from "@/components/templates/anglo/AngloHome";
 import DadakHome from "@/components/templates/dadak/DadakHome";
@@ -52,6 +53,7 @@ export default async function HomePage() {
       <>
         {jsonLd}
         <EditorialHome brand={brand} />
+        <TemplateExtras brandId={brand.id} brandName={brand.name} variant="editorial" gallery={false} />
       </>
     );
   if (brand.template === "ANGLO") {
@@ -64,6 +66,7 @@ export default async function HomePage() {
       <>
         {jsonLd}
         <AngloHome featured={featured} />
+        <TemplateExtras brandId={brand.id} brandName={brand.name} variant="anglo" />
       </>
     );
   }
@@ -82,6 +85,7 @@ export default async function HomePage() {
       <>
         {jsonLd}
         <DadakHome brandName={brand.name} featured={featured} branches={branches} />
+        <TemplateExtras brandId={brand.id} brandName={brand.name} variant="dadak" />
       </>
     );
   }
@@ -113,6 +117,7 @@ export default async function HomePage() {
       <>
         {jsonLd}
         <GerabahHome brand={brand} featured={featured} categories={categories.filter((c) => c.items.length > 0)} branch={branch} />
+        <TemplateExtras brandId={brand.id} brandName={brand.name} variant="gerabah" />
       </>
     );
   }

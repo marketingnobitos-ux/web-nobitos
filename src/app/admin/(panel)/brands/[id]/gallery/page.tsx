@@ -11,6 +11,9 @@ import { addPhotos, createAlbum, deleteAlbum, deletePhoto, reorderPhotos, update
 
 export const metadata = { title: "Galeri Foto" };
 
+/** Template yang galerinya berupa blok di Beranda (components/public/TemplateExtras.tsx), bukan halaman /galeri. */
+const HOME_BLOCK: string[] = ["ANGLO", "DADAK", "GERABAH"];
+
 export default async function BrandGalleryAdmin({ params }: { params: Promise<{ id: string }> }) {
   const brand = await getBrandForAdmin((await params).id);
   const albums = await prisma.galleryAlbum.findMany({
@@ -24,6 +27,11 @@ export default async function BrandGalleryAdmin({ params }: { params: Promise<{ 
       {!TEMPLATE_FEATURES[brand.template].gallery && (
         <Notice tone="warn" title="Galeri tidak tampil di situs brand ini">
           <p>Template {TEMPLATE_LABEL[brand.template]} tidak punya halaman Galeri. Foto yang diunggah di sini tersimpan, tapi belum dipakai di situs.</p>
+        </Notice>
+      )}
+      {HOME_BLOCK.includes(brand.template) && (
+        <Notice title="Tampil di Beranda">
+          <p>Template {TEMPLATE_LABEL[brand.template]} menampilkan 8 foto pertama (urutan album, lalu urutan foto) sebagai blok Galeri di Beranda. Tanpa foto, blok tidak muncul.</p>
         </Notice>
       )}
       <Card title="Buat album">

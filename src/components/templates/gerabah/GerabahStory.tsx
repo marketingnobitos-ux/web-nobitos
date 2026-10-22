@@ -1,9 +1,11 @@
 import { BoardHero, Kicker, Photo, Pill, WRAP } from "@/components/templates/gerabah/shared";
-import { GR, GR_PHOTOS } from "@/data/brands/apw-gerabah";
+import { GR_PHOTOS } from "@/data/brands/apw-gerabah";
+import { gerabahText } from "@/lib/template-text";
 import { trackName } from "@/lib/track";
 
 /** Halaman Cerita Gerabah: papan judul, tiga bab foto & teks berselang-seling, kartu kaca tambahan, penutup. */
-export default function GerabahStory() {
+export default async function GerabahStory() {
+  const GR = await gerabahText();
   const { story } = GR;
   return (
     <>

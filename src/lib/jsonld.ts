@@ -2,7 +2,7 @@
 // dirender di Beranda & Cabang.
 // Aturan: tidak ada data karangan. Field yang nilainya belum ada di DB / src/data/brands tidak dirender.
 import type { Brand } from "@prisma/client";
-import { BAKMI_PAK_JOKO, type AngloBranch } from "@/data/brands/bakmi-pak-joko";
+import { getAngloBranches } from "@/lib/anglo-branches";
 import { formatRupiah, slugify, toIntlPhone } from "@/lib/format";
 import { SCHEMA_DAYS, isCompleteWeek, type DayHours } from "@/lib/hours";
 import { prisma } from "@/lib/prisma";
@@ -27,10 +27,10 @@ type BranchSource = {
   hours: DayHours[];
 };
 
-/** Cabang brand. Template ANGLO membaca cabang dari src/data/brands, selebihnya dari DB (+ tabel BranchHours). */
+/** Cabang brand dari DB (+ tabel BranchHours). ANGLO lewat getAngloBranches (cadangan data kode bila DB kosong). */
 async function branchSources(brand: Brand): Promise<BranchSource[]> {
   if (brand.template === "ANGLO") {
-    return BAKMI_PAK_JOKO.branches.map((b: AngloBranch) => ({
+    return (await getAngloBranches(brand.id)).map((b) => ({
       key: b.slug,
       name: b.name,
       address: b.address,

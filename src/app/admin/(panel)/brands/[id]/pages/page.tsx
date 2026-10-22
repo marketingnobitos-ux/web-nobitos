@@ -7,7 +7,8 @@ import { getBrandForAdmin } from "@/lib/admin";
 import { PAGE_SECTIONS, type SectionData } from "@/lib/content";
 import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES, TEMPLATE_LABEL } from "@/lib/template-features";
-import { saveSection } from "./actions";
+import { TEMPLATE_TEXT_FIELDS, defaultText, hasTemplateText, readTextOverrides } from "@/lib/template-text";
+import { saveSection, saveTemplateText } from "./actions";
 
 export const metadata = { title: "Isi Halaman" };
 
@@ -18,6 +19,37 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
   const brand = await getBrandForAdmin((await params).id);
   const features = TEMPLATE_FEATURES[brand.template];
   const base = `/admin/brands/${brand.id}`;
+
+  const template = brand.template;
+  if (hasTemplateText(template)) {
+    const overrides = await readTextOverrides(brand.id, template);
+    const groups = TEMPLATE_TEXT_FIELDS[template] ?? [];
+    return (
+      <div className="space-y-6">
+        <p className="text-[15px] text-[#d4dcc8]">
+          Teks halaman template {TEMPLATE_LABEL[template]}. Ubah lalu klik Simpan; perubahan langsung tampil di situs. Kosongkan field untuk kembali
+          ke teks bawaan. Foto, tata letak, dan teks kecil lainnya tetap diatur di kode.
+        </p>
+        {groups.map((group, gi) => (
+          <Card key={group.title} title={group.title}>
+            <ActionForm action={saveTemplateText.bind(null, brand.id, gi)} submitLabel="Simpan teks">
+              {group.fields.map((field) => {
+                const def = defaultText(template, field);
+                const value = overrides[field.path] ?? def;
+                const changed = field.path in overrides;
+                const hint = changed ? `Sudah diubah. Teks bawaan: "${def.replaceAll("\n", " / ")}"` : undefined;
+                return field.kind === "long" || field.kind === "lines" ? (
+                  <TextArea key={field.path} label={field.label} name={field.path} defaultValue={value} rows={field.kind === "lines" ? 3 : 4} hint={hint} />
+                ) : (
+                  <TextField key={field.path} label={field.label} name={field.path} defaultValue={value} hint={hint} maxLength={2000} />
+                );
+              })}
+            </ActionForm>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   if (features.codeFile) {
     return (

@@ -4,7 +4,7 @@ import PhotoArt from "@/components/templates/anglo/PhotoArt";
 import StickObserver from "@/components/templates/anglo/StickObserver";
 import { AngloStove, IcedTea, MenuIllustration, NoodleBowl, WokFlame } from "@/components/templates/anglo/illustrations";
 import { Emph, Smoke, StickerLabels, SwipeHint, WRAP, formatHarga } from "@/components/templates/anglo/shared";
-import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { angloText } from "@/lib/template-text";
 import { menuPhotoSlot, type AngloPhotoSlot } from "@/lib/anglo-photos";
 import { trackName } from "@/lib/track";
 
@@ -52,7 +52,8 @@ function Cutout({
 }
 
 /** Beranda Anglo (brief 6.3): hero kolase, "Kenapa Anglo", papan Menu Andalan, strip Dapur Bu Joko. */
-export default function AngloHome({ featured }: { featured: FeaturedItem[] }) {
+export default async function AngloHome({ featured }: { featured: FeaturedItem[] }) {
+  const BAKMI_PAK_JOKO = await angloText();
   const { hero, whyAnglo, featured: featuredCopy, ui } = BAKMI_PAK_JOKO;
   const [stickerAnglo, stickerHours] = hero.stickers;
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Brand } from "@prisma/client";
 import { GERABAH_NAV, InstagramIcon, TikTokIcon, WRAP } from "@/components/templates/gerabah/shared";
-import { GR } from "@/data/brands/apw-gerabah";
+import { gerabahText } from "@/lib/template-text";
 import { mapsLink, whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { waMessage } from "@/lib/site";
@@ -9,6 +9,7 @@ import { branchKey, trackName } from "@/lib/track";
 
 /** Footer arang: nama brand besar bergaris grid, navigasi, alamat (Maps/WA kalau datanya ada), jam, sosial media. */
 export default async function GerabahFooter({ brand }: { brand: Brand }) {
+  const GR = await gerabahText();
   const branch = await prisma.branch.findFirst({
     where: { brandId: brand.id },
     orderBy: { order: "asc" },

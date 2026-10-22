@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 import { getActiveBrand } from "@/lib/active-brand";
 import { PREVIEW_COOKIE, getBrandBySlugCached, resolveBrandSlugByHost } from "@/lib/brand";
-import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { getAngloBranches } from "@/lib/anglo-branches";
 import { prisma } from "@/lib/prisma";
 
 type ActiveBrand = NonNullable<Awaited<ReturnType<typeof getActiveBrand>>>;
@@ -56,9 +56,9 @@ export function joinNames(names: string[]): string {
   return names.length <= 1 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} dan ${names.at(-1)}`;
 }
 
-/** Nama cabang brand. Template ANGLO membaca cabang dari src/data/brands, selebihnya dari DB. */
+/** Nama cabang brand dari DB (ANGLO: cadangan data kode bila DB kosong). */
 export async function branchNames(brand: ActiveBrand): Promise<string[]> {
-  if (brand.template === "ANGLO") return BAKMI_PAK_JOKO.branches.map((b) => b.name);
+  if (brand.template === "ANGLO") return (await getAngloBranches(brand.id)).map((b) => b.name);
   const rows = await prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, select: { name: true } });
   return rows.map((r) => r.name);
 }

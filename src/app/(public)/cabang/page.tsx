@@ -28,7 +28,7 @@ export default async function CabangPage() {
     return (
       <>
         {jsonLd}
-        <AngloBranches brandName={brand.name} />
+        <AngloBranches brandId={brand.id} brandName={brand.name} />
       </>
     );
   const branches = await prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, include: { hours: true } });

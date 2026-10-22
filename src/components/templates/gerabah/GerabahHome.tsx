@@ -3,7 +3,8 @@ import OpenBadge from "@/components/public/OpenBadge";
 import GerabahHero from "@/components/templates/gerabah/GerabahHero";
 import { HoursRing, WeekBars } from "@/components/templates/gerabah/HoursViz";
 import { Kicker, Photo, Pill, WRAP, formatHarga } from "@/components/templates/gerabah/shared";
-import { GR, GR_PHOTOS, GR_SLIDES } from "@/data/brands/apw-gerabah";
+import { GR_PHOTOS, GR_SLIDES } from "@/data/brands/apw-gerabah";
+import { gerabahText } from "@/lib/template-text";
 import { mapsLink } from "@/lib/format";
 import { isCompleteWeek, type DayHours } from "@/lib/hours";
 import { branchKey, trackName } from "@/lib/track";
@@ -16,7 +17,8 @@ type Branch = { name: string; address: string; mapsUrl: string | null; lat: numb
  * Beranda Gerabah, urutan mengikuti referensi: papan hero berslide → deret menu unggulan → papan data berkartu kaca
  * (harga, jam, status) → tiga langkah proses → papan menu (seperti menu cetak) → suasana → lokasi.
  */
-export default function GerabahHome({ brand, featured, categories, branch }: { brand: Brand; featured: Featured[]; categories: Category[]; branch: Branch | null }) {
+export default async function GerabahHome({ brand, featured, categories, branch }: { brand: Brand; featured: Featured[]; categories: Category[]; branch: Branch | null }) {
+  const GR = await gerabahText();
   const hours = branch && isCompleteWeek(branch.hours) ? branch.hours : null;
   const cheapest = [...featured].sort((a, b) => a.price - b.price)[0];
   const menuCount = categories.reduce((n, c) => n + c.items.length, 0);
@@ -91,7 +93,8 @@ function FeaturedRow({ featured }: { featured: Featured[] }) {
 }
 
 /** Papan data: foto sajian di tengah latar buram, kartu kaca berisi angka asli (harga, jumlah menu, jam, status). */
-function DataBoard({ hours, cheapest, categories }: { hours: DayHours[] | null; cheapest?: Featured; categories: Category[] }) {
+async function DataBoard({ hours, cheapest, categories }: { hours: DayHours[] | null; cheapest?: Featured; categories: Category[] }) {
+  const GR = await gerabahText();
   const total = categories.reduce((n, c) => n + c.items.length, 0);
   return (
     <section aria-labelledby="data-title" className="relative isolate overflow-hidden bg-[var(--gr-char-2)] py-20 md:py-28">
@@ -191,7 +194,8 @@ function DataBoard({ hours, cheapest, categories }: { hours: DayHours[] | null; 
 }
 
 /** Tiga langkah proses (dari video TikTok resmi): bumbu → tungku → matang. */
-function Proses() {
+async function Proses() {
+  const GR = await gerabahText();
   const { proses } = GR.home;
   return (
     <section aria-labelledby="proses-title" className="gr-lines bg-[var(--gr-slate)] py-20 md:py-28">
@@ -229,7 +233,8 @@ function Proses() {
 }
 
 /** Papan menu krem: tiga kolom seperti menu cetak resmi, harga dengan titik-titik penuntun. */
-function MenuBoard({ categories }: { categories: Category[] }) {
+async function MenuBoard({ categories }: { categories: Category[] }) {
+  const GR = await gerabahText();
   const { menu } = GR.home;
   return (
     <section aria-labelledby="menu-board-title" className="gr-lines gr-lines-dark bg-[var(--gr-paper)] py-20 text-[var(--gr-char)] md:py-28">
@@ -274,7 +279,8 @@ function MenuBoard({ categories }: { categories: Category[] }) {
 }
 
 /** Suasana: teks di kiri, mosaik foto malam di kanan. */
-function Suasana() {
+async function Suasana() {
+  const GR = await gerabahText();
   const { suasana } = GR.home;
   const p = GR_PHOTOS;
   return (
@@ -300,7 +306,8 @@ function Suasana() {
 }
 
 /** Lokasi: blok daun pisang dengan alamat, patokan, status buka, tombol Maps. */
-function Lokasi({ branch, hours }: { branch: Branch; hours: DayHours[] | null }) {
+async function Lokasi({ branch, hours }: { branch: Branch; hours: DayHours[] | null }) {
+  const GR = await gerabahText();
   const { lokasi } = GR.home;
   return (
     <section aria-labelledby="lokasi-title" className="gr-lines bg-[var(--gr-leaf)] py-20 md:py-24">

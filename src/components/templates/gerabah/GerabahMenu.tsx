@@ -1,5 +1,6 @@
 import { BoardHero, Kicker, Pill, WRAP, categoryAnchor, formatHarga } from "@/components/templates/gerabah/shared";
-import { GR, GR_PHOTOS } from "@/data/brands/apw-gerabah";
+import { GR_PHOTOS } from "@/data/brands/apw-gerabah";
+import { gerabahText } from "@/lib/template-text";
 import { trackName } from "@/lib/track";
 
 type Item = { id: string; name: string; description: string | null; price: number; portion: string | null; imageUrl: string | null };
@@ -9,7 +10,8 @@ type Category = { id: string; name: string; items: Item[] };
  * Halaman Menu Gerabah: papan judul, pil lompat kategori (lengket di atas), lalu tiap kategori:
  * menu berfoto jadi kartu, sisanya baris harga bertitik penuntun. Katalog saja, tanpa tombol pesan.
  */
-export default function GerabahMenu({ tagline, categories }: { tagline: string | null; categories: Category[] }) {
+export default async function GerabahMenu({ tagline, categories }: { tagline: string | null; categories: Category[] }) {
+  const GR = await gerabahText();
   return (
     <>
       <BoardHero

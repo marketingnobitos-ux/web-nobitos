@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Brand } from "@prisma/client";
 import { DADAK_NAV, DEEP, InstagramIcon, TikTokIcon, WRAP } from "@/components/templates/dadak/shared";
-import { AMINOTO } from "@/data/brands/aminoto";
+import { dadakText } from "@/lib/template-text";
 import { mapsLink, whatsappUrl } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { waMessage } from "@/lib/site";
@@ -9,6 +9,7 @@ import { branchKey, trackName } from "@/lib/track";
 
 /** Footer hijau tua: nama brand besar, navigasi, cabang (Maps/WA kalau datanya ada), jam, sosial media. */
 export default async function DadakFooter({ brand }: { brand: Brand }) {
+  const AMINOTO = await dadakText();
   const branches = await prisma.branch.findMany({
     where: { brandId: brand.id },
     orderBy: { order: "asc" },

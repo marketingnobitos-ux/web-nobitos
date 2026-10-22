@@ -1,12 +1,14 @@
 import DadakBranchCard, { type DadakBranch } from "@/components/templates/dadak/DadakBranchCard";
 import { ClosingCta, InstagramIcon, Label, PageHero, TikTokIcon, WRAP } from "@/components/templates/dadak/shared";
-import { AMINOTO, AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { dadakText } from "@/lib/template-text";
 import { trackName } from "@/lib/track";
 
 type Props = { brandName: string; branches: DadakBranch[]; instagramUrl: string | null; tiktokUrl: string | null };
 
 /** Halaman Cabang: hero foto, satu baris besar per cabang, tautan sosial media, penutup. */
-export default function DadakBranches({ brandName, branches, instagramUrl, tiktokUrl }: Props) {
+export default async function DadakBranches({ brandName, branches, instagramUrl, tiktokUrl }: Props) {
+  const AMINOTO = await dadakText();
   return (
     <>
       <PageHero image={AMINOTO_IMAGES.heroCabang} title={AMINOTO.branches.pageTitle} sub={AMINOTO.branches.pageSub} />

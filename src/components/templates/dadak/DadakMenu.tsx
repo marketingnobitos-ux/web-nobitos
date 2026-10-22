@@ -1,11 +1,13 @@
 import { ClosingCta, Label, PageHero, WRAP, categoryAnchor, formatHarga } from "@/components/templates/dadak/shared";
-import { AMINOTO, AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { dadakText } from "@/lib/template-text";
 
 type Item = { id: string; name: string; description: string | null; price: number; portion: string | null; imageUrl: string | null; isFeatured: boolean };
 type Category = { id: string; name: string; items: Item[] };
 
 /** Halaman Menu: hero foto, catatan harga, pintasan kategori, lalu daftar harga per kategori (nama ..... harga). */
-export default function DadakMenu({ categories }: { categories: Category[] }) {
+export default async function DadakMenu({ categories }: { categories: Category[] }) {
+  const AMINOTO = await dadakText();
   const { menu } = AMINOTO;
 
   return (

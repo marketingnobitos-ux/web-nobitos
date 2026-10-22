@@ -3,12 +3,14 @@ import type { Brand } from "@prisma/client";
 import { WarungFront } from "@/components/templates/anglo/illustrations";
 import { ANGLO_NAV, LocationCard, WRAP } from "@/components/templates/anglo/shared";
 import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { getAngloBranches } from "@/lib/anglo-branches";
 import { socialHandle } from "@/lib/site";
 import { trackName } from "@/lib/track";
 
 /** Footer Anglo (brief 6.3): ilustrasi garis warung, kartu lokasi per cabang, link Instagram & TikTok (kolom Brand). */
-export default function AngloFooter({ brand }: { brand: Brand }) {
-  const { branches, hashtag } = BAKMI_PAK_JOKO;
+export default async function AngloFooter({ brand }: { brand: Brand }) {
+  const { hashtag } = BAKMI_PAK_JOKO;
+  const branches = await getAngloBranches(brand.id);
 
   return (
     <footer className="ag-noise border-t-2 border-ink bg-paper text-ink">

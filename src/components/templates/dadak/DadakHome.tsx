@@ -1,7 +1,8 @@
 import Link from "next/link";
 import DadakBranchCard, { type DadakBranch } from "@/components/templates/dadak/DadakBranchCard";
 import { ArrowUpRight, Btn, ClosingCta, DEEP, Img, Label, PageHero, PhotoStrip, WRAP, formatHarga } from "@/components/templates/dadak/shared";
-import { AMINOTO, AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { dadakText } from "@/lib/template-text";
 import { whatsappUrl } from "@/lib/format";
 import { trackName } from "@/lib/track";
 
@@ -18,7 +19,8 @@ type Props = { brandName: string; featured: DadakFeatured[]; branches: DadakBran
  * Beranda Dadak (referensi Fran "kado"): hero foto penuh, sambutan dua kolom, strip foto, menu andalan di hijau tua,
  * panel catering + "bisa dibakar", cabang, rating Google di atas foto, penutup.
  */
-export default function DadakHome({ brandName, featured, branches }: Props) {
+export default async function DadakHome({ brandName, featured, branches }: Props) {
+  const AMINOTO = await dadakText();
   const { hero, intro, catering, bakar, ratings } = AMINOTO;
 
   return (

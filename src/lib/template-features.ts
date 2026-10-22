@@ -15,8 +15,10 @@ export type TemplateFeatures = {
   menuPhotos: boolean;
   /** Logo dari Info Brand tampil di header/footer (Anglo & Dadak memakai logo bawaan template). */
   logo: boolean;
-  /** File teks halaman yang dikunci di kode (hero, cerita, dll); null = teks dari Konten Halaman. */
+  /** File teks halaman bawaan di kode (hero, cerita, dll); null = teks dari Konten Halaman. */
   codeFile: string | null;
+  /** Teks bawaan di codeFile bisa ditimpa dari Admin > Isi Halaman (lib/template-text.ts). */
+  editableText?: boolean;
   /** Template masih dipakai brand aktif. */
   inUse: boolean;
 };
@@ -37,7 +39,7 @@ export const TEMPLATE_FEATURES: Record<BrandTemplate, TemplateFeatures> = {
   EDITORIAL: {
     sections: ["home/hero", "home/intro", "home/chapters", "site/social", "gallery/feature", ...STORY],
     gallery: true,
-    promos: false,
+    promos: true, // blok Promo di Beranda (TemplateExtras), F6.13
     dbBranches: true,
     menuPhotos: false,
     logo: true,
@@ -46,16 +48,17 @@ export const TEMPLATE_FEATURES: Record<BrandTemplate, TemplateFeatures> = {
   },
   ANGLO: {
     sections: [],
-    gallery: false,
-    promos: false,
-    dbBranches: false,
+    gallery: true, // blok Promo & Galeri di Beranda (TemplateExtras), F6.13
+    promos: true,
+    dbBranches: true,
     menuPhotos: false,
     logo: false,
     codeFile: "src/data/brands/bakmi-pak-joko.ts",
+    editableText: true,
     inUse: true,
   },
-  DADAK: { sections: [], gallery: false, promos: false, dbBranches: true, menuPhotos: true, logo: false, codeFile: "src/data/brands/aminoto.ts", inUse: true },
-  GERABAH: { sections: [], gallery: false, promos: false, dbBranches: true, menuPhotos: true, logo: true, codeFile: "src/data/brands/apw-gerabah.ts", inUse: true },
+  DADAK: { sections: [], gallery: true, promos: true, dbBranches: true, menuPhotos: true, logo: false, codeFile: "src/data/brands/aminoto.ts", editableText: true, inUse: true },
+  GERABAH: { sections: [], gallery: true, promos: true, dbBranches: true, menuPhotos: true, logo: true, codeFile: "src/data/brands/apw-gerabah.ts", editableText: true, inUse: true },
   TUNGKU: { sections: [], gallery: false, promos: false, dbBranches: true, menuPhotos: true, logo: true, codeFile: "src/data/brands/apw.ts", inUse: false },
 };
 
@@ -72,7 +75,7 @@ export const TEMPLATE_LABEL: Record<BrandTemplate, string> = {
 export function mutedBrandTabs(template: BrandTemplate): string[] {
   const f = TEMPLATE_FEATURES[template];
   return [
-    ...(f.sections.length ? [] : ["pages"]),
+    ...(f.sections.length || f.editableText ? [] : ["pages"]),
     ...(f.gallery ? [] : ["gallery"]),
     ...(f.promos ? [] : ["promos"]),
   ];

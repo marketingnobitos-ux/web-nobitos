@@ -1,8 +1,10 @@
 import { ClosingCta, DEEP, Label, PageHero, PhotoStrip, WRAP } from "@/components/templates/dadak/shared";
-import { AMINOTO, AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { AMINOTO_IMAGES } from "@/data/brands/aminoto";
+import { dadakText } from "@/lib/template-text";
 
 /** Halaman Cerita: hero foto, cerita dua kolom, strip foto, empat hal yang dijaga, penutup. */
-export default function DadakStory() {
+export default async function DadakStory() {
+  const AMINOTO = await dadakText();
   const { story } = AMINOTO;
 
   return (

@@ -3,10 +3,11 @@ import PhotoArt from "@/components/templates/anglo/PhotoArt";
 import StickObserver from "@/components/templates/anglo/StickObserver";
 import { AngloStove, WokFlame } from "@/components/templates/anglo/illustrations";
 import { Emph, StickerLabels, WRAP } from "@/components/templates/anglo/shared";
-import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { angloText } from "@/lib/template-text";
 
 /** Cerita Anglo (brief 4.4): judul spidol di kertas krem, paragraf mesin ketik di kertas tempel. */
-export default function AngloStory() {
+export default async function AngloStory() {
+  const BAKMI_PAK_JOKO = await angloText();
   const { story, hero } = BAKMI_PAK_JOKO;
   return (
     <div className="ag-noise bg-paper text-ink">

@@ -1,11 +1,12 @@
 import { StickerLabels } from "@/components/templates/anglo/shared";
-import { BAKMI_PAK_JOKO } from "@/data/brands/bakmi-pak-joko";
+import { angloText } from "@/lib/template-text";
 
 /**
  * Strip Dapur Bu Joko (brief 4.6 & 6.3): blok hijau, judul sebagai label stiker.
  * `boxed` = kotak bergaris untuk ditaruh di dalam halaman (Cabang); tanpa itu, isi strip full-width Beranda.
  */
-export default function BuJokoNotice({ track, boxed = false }: { track: string; boxed?: boolean }) {
+export default async function BuJokoNotice({ track, boxed = false }: { track: string; boxed?: boolean }) {
+  const BAKMI_PAK_JOKO = await angloText();
   const { title, body, cta, url } = BAKMI_PAK_JOKO.buJoko;
   return (
     <aside

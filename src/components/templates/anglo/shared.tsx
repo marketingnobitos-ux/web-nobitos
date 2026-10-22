@@ -82,24 +82,28 @@ export function LocationCard({
       {branch.hours && <p className="mt-3 font-mono text-sm font-bold uppercase">{branch.hours}</p>}
       {branch.openingHours && <OpenBadge hours={branch.openingHours} className="mt-2 font-mono text-sm uppercase" />}
       <div className="mt-6 flex flex-wrap gap-3">
-        <a
-          href={branch.mapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-track={trackName("maps", branch.slug)}
-          className="ag-pill bg-accent text-ink"
-        >
-          {ui.directions}
-        </a>
-        <a
-          href={whatsappUrl(branch.whatsapp, waMessage(brandName, branch.name))}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-track={trackName("wa", branch.slug)}
-          className="ag-pill bg-white text-ink hover:bg-ink hover:text-sheet"
-        >
-          {ui.whatsapp} {branch.whatsapp}
-        </a>
+        {branch.mapsUrl && (
+          <a
+            href={branch.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track={trackName("maps", branch.slug)}
+            className="ag-pill bg-accent text-ink"
+          >
+            {ui.directions}
+          </a>
+        )}
+        {branch.whatsapp && (
+          <a
+            href={whatsappUrl(branch.whatsapp, waMessage(brandName, branch.name))}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track={trackName("wa", branch.slug)}
+            className="ag-pill bg-white text-ink hover:bg-ink hover:text-sheet"
+          >
+            {ui.whatsapp} {branch.whatsapp}
+          </a>
+        )}
       </div>
     </div>
   );

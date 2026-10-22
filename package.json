@@ -15,6 +15,7 @@
     "bolu:jsonld": "tsx --env-file=.env prisma/bolu-sunyaragi.ts --jsonld",
     "bolu:alamat-favicon": "tsx --env-file=.env prisma/bolu-sunyaragi.ts --address --favicon",
     "bakmi-pak-joko:seed": "tsx --env-file=.env prisma/seed-bakmi-pak-joko.ts",
+    "bakmi-pak-joko:cabang": "tsx --env-file=.env prisma/bakmi-pak-joko-cabang.ts",
     "apw:seed": "tsx --env-file=.env prisma/seed-apw.ts",
     "aminoto:seed": "tsx --env-file=.env prisma/seed-aminoto.ts",
     "admin:set-password": "tsx --env-file=.env prisma/admin-user.ts",
