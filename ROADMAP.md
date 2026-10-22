@@ -29,20 +29,19 @@
 
 | # | Halaman | Domain | Template | Status 22 Okt 2026 | Fase |
 |---|---|---|---|---|---|
-| 1 | Admin | nobitos.web.id | — | **Live, lengkap**. Perbaikan F6.1–F6.11 selesai 23 Okt di `6ce5ac7` (lokal, **belum deploy**); sisa F6.4 & F6.8b menunggu Fran | F6 |
+| 1 | Admin | nobitos.web.id | — | **Live, lengkap**. Perbaikan F6.1–F6.11 **live 23 Okt** (deploy `3d215c3`); sisa F6.4 & F6.8b menunggu Fran. Preview Draft (F6.7) butuh `ADMIN_HOST=nobitos.web.id` di `.env` VPS | F6 |
 | 2 | Pecel Lele Sambel Dadak Aminoto | pecelleleaminoto.web.id | DADAK | **Live, selesai** 22 Okt (template baru + isi asli) | F4 ✓ |
 | 3 | Bolu Sunyaragi | bolusunyaragi.web.id | EDITORIAL | **Live, selesai** 22 Okt (SEO, alamat lengkap, Lighthouse) | F5 ✓ |
 | 4 | Bakmi Jowo Anglo Pak Joko | bakmijowopakjoko.web.id | ANGLO | **Live, selesai** 22 Okt (F1.2 foto dibatalkan, tetap ilustrasi) | F1 ✓ |
-| 5 | Ayam Panggang Wicaksono | ayampanggangwicaksono.web.id | GERABAH | **Live** 22 Okt (template baru referensi Daily Dishes Lab, foto TikTok resmi, menu 20 item, hanya cabang Kesambi). F2.7 (platform) selesai 23 Okt di `8e720c8`, **belum deploy**; draf TUNGKU yang belum di-commit menunggu keputusan Fran | F2 |
+| 5 | Ayam Panggang Wicaksono | ayampanggangwicaksono.web.id | GERABAH | **Live** 22 Okt (template baru referensi Daily Dishes Lab, foto TikTok resmi, menu 20 item, hanya cabang Kesambi). F2.7 (platform) **live 23 Okt** (deploy `3d215c3`); draf TUNGKU yang belum di-commit menunggu keputusan Fran | F2 |
 | 6 | Sayur Lodeh Bu Joko | belum ada 🙋 | baru | **Ditahan** sejak 23 Okt (keputusan Fran: operasional brand masih dibenahi). Riset IG selesai di `BRIEF-Bu-Joko.md`, [CEK] jam/harga/nama belum dijawab | F3 ⏸ |
 
 ## PR — yang belum selesai (diperbarui 22 Okt 2026)
 
-Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fondasi F0. F2.7 (platform: JS 22 Okt, CSS/font per template + tanpa `loading.tsx` 23 Okt) selesai di lokal, belum deploy. Halaman status untuk dibagikan: artifact "Progres Web Nobitos" https://claude.ai/artifact/FyjRejwbC5L5ep5URSRpik (perbarui setiap ada task selesai).
+Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fondasi F0. F2.7 (platform: JS 22 Okt, CSS/font per template + tanpa `loading.tsx` 23 Okt) dan Admin F6 live 23 Okt (deploy `3d215c3`, tanpa migrasi/seed): 4 domain × Beranda/Menu/Cabang/Cerita/sitemap 200, Bolu `/menu/<id-salah>` 404, `/admin` minta login. Halaman status untuk dibagikan: artifact "Progres Web Nobitos" https://claude.ai/artifact/FyjRejwbC5L5ep5URSRpik (perbarui setiap ada task selesai).
 
 **Menunggu Fran 🙋**
-- Admin F6 (`6ce5ac7`): ikut push bersama F2.7, tanpa migrasi/seed. Sesudah deploy: buka Admin di HP, coba Preview brand Draft (harus ada banner "Mode preview"), cek halaman Kesehatan SEO.
-- F2.7: izin push `8e720c8` lalu rumus update di VPS (tanpa migrasi/seed). Sesudah deploy: cek live Beranda 5 domain + 1 URL `/menu/<id-salah>` di Bolu harus 404.
+- Admin: ubah `ADMIN_HOST=admin.nobitos.com` → `nobitos.web.id` di `.env` VPS lalu `pm2 restart web-nobitos`, supaya Preview brand Draft (F6.7) jalan dan `nobitos.web.id/` langsung ke panel. Sesudah itu: buka Admin di HP, coba Preview, cek Kesehatan SEO.
 - APW: Lighthouse 84 (target 85). Sisa penyebab = animasi masuk foto sajian hero (`gr-dish-in`, LCP menunggu animasi). Opsi: foto pertama langsung tampil tanpa animasi masuk (tampilan berubah sedikit) atau biarkan.
 - APW: putuskan perubahan TUNGKU yang belum di-commit di folder kerja (APW sudah pindah ke GERABAH, jadi kemungkinan dibuang); kirim file foto/video asli tanpa watermark & foto bebek panggang ([CEK] di `BRIEF-APW.md`).
 - Sayur Lodeh Bu Joko: beli domain + A record (F3.1); referensi desain (F3.3); menu & harga sarapan (F3.2).
@@ -52,9 +51,9 @@ Selesai & live: Pak Joko (F1), Bolu (F5), Aminoto (F4), APW (F2.1–F2.6), fonda
 - Keputusan F6.8b: teks halaman ANGLO/TUNGKU pindah ke DB atau tetap di kode.
 
 **Dikerjakan Claude (urut, setelah keputusan di atas)**
-1. ~~Platform F2.7 sisa~~ — selesai 23 Okt (`8e720c8`), tinggal deploy.
+1. ~~Platform F2.7 sisa~~ — selesai & live 23 Okt (`8e720c8`, deploy `3d215c3`).
 2. ~~Sayur Lodeh Bu Joko: F3.2–F3.6~~ — ditahan 23 Okt sampai Fran menyatakan operasional brand siap.
-3. ~~Admin F6.1–F6.11~~ — selesai 23 Okt (`6ce5ac7`), tinggal deploy (tanpa migrasi DB). Sisa: F6.4 & F6.8b (🙋 Fran).
+3. ~~Admin F6.1–F6.11~~ — selesai & live 23 Okt (`6ce5ac7`, deploy `3d215c3`). Sisa: F6.4 & F6.8b (🙋 Fran).
 4. QA akhir & serah terima F7.
 
 ---
