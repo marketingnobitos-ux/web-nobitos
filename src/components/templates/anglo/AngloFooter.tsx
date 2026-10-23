@@ -17,6 +17,8 @@ export default async function AngloFooter({ brand }: { brand: Brand }) {
       <div className={`${WRAP} pb-10 pt-16 md:pt-24`}>
         <WarungFront className="mx-auto w-full max-w-[560px]" />
 
+        {/* Induk untuk judul h3 kartu cabang, supaya urutan heading tidak loncat di halaman tanpa h2 (Cerita). */}
+        <h2 className="sr-only">Cabang {brand.name}</h2>
         <ul className="mt-14 grid gap-8 md:mt-20 md:grid-cols-2 md:gap-10">
           {branches.map((b, i) => (
             <li key={b.slug}>

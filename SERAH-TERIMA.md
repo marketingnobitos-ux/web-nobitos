@@ -15,7 +15,7 @@
 | Sayur Lodeh Bu Joko | belum ada | **Ditahan** sejak 23 Okt sampai operasional siap |
 | Admin | https://nobitos.web.id | **Live, lengkap** |
 
-Skor PageSpeed HP (23 Okt, target ≥ 85): Aminoto 97 · Pak Joko 93 · Bolu 87 · APW 85. Aksesibilitas 96–100, SEO 100 di semua.
+Skor PageSpeed HP (23 Okt, median 3 run, target ≥ 85): Pak Joko 95 · Bolu 94 · Aminoto 93 · APW 91. Aksesibilitas 96–100, SEO 100 di semua.
 
 ## 2. Yang sudah live per situs
 
@@ -49,7 +49,7 @@ Skor PageSpeed HP (23 Okt, target ≥ 85): Aminoto 97 · Pak Joko 93 · Bolu 87 
 ## 5. Masih [CEK] / menunggu Fran
 
 **Semua brand**
-- Daftar Google Search Console + Google Business Profile tiap cabang (F6.4). Claude bisa buatkan panduannya.
+- Daftar Google Search Console + Google Business Profile tiap cabang (F6.4). Panduan langkah demi langkah: `PANDUAN-SEARCH-CONSOLE-GBP.md`.
 
 **APW**
 - Nomor WhatsApp Kesambi (sekarang belum ada tombol WA).
@@ -57,7 +57,7 @@ Skor PageSpeed HP (23 Okt, target ≥ 85): Aminoto 97 · Pak Joko 93 · Bolu 87 
 - Logo resolusi tinggi; video/foto TikTok tanpa watermark; foto asli Ayam Panggang Kampung & Bebek Panggang.
 - Cerita: siapa Wicaksono? Logo IG "Sejak 2024" vs post pertama Juli 2026. Bebek juga dipanggang di tungku gerabah?
 - Konfirmasi alamat & jam dari bio IG masih benar.
-- Keputusan: foto hero langsung tampil tanpa animasi masuk (skor naik dari 85) atau biarkan.
+- Keputusan (tidak mendesak lagi, skor ukur ulang 90–94): foto hero langsung tampil tanpa animasi masuk, atau biarkan.
 - Keputusan: draf template TUNGKU lama di folder kerja dibuang atau disimpan.
 
 **Bolu Sunyaragi**
@@ -82,7 +82,8 @@ Skor PageSpeed HP (23 Okt, target ≥ 85): Aminoto 97 · Pak Joko 93 · Bolu 87 
 
 ## 6. Catatan teknis untuk sesi berikutnya
 
-- Update situs live: lihat `README.md`. Sebelum `git pull` di VPS: ada perubahan lokal di `package-lock.json` (84 baris terhapus, belum diselidiki), cek dulu.
+- Update situs live: lihat `README.md`. `package-lock.json` di VPS berubah lokal (npm 10 di VPS menghapus kolom `libc`, hanya metadata, aman). Kalau `git pull` menolak karena file itu, jalankan `git checkout -- package-lock.json` dulu.
+- Menunggu deploy (🙋 izin): perbaikan urutan judul footer Pak Joko (`AngloFooter.tsx`), tampilan tidak berubah.
 - VPS menampilkan "System restart required": reboot malam hari setelah backup, di luar jam buka.
 - Pulihkan DB: `pg_restore --clean --if-exists -d "<DATABASE_URL tanpa ?schema=>" ~/backups/web-nobitos-f7-3-20261023-1643.dump`.
 - DB VPS masih menyimpan brand contoh `bakmi-jowo` & `bu-joko` (tidak tayang). Brand Bu Joko asli nanti pakai slug baru.
