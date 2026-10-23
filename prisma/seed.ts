@@ -155,44 +155,6 @@ const brands: SeedBrand[] = [
     gallery: [],
   },
   {
-    slug: "bakmi-jowo",
-    name: "Bakmi Jowo Anglo Mas Joko",
-    tagline: "Bakmi Jawa dimasak satu-satu di atas anglo arang.",
-    colorPrimary: "#b91c1c",
-    colorSecondary: "#fef2f2",
-    branches: [
-      { name: "Kartini", address: "Jl. Kartini, Cirebon", openHours: "17.00 - 23.00 setiap hari" },
-      { name: "Ciperna", address: "Ciperna, Kabupaten Cirebon", openHours: "17.00 - 23.00 setiap hari" },
-    ],
-    menu: [
-      {
-        name: "Bakmi & Nasi",
-        items: [
-          { name: "Bakmi Godog", price: 22000, portion: "1 porsi", description: "Kuahnya kentel, telur bebeknya diorak-arik.", featured: true },
-          { name: "Bakmi Goreng", price: 22000, portion: "1 porsi", description: "Digoreng di atas anglo, aroma arangnya nempel.", featured: true },
-          { name: "Nasi Goreng Jawa", price: 20000, portion: "1 porsi", description: "Manis gurih, sedikit gosong di pinggir. Pas.", featured: true },
-        ],
-      },
-      {
-        name: "Minuman",
-        items: [
-          { name: "Wedang Jahe", price: 7000, portion: "1 gelas", description: "Anget sampai ke perut." },
-          { name: "Es Teh Manis", price: 4000, portion: "1 gelas", description: "Seger, manisnya pas." },
-        ],
-      },
-    ],
-    story: {
-      profile: "Satu wajan, satu porsi. Dimasak di atas anglo arang, sabar nunggu itu bagian dari nikmatnya.",
-      history: "Mas Joko mulai jualan pakai satu anglo di teras rumah. Antrenya panjang, jadi anglonya nambah.",
-      values: ["Dimasak satu per satu", "Pakai arang, bukan kompor", "Telur bebek asli", "Bumbu racikan sendiri"],
-      atmosphere: "Asap arang, bau bawang goreng, suara wajan. Duduk santai sambil nunggu giliran.",
-      process: ["Dikipas.", "Dimasak.", "Disajikan ngebul."],
-      processBody: "Arang dikipas sampai merah, bakmi masuk wajan satu porsi satu porsi. Makanya sabar, ya.",
-    },
-    promo: { title: "Malam Jumat, wedang jahe gratis", description: "Tiap Kamis malam, pesen bakmi apa aja dapet wedang jahe anget." },
-    gallery: [],
-  },
-  {
     slug: "apw",
     name: "Ayam Panggang Wicaksono (APW)",
     tagline: "Ayam panggang, bumbunya meresep sampai tulang.",
@@ -339,8 +301,6 @@ const OLD_DESCRIPTIONS: Record<string, string> = {
   "Bolu Pandan": "Bolu pandan lembut dan harum.",
   "Bolu Cokelat": "Cokelat pekat, tekstur moist.",
   "Bolu Keju": "Taburan keju melimpah.",
-  "Bakmi Godog": "Bakmi kuah kental, telur bebek.",
-  "Bakmi Goreng": "Digoreng di atas anglo, aroma arang.",
   "Ayam Panggang 1/4": "Dipanggang perlahan, bumbu manis gurih.",
   "Paket Nasi Ayam Panggang": "Nasi, ayam 1/4, lalapan, sambal & es teh.",
   "Nasi Rames": "Nasi dengan pilihan lauk harian.",

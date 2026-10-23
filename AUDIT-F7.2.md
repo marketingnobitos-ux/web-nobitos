@@ -55,6 +55,6 @@ Detail PageSpeed (mobile, 23 Okt ±16.30): Pak Joko LCP 2,6 s · TBT 160 ms · C
 
 ## 3. Catatan lain
 
-- DB VPS masih menyimpan brand contoh `bakmi-jowo` dan `bu-joko` (tidak publish, tanpa domain, jadi tidak tampil di publik). Perlu diingat saat F3.6: slug brand baru `dapur-bu-joko` berbeda dari `bu-joko` contoh.
+- DB VPS masih menyimpan brand contoh `bu-joko` (tidak publish, tanpa domain, jadi tidak tampil di publik). Brand contoh `bakmi-jowo` ("Mas Joko") dihapus 23 Okt 2026 atas izin Fran (backup `~/backups/web-nobitos-pre-hapus-bakmi-jowo-20261023-2051.dump`). Perlu diingat saat F3.6: slug brand baru `dapur-bu-joko` berbeda dari `bu-joko` contoh.
 - Data klik lama Bolu masih memakai nama sebelum F0.6 (`footer-maps-*`, `maps-cabang-*`, `ed-maps-<id>`); Dashboard memetakannya lewat `normalizeTarget`, jadi tetap terhitung.
 - `streetAddress` di JSON-LD Aminoto & Bolu memuat ulang kota dan kode pos (sudah ada di `addressLocality`/`postalCode`). Lolos Rich Results Test; kosmetik saja.
