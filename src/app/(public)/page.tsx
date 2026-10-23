@@ -7,6 +7,7 @@ import HeroSection from "@/components/public/home/HeroSection";
 import Marquee from "@/components/public/home/Marquee";
 import MenuPicker from "@/components/public/home/MenuPicker";
 import PromoPoster from "@/components/public/home/PromoPoster";
+import PageJsonLd from "@/components/public/PageJsonLd";
 import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
 import TemplateExtras from "@/components/public/TemplateExtras";
 import StoryPinned from "@/components/public/home/StoryPinned";
@@ -20,24 +21,23 @@ import { getActivePromos, getSections } from "@/lib/content";
 import { greetingFor, wibHour } from "@/lib/greeting";
 import { GALLERY_PLACEHOLDERS, PLACEHOLDER, menuPhoto, realPhoto } from "@/lib/placeholder";
 import { prisma } from "@/lib/prisma";
-import { branchNames, brandPageMetadata, joinNames } from "@/lib/seo";
+import { brandCity, branchNames, brandPageMetadata, homeTitle, joinNames } from "@/lib/seo";
 import { trackName } from "@/lib/track";
 
 const DEFAULT_PROCESS = ["Diulek.", "Digoreng.", "Disajikan hangat."];
 
-/** Batas judul Beranda sebelum tagline tidak lagi ikut di judul (hasil pencarian memotong ±60 karakter). */
-const HOME_TITLE_MAX = 65;
-
 export function generateMetadata() {
   return brandPageMetadata(async (brand) => {
-    const names = await branchNames(brand);
-    const withTagline = brand.tagline ? `${brand.name} — ${brand.tagline}` : brand.name;
+    const [names, city] = await Promise.all([branchNames(brand), brandCity(brand)]);
+    const cuisine = brand.servesCuisine[0];
+    // Pembuka deskripsi menyebut jenis makanan + kota (mis. "Ayam panggang di Cirebon.") bila tagline belum menyebut kota.
+    const local = city && !brand.tagline?.toLowerCase().includes(city.toLowerCase()) ? `${cuisine ?? brand.name} di ${city}. ` : "";
     const branches = names.length ? ` ${names.length} cabang: ${joinNames(names)}.` : "";
     return {
-      title: withTagline.length <= HOME_TITLE_MAX ? withTagline : brand.name,
+      title: homeTitle(brand, city),
       absoluteTitle: true,
       // Tagline yang sudah diakhiri tanda baca (mis. "...segar!") tidak diberi titik lagi.
-      description: `${brand.tagline ? brand.tagline.replace(/([^.!?])$/, "$1.") : brand.name}${branches} Lihat menu, harga, jam buka & lokasi.`,
+      description: `${local}${brand.tagline ? brand.tagline.replace(/([^.!?])$/, "$1.") : brand.name}${branches} Lihat menu, harga, jam buka & lokasi.`,
       path: "/",
     };
   });
@@ -47,7 +47,12 @@ export function generateMetadata() {
 // hero, marquee, menu andalan, picker, cerita, promo, galeri, cabang.
 export default async function HomePage() {
   const brand = await requireActiveBrand();
-  const jsonLd = <RestaurantJsonLd brand={brand} />;
+  const jsonLd = (
+    <>
+      <RestaurantJsonLd brand={brand} />
+      <PageJsonLd brand={brand} path="/" />
+    </>
+  );
   if (brand.template === "EDITORIAL")
     return (
       <>

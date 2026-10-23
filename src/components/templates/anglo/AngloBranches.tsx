@@ -15,7 +15,7 @@ export default async function AngloBranches({ brandId, brandName }: { brandId: s
         <ul className="mt-12 grid gap-10 md:mt-16 lg:grid-cols-2 lg:items-start">
           {branches.map((b, i) => (
             <li key={b.slug} className="space-y-8">
-              <LocationCard branch={b} brandName={brandName} className={i % 2 ? "md:rotate-1" : "md:-rotate-1"} />
+              <LocationCard branch={b} brandName={brandName} heading="h2" className={i % 2 ? "md:rotate-1" : "md:-rotate-1"} />
               {b.showBuJoko && <BuJokoNotice boxed track={trackName("ig_bujoko", b.slug)} />}
             </li>
           ))}

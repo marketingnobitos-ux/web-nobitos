@@ -4,6 +4,7 @@ import DadakStory from "@/components/templates/dadak/DadakStory";
 import EditorialStory from "@/components/templates/editorial/EditorialStory";
 import GerabahStory from "@/components/templates/gerabah/GerabahStory";
 import TungkuStory from "@/components/templates/tungku/TungkuStory";
+import PageJsonLd from "@/components/public/PageJsonLd";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections, type Section } from "@/lib/content";
 import { APW } from "@/data/brands/apw";
@@ -33,7 +34,7 @@ export function generateMetadata() {
 }
 
 // Cerita brand: profil, sejarah, nilai, suasana outlet (dari PageContent pageKey "story").
-export default async function CeritaPage() {
+async function CeritaPageContent() {
   const brand = await requireActiveBrand();
   if (brand.template === "ANGLO") return <AngloStory />;
   if (brand.template === "TUNGKU") return <TungkuStory />;
@@ -99,5 +100,16 @@ function StorySection({ section, reverse, brandName }: { section: Section; rever
         <img src={imageUrl} alt={altText(title, `Foto ${brandName}`)} loading="lazy" className="aspect-[4/3] w-full rounded-2xl object-cover" />
       )}
     </section>
+  );
+}
+
+/** Isi halaman + JSON-LD tambahan (breadcrumb). */
+export default async function CeritaPage() {
+  const brand = await requireActiveBrand();
+  return (
+    <>
+      <PageJsonLd brand={brand} path="/cerita" />
+      <CeritaPageContent />
+    </>
   );
 }

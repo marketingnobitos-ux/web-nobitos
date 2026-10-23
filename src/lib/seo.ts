@@ -75,18 +75,82 @@ type PageSeo = {
   description: string;
   /** Path halaman ini, mis. "/menu". */
   path: string;
+  /** Halaman tidak untuk diindeks (mis. detail menu Bolu yang tipis). */
+  noindex?: boolean;
 };
 
+// ---- Judul & deskripsi Google yang ditulis manual di Admin > Isi Halaman (F6.14) ----
+
+export const SEO_PAGE_KEY = "seo";
+export const SEO_SECTION_KEY = "halaman";
+/** Halaman yang punya field SEO di Admin. Kunci = path. */
+export const SEO_PAGES = [
+  { path: "/", label: "Beranda" },
+  { path: "/menu", label: "Menu" },
+  { path: "/cabang", label: "Cabang" },
+  { path: "/cerita", label: "Cerita" },
+] as const;
+export type SeoOverride = { title?: string; description?: string };
+export type SeoOverrides = Record<string, SeoOverride>;
+
+/** Timpaan judul/deskripsi per path dari tabel PageContent (kosong = rumus otomatis). */
+export const getSeoOverrides = cache(async (brandId: string): Promise<SeoOverrides> => {
+  const row = await prisma.pageContent.findUnique({
+    where: { brandId_pageKey_sectionKey: { brandId, pageKey: SEO_PAGE_KEY, sectionKey: SEO_SECTION_KEY } },
+    select: { data: true },
+  });
+  const data = row?.data;
+  return data && typeof data === "object" && !Array.isArray(data) ? (data as SeoOverrides) : {};
+});
+
+/** Kota brand untuk judul lokal: semua brand Nobitos di Cirebon, dicek dari alamat cabang. */
+export async function brandCity(brand: ActiveBrand): Promise<string | null> {
+  const addresses =
+    brand.template === "ANGLO"
+      ? (await getAngloBranches(brand.id)).map((b) => b.address)
+      : (await prisma.branch.findMany({ where: { brandId: brand.id }, select: { address: true } })).map((b) => b.address);
+  return addresses.some((a) => /cirebon/i.test(a)) || brand.template === "ANGLO" ? "Cirebon" : null;
+}
+
+/**
+ * Judul Beranda dengan jenis makanan + kota supaya cocok dengan pencarian lokal (mis. "bakmi jawa cirebon"):
+ * "Bakmi Jowo Anglo Pak Joko — Bakmi Jawa di Cirebon", "Pecel Lele Sambel Dadak Aminoto di Cirebon".
+ * Tagline yang sudah menyebut kota tetap dipakai ("Bolu Sunyaragi — Dari Cirebon, pulang membawa rasa").
+ */
+export function homeTitle(brand: ActiveBrand, city: string | null, max = 65): string {
+  const name = brand.name;
+  if (brand.tagline && city && brand.tagline.toLowerCase().includes(city.toLowerCase()) && `${name} — ${brand.tagline}`.length <= max) {
+    return `${name} — ${brand.tagline}`;
+  }
+  const cuisine = brand.servesCuisine[0];
+  if (city && cuisine && !name.toLowerCase().includes(cuisine.toLowerCase())) {
+    const t = `${name} — ${cuisine} di ${city}`;
+    if (t.length <= max) return t;
+  }
+  if (city && `${name} di ${city}`.length <= max) return `${name} di ${city}`;
+  return name;
+}
+
 /** Metadata lengkap satu halaman publik. Open Graph & Twitter ditulis penuh karena tidak diwarisi sebagian dari layout. */
-export async function pageMetadata(brand: ActiveBrand, { title, absoluteTitle, description, path }: PageSeo): Promise<Metadata> {
+export async function pageMetadata(brand: ActiveBrand, { title, absoluteTitle, description, path, noindex }: PageSeo): Promise<Metadata> {
+  // Judul/deskripsi manual dari Admin menang atas rumus otomatis. Judul manual dipakai utuh (tanpa " · Nama Brand").
+  const manual = (await getSeoOverrides(brand.id))[path];
+  if (manual?.title) {
+    title = manual.title;
+    absoluteTitle = true;
+  }
+  if (manual?.description) description = manual.description;
   const fullTitle = absoluteTitle ? title : `${title} · ${brand.name}`;
   const desc = clip(description);
   const image = ogImage(brand);
+  const origin = await siteOrigin(brand.id);
   return {
-    metadataBase: await siteOrigin(brand.id),
+    metadataBase: origin,
     title: absoluteTitle ? { absolute: title } : title,
     description: desc,
-    alternates: { canonical: path },
+    // URL penuh supaya beranda tetap "https://domain/" (sama dengan sitemap).
+    alternates: { canonical: new URL(path, origin).toString() },
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: "website",
       locale: "id_ID",

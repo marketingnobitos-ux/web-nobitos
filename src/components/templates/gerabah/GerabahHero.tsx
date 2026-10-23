@@ -75,7 +75,7 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
           <p key={index} className="gr-display gr-slide-in relative z-[3] mt-6 text-[clamp(38px,10.5vw,64px)] lg:text-[clamp(44px,5vw,80px)]">
             {slide.title.map((line) => (
               <span key={line} className="block">
-                {line}
+                {line}{" "}
               </span>
             ))}
           </p>

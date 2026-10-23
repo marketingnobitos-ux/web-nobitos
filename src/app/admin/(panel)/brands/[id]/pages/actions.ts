@@ -7,6 +7,7 @@ import { actionError } from "@/lib/admin-action";
 import { PAGE_SECTIONS, type SectionData } from "@/lib/content";
 import { deleteReplacedImage } from "@/lib/media";
 import { prisma } from "@/lib/prisma";
+import { SEO_PAGES, SEO_PAGE_KEY, SEO_SECTION_KEY, type SeoOverrides } from "@/lib/seo";
 import { TEMPLATE_TEXT_FIELDS, TEXT_PAGE_KEY, defaultText, hasTemplateText, readTextOverrides } from "@/lib/template-text";
 import { parseForm, sectionSchema, type ActionState } from "@/lib/validation";
 
@@ -82,6 +83,32 @@ export async function saveTemplateText(brandId: string, groupIndex: number, _pre
     await logActivity(admin, brandId, `mengubah teks halaman "${group.title}"`);
     revalidatePath(`/admin/brands/${brandId}/pages`);
     return { ok: true, message: "Teks disimpan. Langsung tampil di situs." };
+  } catch (e) {
+    return actionError(e);
+  }
+}
+
+/** Simpan judul & deskripsi Google per halaman (F6.14). Kosong = rumus otomatis. */
+export async function saveSeo(brandId: string, _prev: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    const admin = await requireBrandAdmin(brandId);
+    const data: SeoOverrides = {};
+    for (const { path, label } of SEO_PAGES) {
+      const title = String(formData.get(`title:${path}`) ?? "").replace(/\s+/g, " ").trim();
+      const description = String(formData.get(`description:${path}`) ?? "").replace(/\s+/g, " ").trim();
+      if (title.length > 70) return { error: `${label}: judul maksimal 70 karakter (sekarang ${title.length}).` };
+      if (description.length > 200) return { error: `${label}: deskripsi maksimal 200 karakter (sekarang ${description.length}).` };
+      if (title || description) data[path] = { ...(title ? { title } : {}), ...(description ? { description } : {}) };
+    }
+    const where = { brandId_pageKey_sectionKey: { brandId, pageKey: SEO_PAGE_KEY, sectionKey: SEO_SECTION_KEY } };
+    await prisma.pageContent.upsert({
+      where,
+      update: { data },
+      create: { brandId, pageKey: SEO_PAGE_KEY, sectionKey: SEO_SECTION_KEY, data, isVisible: true, order: 98 },
+    });
+    await logActivity(admin, brandId, "mengubah judul & deskripsi Google");
+    revalidatePath(`/admin/brands/${brandId}/pages`);
+    return { ok: true, message: "Disimpan. Google membaca perubahan saat merayapi ulang (beberapa hari)." };
   } catch (e) {
     return actionError(e);
   }

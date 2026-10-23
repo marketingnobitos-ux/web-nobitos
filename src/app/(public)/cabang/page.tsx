@@ -4,6 +4,7 @@ import DadakBranches from "@/components/templates/dadak/DadakBranches";
 import GerabahBranches from "@/components/templates/gerabah/GerabahBranches";
 import TungkuBranches from "@/components/templates/tungku/TungkuBranches";
 import RestaurantJsonLd from "@/components/public/RestaurantJsonLd";
+import PageJsonLd from "@/components/public/PageJsonLd";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { prisma } from "@/lib/prisma";
 import { branchNames, brandPageMetadata, joinNames } from "@/lib/seo";
@@ -20,7 +21,7 @@ export function generateMetadata() {
 }
 
 // Daftar cabang: alamat, jam buka, peta, WhatsApp/telepon.
-export default async function CabangPage() {
+async function CabangPageContent() {
   const brand = await requireActiveBrand();
   const jsonLd = <RestaurantJsonLd brand={brand} />;
   // ANGLO: cabang dari src/data/brands, bukan DB.
@@ -75,5 +76,16 @@ export default async function CabangPage() {
         <p className="mt-6 text-gray-500">Info cabang belum tersedia.</p>
       )}
     </section>
+  );
+}
+
+/** Isi halaman + JSON-LD tambahan (breadcrumb). */
+export default async function CabangPage() {
+  const brand = await requireActiveBrand();
+  return (
+    <>
+      <PageJsonLd brand={brand} path="/cabang" />
+      <CabangPageContent />
+    </>
   );
 }

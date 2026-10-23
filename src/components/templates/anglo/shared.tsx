@@ -68,16 +68,20 @@ export function LocationCard({
   branch,
   brandName,
   className = "",
+  heading = "h3",
 }: {
   branch: AngloBranch;
   /** Untuk pesan awal WhatsApp. */
   brandName: string;
   className?: string;
+  /** h2 di halaman Cabang (judul utama tiap kartu), h3 di footer. */
+  heading?: "h2" | "h3";
 }) {
+  const Heading = heading;
   const { ui } = BAKMI_PAK_JOKO;
   return (
     <div data-stick className={`ag-paper ag-tape relative flex flex-col p-6 pt-8 text-ink ${className}`}>
-      <h3 className="ag-marker text-[2.6rem]">{branch.name}</h3>
+      <Heading className="ag-marker text-[2.6rem]">{branch.name}</Heading>
       <p className="mt-3 leading-relaxed">{branch.address}</p>
       {branch.hours && <p className="mt-3 font-mono text-sm font-bold uppercase">{branch.hours}</p>}
       {branch.openingHours && <OpenBadge hours={branch.openingHours} className="mt-2 font-mono text-sm uppercase" />}

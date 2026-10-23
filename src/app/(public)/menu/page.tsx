@@ -4,6 +4,7 @@ import DadakMenu from "@/components/templates/dadak/DadakMenu";
 import EditorialMenu from "@/components/templates/editorial/EditorialMenu";
 import GerabahMenu from "@/components/templates/gerabah/GerabahMenu";
 import TungkuMenu from "@/components/templates/tungku/TungkuMenu";
+import PageJsonLd from "@/components/public/PageJsonLd";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { formatRupiah } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
@@ -26,7 +27,7 @@ export function generateMetadata() {
 }
 
 // Daftar menu per kategori + filter. Katalog saja, tanpa tombol pesan.
-export default async function MenuPage() {
+async function MenuPageContent() {
   const brand = await requireActiveBrand();
 
   const categories = await prisma.menuCategory.findMany({
@@ -90,5 +91,16 @@ export default async function MenuPage() {
         )}
       </div>
     </section>
+  );
+}
+
+/** Isi halaman + JSON-LD tambahan (breadcrumb, menu). */
+export default async function MenuPage() {
+  const brand = await requireActiveBrand();
+  return (
+    <>
+      <PageJsonLd brand={brand} path="/menu" />
+      <MenuPageContent />
+    </>
   );
 }

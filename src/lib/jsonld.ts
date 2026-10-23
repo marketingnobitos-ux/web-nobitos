@@ -64,7 +64,8 @@ function openingHoursSpec(hours: DayHours[]): JsonLd[] | undefined {
   if (groups.size === 0) return undefined;
   return [...groups].map(([slot, dayOfWeek]) => {
     const [opens, closes] = slot.split("-");
-    return { "@type": "OpeningHoursSpecification", dayOfWeek, opens, closes };
+    // Tutup tengah malam: Google menyarankan "23:59", bukan "00:00" (dibaca tutup di awal hari).
+    return { "@type": "OpeningHoursSpecification", dayOfWeek, opens, closes: closes === "00:00" ? "23:59" : closes };
   });
 }
 
@@ -103,8 +104,7 @@ export async function restaurantJsonLd(brand: Brand): Promise<JsonLd | null> {
       name: `${brand.name} — ${b.name}`,
       url: url("/cabang"),
       image,
-      // TODO: konfirmasi Fran — addressLocality, addressRegion & postalCode belum terstruktur (alamat masih satu teks).
-      address: b.address ? { "@type": "PostalAddress", streetAddress: b.address, addressCountry: "ID" } : undefined,
+      address: b.address ? postalAddress(b.address) : undefined,
       // TODO: konfirmasi Fran — cabang tanpa lat/lng (Aminoto) tidak punya `geo`.
       geo: b.lat != null && b.lng != null ? { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng } : undefined,
       hasMap: b.mapsUrl,
@@ -121,4 +121,89 @@ export async function restaurantJsonLd(brand: Brand): Promise<JsonLd | null> {
   });
 
   return { "@context": "https://schema.org", "@graph": restaurants };
+}
+
+/**
+ * Alamat bebas -> PostalAddress terstruktur. Semua cabang Nobitos di wilayah Cirebon: kota & provinsi diisi bila
+ * alamat menyebut "Cirebon"; kode pos 5 digit diambil dari teks. Field yang tidak ketemu tidak dirender.
+ */
+export function postalAddress(text: string): JsonLd {
+  const cirebon = /\bcirebon\b/i.test(text);
+  const postalCode = text.match(/\b\d{5}\b/)?.[0];
+  return compact({
+    "@type": "PostalAddress",
+    streetAddress: text,
+    addressLocality: cirebon ? "Cirebon" : undefined,
+    addressRegion: cirebon || /jawa barat/i.test(text) ? "Jawa Barat" : undefined,
+    postalCode,
+    addressCountry: "ID",
+  });
+}
+
+/** WebSite + Organization brand (Beranda). Organization menautkan akun sosial & induk usaha Nobitos. */
+export async function siteJsonLd(brand: Brand): Promise<JsonLd> {
+  const origin = await siteOrigin(brand.id);
+  const url = (path: string) => new URL(path, origin).toString();
+  const sameAs = [brand.instagramUrl, brand.tiktokUrl].filter(Boolean);
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      compact({ "@type": "WebSite", "@id": url("/#website"), url: url("/"), name: brand.name, inLanguage: "id-ID", publisher: { "@id": url("/#organization") } }),
+      compact({
+        "@type": "Organization",
+        "@id": url("/#organization"),
+        name: brand.name,
+        url: url("/"),
+        logo: brand.logoUrl ? url(brand.logoUrl) : undefined,
+        description: brand.tagline,
+        sameAs,
+        parentOrganization: { "@type": "Organization", name: "Nobitos" },
+      }),
+    ],
+  };
+}
+
+/** BreadcrumbList "Beranda › <halaman>" untuk halaman selain Beranda. */
+export async function breadcrumbJsonLd(brand: Brand, items: { name: string; path: string }[]): Promise<JsonLd> {
+  const origin = await siteOrigin(brand.id);
+  const all = [{ name: "Beranda", path: "/" }, ...items];
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: all.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it.name, item: new URL(it.path, origin).toString() })),
+  };
+}
+
+/** Menu (schema.org Menu → MenuSection → MenuItem + harga) dari menu yang tersedia. Null bila belum ada menu. */
+export async function menuJsonLd(brand: Brand): Promise<JsonLd | null> {
+  const [origin, categories] = await Promise.all([
+    siteOrigin(brand.id),
+    prisma.menuCategory.findMany({
+      where: { brandId: brand.id },
+      orderBy: [{ order: "asc" }, { name: "asc" }],
+      select: { name: true, items: { where: { isAvailable: true }, orderBy: [{ order: "asc" }, { createdAt: "asc" }], select: { name: true, description: true, price: true } } },
+    }),
+  ]);
+  const sections = categories.filter((c) => c.items.length);
+  if (!sections.length) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Menu",
+    "@id": new URL("/menu#menu", origin).toString(),
+    name: `Menu ${brand.name}`,
+    url: new URL("/menu", origin).toString(),
+    inLanguage: "id-ID",
+    hasMenuSection: sections.map((c) => ({
+      "@type": "MenuSection",
+      name: c.name,
+      hasMenuItem: c.items.map((i) =>
+        compact({
+          "@type": "MenuItem",
+          name: i.name,
+          description: i.description,
+          offers: { "@type": "Offer", price: i.price, priceCurrency: "IDR" },
+        }),
+      ),
+    })),
+  };
 }

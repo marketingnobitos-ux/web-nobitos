@@ -24,6 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: item.name,
     description: `${item.name} di ${brand.name}, ${price}.${item.description ? ` ${item.description}` : ""}`,
     path: `/menu/${item.id}`,
+    // Halaman detail tipis (ID acak, nama bisa kembar antar kategori): tidak diindeks, cukup halaman /menu (audit F6.14).
+    noindex: true,
   });
 }
 

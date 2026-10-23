@@ -8,12 +8,39 @@ import { PAGE_SECTIONS, type SectionData } from "@/lib/content";
 import { prisma } from "@/lib/prisma";
 import { TEMPLATE_FEATURES, TEMPLATE_LABEL } from "@/lib/template-features";
 import { TEMPLATE_TEXT_FIELDS, defaultText, hasTemplateText, readTextOverrides } from "@/lib/template-text";
-import { saveSection, saveTemplateText } from "./actions";
+import { SEO_PAGES, getSeoOverrides } from "@/lib/seo";
+import { saveSection, saveSeo, saveTemplateText } from "./actions";
 
 export const metadata = { title: "Isi Halaman" };
 
 // Urutan kunci = urutan tampil.
 const PAGE_TITLE: Record<string, string> = { home: "Beranda", story: "Cerita", gallery: "Galeri", site: "Semua halaman (footer)" };
+
+/** Judul & deskripsi yang tampil di hasil Google, per halaman. Kosong = dibuat otomatis dari data brand. */
+async function SeoCard({ brandId }: { brandId: string }) {
+  const seo = await getSeoOverrides(brandId);
+  return (
+    <Card title="Judul & deskripsi di Google">
+      <p className="mb-4 text-sm text-gray-600">
+        Kosongkan untuk memakai teks otomatis (nama brand, jenis makanan, kota, cabang). Judul ideal 50–60 karakter, deskripsi 120–155 karakter.
+      </p>
+      <ActionForm action={saveSeo.bind(null, brandId)} submitLabel="Simpan SEO">
+        <div className="grid gap-4 lg:grid-cols-2">
+          {SEO_PAGES.map(({ path, label }) => (
+            <fieldset key={path} className="space-y-3 rounded-[20px] bg-white p-4">
+              <legend className="sr-only">{label}</legend>
+              <p aria-hidden className="text-sm font-bold">
+                {label} <span className="font-normal text-gray-500">{path}</span>
+              </p>
+              <TextField label="Judul" name={`title:${path}`} id={`seo-title-${path}`} defaultValue={seo[path]?.title} maxLength={70} placeholder="Otomatis" />
+              <TextArea label="Deskripsi" name={`description:${path}`} defaultValue={seo[path]?.description} rows={3} hint="Maksimal 200 karakter; Google memotong di ±155." />
+            </fieldset>
+          ))}
+        </div>
+      </ActionForm>
+    </Card>
+  );
+}
 
 export default async function BrandPagesAdmin({ params }: { params: Promise<{ id: string }> }) {
   const brand = await getBrandForAdmin((await params).id);
@@ -26,6 +53,7 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
     const groups = TEMPLATE_TEXT_FIELDS[template] ?? [];
     return (
       <div className="space-y-6">
+        <SeoCard brandId={brand.id} />
         <p className="text-[15px] text-[#d4dcc8]">
           Teks halaman template {TEMPLATE_LABEL[template]}. Ubah lalu klik Simpan; perubahan langsung tampil di situs. Kosongkan field untuk kembali
           ke teks bawaan. Foto, tata letak, dan teks kecil lainnya tetap diatur di kode.
@@ -54,6 +82,7 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
   if (features.codeFile) {
     return (
       <div className="space-y-4">
+        <SeoCard brandId={brand.id} />
         <Notice tone="warn" title="Teks halaman ini diatur di kode">
           <p>
             Template {TEMPLATE_LABEL[brand.template]} mengambil teks hero, cerita, dan bagian halaman lain dari{" "}
@@ -97,6 +126,7 @@ export default async function BrandPagesAdmin({ params }: { params: Promise<{ id
 
   return (
     <div className="space-y-8">
+      <SeoCard brandId={brand.id} />
       <p className="text-sm text-gray-600">
         Hanya bagian yang dipakai template {TEMPLATE_LABEL[brand.template]} yang ditampilkan. Kosongkan field yang tidak dipakai; bagian tanpa foto
         memakai foto contoh bawaan.

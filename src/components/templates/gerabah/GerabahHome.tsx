@@ -206,7 +206,7 @@ async function Proses() {
             <h2 id="proses-title" className="gr-display mt-5 text-[clamp(36px,5vw,72px)]">
               {proses.title.map((line) => (
                 <span key={line} className="block">
-                  {line}
+                  {line}{" "}
                 </span>
               ))}
             </h2>

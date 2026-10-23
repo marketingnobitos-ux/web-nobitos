@@ -14,16 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ANGLO, TUNGKU, DADAK & GERABAH tidak punya halaman galeri & detail menu (keduanya redirect), jadi tidak dicantumkan.
   const anglo = brand.template === "ANGLO" || brand.template === "TUNGKU" || brand.template === "DADAK" || brand.template === "GERABAH";
 
-  const [photoCount, items] = await Promise.all([
-    anglo ? 0 : prisma.galleryPhoto.count({ where: { album: { brandId: brand.id } } }),
-    anglo
-      ? []
-      : prisma.menuItem.findMany({
-          where: { brandId: brand.id, isAvailable: true },
-          orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
-          select: { id: true, createdAt: true },
-        }),
-  ]);
+  // Detail menu /menu/<id> sengaja tidak dicantumkan: halaman itu noindex (audit F6.14).
+  const photoCount = anglo ? 0 : await prisma.galleryPhoto.count({ where: { album: { brandId: brand.id } } });
 
   const lastModified = brand.updatedAt;
   return [
@@ -32,6 +24,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url("/cabang"), lastModified, changeFrequency: "monthly", priority: 0.9 },
     { url: url("/cerita"), lastModified, changeFrequency: "monthly", priority: 0.6 },
     ...(photoCount > 0 ? [{ url: url("/galeri"), lastModified, changeFrequency: "monthly" as const, priority: 0.5 }] : []),
-    ...items.map((i) => ({ url: url(`/menu/${i.id}`), lastModified: i.createdAt, changeFrequency: "monthly" as const, priority: 0.5 })),
   ];
 }

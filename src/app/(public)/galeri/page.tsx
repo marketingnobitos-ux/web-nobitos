@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import GalleryGrid from "@/components/public/GalleryGrid";
 import EditorialGallery from "@/components/templates/editorial/EditorialGallery";
+import PageJsonLd from "@/components/public/PageJsonLd";
 import { requireActiveBrand } from "@/lib/active-brand";
 import { getSections } from "@/lib/content";
 import { prisma } from "@/lib/prisma";
@@ -15,7 +16,7 @@ export function generateMetadata() {
 }
 
 // Album foto per brand, klik foto untuk lightbox.
-export default async function GaleriPage() {
+async function GaleriPageContent() {
   const brand = await requireActiveBrand();
   if (brand.template === "ANGLO" || brand.template === "TUNGKU" || brand.template === "DADAK" || brand.template === "GERABAH") redirect("/"); // template tanpa halaman galeri
 
@@ -60,5 +61,16 @@ export default async function GaleriPage() {
         <p className="mt-6 text-gray-500">Foto belum tersedia.</p>
       )}
     </section>
+  );
+}
+
+/** Isi halaman + JSON-LD tambahan (breadcrumb). */
+export default async function GaleriPage() {
+  const brand = await requireActiveBrand();
+  return (
+    <>
+      <PageJsonLd brand={brand} path="/galeri" />
+      <GaleriPageContent />
+    </>
   );
 }

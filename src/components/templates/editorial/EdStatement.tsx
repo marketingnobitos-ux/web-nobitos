@@ -45,12 +45,13 @@ export default function EdStatement({ text, label }: { text: string; label?: str
   return (
     <section className="bg-paper px-5 py-28 sm:px-8 md:px-12 md:py-44">
       <div className="mx-auto grid max-w-[1440px] gap-8 md:grid-cols-12">
-        {label && <p className="text-sm text-ink/60 md:col-span-3 md:pt-4">{label}</p>}
+        {label && <p className="text-sm text-ink/75 md:col-span-3 md:pt-4">{label}</p>}
         <p
           ref={root}
           className="ed-title text-[clamp(30px,4.4vw,68px)] leading-[1.12] md:col-span-9 md:col-start-4"
-          aria-label={text.replace(/\*/g, "")}
         >
+          {/* Teks utuh untuk pembaca layar (aria-label tidak boleh di <p>); kata animasi di bawahnya disembunyikan. */}
+          <span className="sr-only">{text.replace(/\*/g, "")}</span>
           {words.map((w, i) => (
             <span key={i} aria-hidden>
               <span data-word className={w.italic ? "italic" : undefined}>

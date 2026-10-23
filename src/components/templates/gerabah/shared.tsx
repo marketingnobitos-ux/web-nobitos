@@ -108,7 +108,7 @@ export function BoardHero({
           <h1 id="page-title" className="gr-display mt-5 text-[clamp(52px,8vw,118px)]">
             {title.map((line) => (
               <span key={line} className="block">
-                {line}
+                {line}{" "}
               </span>
             ))}
           </h1>
