@@ -43,7 +43,7 @@ Detail PageSpeed (mobile, 23 Okt ±16.30): Pak Joko LCP 2,6 s · TBT 160 ms · C
 | # | Brand | Temuan | Siapa | Cara |
 |---|---|---|---|---|
 | 1 ✅ beres 23 Okt (F7.3) | Bolu | Jam buka & "buka setiap hari" tidak tertulis di halaman Cabang/footer. Data jam 7 hari ada (badge & JSON-LD benar), tapi teks `openHours` 3 cabang kosong di DB VPS, padahal template membaca teks itu. | Claude (perlu izin ubah DB VPS) atau admin | Admin > Bolu > Lokasi & Jam Buka > simpan ulang tiap cabang (teks jam terisi otomatis bila kosong & jam seragam), atau seed `bolu` kecil yang mengisi `openHours`. Hasil: "08.00–21.00 setiap hari", Kedawung "08.00–20.00", Stasiun "06.00–21.00". |
-| 2 | Bolu | `servesCuisine` kosong (opsional di Rich Results). | Admin | Admin > Profil Brand > "Jenis masakan", mis. "Kue", "Bolu Gulung". |
+| 2 ✅ beres 23 Okt | Bolu | `servesCuisine` kosong (opsional di Rich Results). | Admin | Admin > Profil Brand > "Jenis masakan", mis. "Kue", "Bolu Gulung". |
 | 3 | APW | Belum ada tombol WA; Maps masih pencarian alamat; JSON-LD tanpa `telephone` & `geo`. | 🙋 Fran (data) | F6.14 Paket 3: kirim nomor WA & link pin Google Maps Kesambi. |
 | 4 | Pak Joko | Alamat Kartini tanpa kode pos; Ciperna tanpa "Kabupaten Cirebon" & kode pos (`addressLocality` hilang di JSON-LD). | 🙋 Fran / admin | Admin > Lokasi & Jam Buka: lengkapi alamat (F6.14 Paket 3). |
 | 5 | Aminoto | Alamat Ciledug hanya "Dekat pintu tol Ciledug, Ciledug Kulon…" tanpa nama jalan/nomor. | 🙋 Fran [CEK] | Konfirmasi alamat dari pin Google Maps, isi di Admin. |
