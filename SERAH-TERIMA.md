@@ -11,7 +11,7 @@
 | Pecel Lele Sambel Dadak Aminoto | https://pecelleleaminoto.web.id | **Live, lengkap** |
 | Bolu Sunyaragi | https://bolusunyaragi.web.id | **Live, lengkap** (5 foto cerita di Beranda masih foto contoh) |
 | Bakmi Jowo Anglo Pak Joko | https://bakmijowopakjoko.web.id | **Live, lengkap** |
-| Ayam Panggang Wicaksono (APW) | https://ayampanggangwicaksono.web.id | **Live**, belum ada tombol WhatsApp & pin Maps |
+| Ayam Panggang Wicaksono (APW) | https://ayampanggangwicaksono.web.id | **Live**, belum ada tombol WhatsApp (pin Maps sudah resmi) |
 | Sayur Lodeh Bu Joko | belum ada | **Ditahan** sejak 23 Okt sampai operasional siap |
 | Admin | https://nobitos.web.id | **Live, lengkap** |
 
@@ -53,7 +53,6 @@ Skor PageSpeed HP (23 Okt, median 3 run, target ≥ 85): Pak Joko 95 · Bolu 94 
 
 **APW**
 - Nomor WhatsApp Kesambi (sekarang belum ada tombol WA).
-- Link pin Google Maps Kesambi (tombol Maps masih pencarian alamat).
 - Logo resolusi tinggi; video/foto TikTok tanpa watermark; foto asli Ayam Panggang Kampung & Bebek Panggang.
 - Cerita: siapa Wicaksono? Logo IG "Sejak 2024" vs post pertama Juli 2026. Bebek juga dipanggang di tungku gerabah?
 - Konfirmasi alamat & jam dari bio IG masih benar.

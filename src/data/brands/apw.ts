@@ -52,11 +52,11 @@ export const APW_BRANCH = {
   hours: weeklyHours("16:00", "00:00", [DAY.KAMIS]),
   // TODO: konfirmasi Fran — nomor WhatsApp cabang. Kosong = tombol WA tidak dirender.
   whatsapp: null as string | null,
-  // TODO: konfirmasi Fran — link Google Maps resmi. Sementara tombol Maps memakai pencarian alamat.
-  mapsUrl: null as string | null,
-  // TODO: konfirmasi Fran — titik koordinat (JSON-LD `geo`).
-  lat: null as number | null,
-  lng: null as number | null,
+  // Pin Google Maps resmi dari Fran (23 Okt 2026), tempat "Ayam Panggang Wicaksono".
+  mapsUrl: "https://maps.app.goo.gl/9mLpQbZKeGuHNsAo9" as string | null,
+  // Koordinat dari pin di atas (JSON-LD `geo`).
+  lat: -6.731826 as number | null,
+  lng: 108.55016 as number | null,
 };
 
 export const APW = {
