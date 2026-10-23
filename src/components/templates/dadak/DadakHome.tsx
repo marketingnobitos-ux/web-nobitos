@@ -66,7 +66,7 @@ export default async function DadakHome({ brandName, featured, branches }: Props
                 <li key={item.id}>
                   <Link href="/menu" data-track={trackName("menu")} className="dk-frame group block overflow-hidden">
                     {item.imageUrl && (
-                      <Img image={{ src: item.imageUrl, alt: item.name }} className="aspect-[3/4] w-full transition-transform duration-500 group-hover:scale-[1.03]" />
+                      <Img image={{ src: item.imageUrl, alt: item.name }} sizes="(min-width: 768px) 25vw, 50vw" className="aspect-[3/4] w-full transition-transform duration-500 group-hover:scale-[1.03]" />
                     )}
                     <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgb(10_34_25/0.65)_0%,transparent_30%,transparent_65%,rgb(10_34_25/0.75)_100%)]" />
                     <p className="dk-display absolute left-6 right-6 top-6 text-lg leading-tight md:text-xl">{item.name}</p>
@@ -93,14 +93,14 @@ export default async function DadakHome({ brandName, featured, branches }: Props
       <section aria-label="Catering dan menu bakar" className="grid md:grid-cols-2">
         <div className="dk-wash-lime flex flex-col items-center justify-center px-6 py-20 text-center md:py-24">
           <h2 className="dk-display max-w-[13ch] text-[clamp(36px,4.2vw,56px)]">{catering.title}</h2>
-          <Img image={AMINOTO_IMAGES.strip[1]} className="mt-8 aspect-[3/4] w-32" />
+          <Img image={AMINOTO_IMAGES.strip[1]} sizes="128px" className="mt-8 aspect-[3/4] w-32" />
           <p className="dk-caps mt-8 max-w-[34ch] text-[14px] font-medium leading-relaxed">{catering.body}</p>
           <a href={whatsappUrl(catering.whatsapp, catering.message)} target="_blank" rel="noopener noreferrer" data-track={trackName("wa", "catering")} className="dk-btn dk-btn-line mt-8">
             {catering.cta}
           </a>
         </div>
         <div className={`relative isolate flex min-h-[520px] items-end ${DEEP}`}>
-          <Img image={AMINOTO_IMAGES.panelBara} className="absolute inset-0 -z-20 h-full w-full" />
+          <Img image={AMINOTO_IMAGES.panelBara} sizes="(min-width: 768px) 50vw, 100vw" className="absolute inset-0 -z-20 h-full w-full" />
           <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(10_34_25/0.2)_0%,rgb(10_34_25/0.92)_78%)]" />
           <div className="p-6 sm:p-10">
             <p className="dk-caps text-[13px] font-medium text-accent">{bakar.label}</p>

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { preload } from "react-dom";
 import { AMINOTO, AMINOTO_IMAGES, type AminotoImage } from "@/data/brands/aminoto";
+import { imageSrcSet } from "@/lib/image";
 import { trackName } from "@/lib/track";
 
 /** Navigasi utama (logo = Beranda). */
@@ -33,12 +34,28 @@ export function categoryAnchor(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
-/** Foto biasa. `priority` untuk foto LCP. */
-export function Img({ image, className = "", priority = false, width = 600, height = 800 }: { image: AminotoImage; className?: string; priority?: boolean; width?: number; height?: number }) {
+/** Foto biasa. `priority` untuk foto LCP. `sizes` = lebar tampil, supaya HP memakai salinan 400px. */
+export function Img({
+  image,
+  className = "",
+  priority = false,
+  width = 600,
+  height = 800,
+  sizes,
+}: {
+  image: AminotoImage;
+  className?: string;
+  priority?: boolean;
+  width?: number;
+  height?: number;
+  sizes?: string;
+}) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={image.src}
+      srcSet={sizes && imageSrcSet(image.src)}
+      sizes={sizes}
       alt={image.alt}
       width={width}
       height={height}
@@ -120,7 +137,7 @@ export function PhotoStrip({ images = AMINOTO_IMAGES.strip }: { images?: Aminoto
   return (
     <div className="dk-strip flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 md:overflow-hidden md:px-2" role="group" aria-label="Foto suasana Aminoto">
       {images.map((img) => (
-        <Img key={img.src} image={img} className="aspect-[3/4] w-[44vw] shrink-0 snap-start sm:w-[30vw] md:w-auto md:min-w-0 md:flex-1" />
+        <Img key={img.src} image={img} sizes="(min-width: 768px) 15vw, (min-width: 640px) 30vw, 44vw" className="aspect-[3/4] w-[44vw] shrink-0 snap-start sm:w-[30vw] md:w-auto md:min-w-0 md:flex-1" />
       ))}
     </div>
   );
@@ -133,7 +150,7 @@ export function ClosingCta() {
     <section aria-label={`${closing.left} ${closing.right}`} className="dk-wash-cream">
       <div className={`${WRAP} grid items-center gap-8 py-20 text-center md:grid-cols-[1fr_auto_1fr] md:py-28`}>
         <p className="dk-display text-[clamp(44px,6vw,84px)] md:text-right">{closing.left}</p>
-        <Img image={AMINOTO_IMAGES.ctaPiring} width={600} height={600} className="mx-auto aspect-[4/5] w-48 md:w-60" />
+        <Img image={AMINOTO_IMAGES.ctaPiring} width={600} height={600} sizes="(min-width: 768px) 240px, 192px" className="mx-auto aspect-[4/5] w-48 md:w-60" />
         <p className="dk-display text-[clamp(44px,6vw,84px)] md:text-left">{closing.right}</p>
         <div className="md:col-span-3">
           <Btn href="/cabang" track={trackName("cabang")} variant="line">

@@ -133,8 +133,21 @@ export const middleware = auth(async (req) => {
   if (redirect) return redirect;
 
   headers.set(BRAND_HEADER, slug);
-  return NextResponse.next({ request: { headers } });
+  const res = NextResponse.next({ request: { headers } });
+  return pathname === "/og-image" ? res : htmlCache(res);
 });
+
+/**
+ * Halaman publik dirender per permintaan, jadi Next mengirim `no-store` dan halaman tidak bisa masuk
+ * back/forward cache (tombol Kembali memuat ulang dari server). Tanpa `no-store` browser boleh menyimpan halaman
+ * untuk tombol Kembali/Maju, tetapi `no-cache` tetap meminta versi terbaru setiap kunjungan biasa (stok, harga, jam
+ * buka tidak basi). `private`: tidak disimpan proxy/CDN. Header dari middleware mengalahkan header route handler,
+ * jadi /og-image (punya cache sendiri) dilewati.
+ */
+function htmlCache(res: NextResponse): NextResponse {
+  res.headers.set("Cache-Control", "private, no-cache, max-age=0, must-revalidate");
+  return res;
+}
 
 /** Preview admin di produksi tidak boleh diindeks. */
 function noindex(res: NextResponse, on: boolean): NextResponse {

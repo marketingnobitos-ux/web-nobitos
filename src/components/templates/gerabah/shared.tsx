@@ -1,6 +1,7 @@
 // Bagian kecil yang dipakai bersama halaman template Gerabah (Ayam Panggang Wicaksono).
 import Link from "next/link";
 import type { GerabahPhoto } from "@/data/brands/apw-gerabah";
+import { imageSrcSet } from "@/lib/image";
 
 /** Navigasi utama. `icon` dipakai rail kiri (desktop). */
 export const GERABAH_NAV = [
@@ -31,12 +32,14 @@ export function categoryAnchor(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
-/** Foto biasa. `priority` untuk foto LCP. */
-export function Photo({ photo, className = "", priority = false }: { photo: GerabahPhoto; className?: string; priority?: boolean }) {
+/** Foto biasa. `priority` untuk foto LCP. `sizes` = lebar tampil, supaya HP memakai salinan 400px. */
+export function Photo({ photo, className = "", priority = false, sizes }: { photo: GerabahPhoto; className?: string; priority?: boolean; sizes?: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={photo.src}
+      srcSet={sizes && imageSrcSet(photo.src)}
+      sizes={sizes}
       alt={photo.alt}
       width={photo.width}
       height={photo.height}

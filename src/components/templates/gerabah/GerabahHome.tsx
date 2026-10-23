@@ -6,6 +6,7 @@ import { Kicker, Photo, Pill, WRAP, formatHarga } from "@/components/templates/g
 import { GR_PHOTOS, GR_SLIDES } from "@/data/brands/apw-gerabah";
 import { gerabahText } from "@/lib/template-text";
 import { mapsLink } from "@/lib/format";
+import { imageSrcSet } from "@/lib/image";
 import { isCompleteWeek, type DayHours } from "@/lib/hours";
 import { branchKey, trackName } from "@/lib/track";
 
@@ -64,6 +65,8 @@ function FeaturedRow({ featured }: { featured: Featured[] }) {
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={item.imageUrl}
+                srcSet={imageSrcSet(item.imageUrl)}
+                sizes="(min-width: 768px) 25vw, 96px"
                 alt={`${item.name} Ayam Panggang Wicaksono`}
                 width={320}
                 height={240}
@@ -296,8 +299,8 @@ async function Suasana() {
         </div>
         <div className="grid grid-cols-6 gap-3 md:grid-rows-[300px_220px] md:gap-4">
           <Photo photo={p.malamMinggu} className="col-span-6 aspect-[16/9] w-full rounded-[24px] md:col-span-4 md:aspect-auto md:h-full" />
-          <Photo photo={p.nampan} className="col-span-3 aspect-square w-full rounded-[24px] md:col-span-2 md:aspect-auto md:h-full" />
-          <Photo photo={p.deretan} className="col-span-3 aspect-square w-full rounded-[24px] md:col-span-2 md:aspect-auto md:h-full" />
+          <Photo photo={p.nampan} sizes="(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 50vw" className="col-span-3 aspect-square w-full rounded-[24px] md:col-span-2 md:aspect-auto md:h-full" />
+          <Photo photo={p.deretan} sizes="(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 50vw" className="col-span-3 aspect-square w-full rounded-[24px] md:col-span-2 md:aspect-auto md:h-full" />
           <Photo photo={p.senja} className="col-span-6 aspect-[16/9] w-full rounded-[24px] md:col-span-4 md:aspect-auto md:h-full" />
         </div>
       </div>

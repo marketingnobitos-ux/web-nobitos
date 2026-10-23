@@ -1,5 +1,6 @@
 import { BoardHero, Kicker, Pill, WRAP, categoryAnchor, formatHarga } from "@/components/templates/gerabah/shared";
 import { GR_PHOTOS } from "@/data/brands/apw-gerabah";
+import { imageSrcSet } from "@/lib/image";
 import { gerabahText } from "@/lib/template-text";
 import { trackName } from "@/lib/track";
 
@@ -69,7 +70,7 @@ export default async function GerabahMenu({ tagline, categories }: { tagline: st
                         {withPhoto.map((item) => (
                           <li key={item.id} className="flex flex-col overflow-hidden rounded-[24px] bg-[var(--gr-slate)] ring-1 ring-[var(--gr-line)]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={item.imageUrl!} alt={`${item.name} Ayam Panggang Wicaksono`} width={576} height={432} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" />
+                            <img src={item.imageUrl!} srcSet={imageSrcSet(item.imageUrl!)} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" alt={`${item.name} Ayam Panggang Wicaksono`} width={576} height={432} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" />
                             <div className="flex flex-1 flex-col p-6">
                               <div className="flex items-start justify-between gap-4">
                                 <h3 className="gr-display text-[22px] leading-tight">{item.name}</h3>

@@ -19,6 +19,7 @@
     "apw:seed": "tsx --env-file=.env prisma/seed-apw.ts",
     "aminoto:seed": "tsx --env-file=.env prisma/seed-aminoto.ts",
     "admin:set-password": "tsx --env-file=.env prisma/admin-user.ts",
+    "images:variants": "node scripts/image-variants.mjs",
     "postinstall": "prisma generate"
   },
   "prisma": {

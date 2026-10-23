@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { preload } from "react-dom";
 import { withGsap } from "@/components/animations/lazy-gsap";
 import EdLink from "@/components/templates/editorial/EdLink";
-import { imageSrcSet, repoWebp } from "@/lib/image";
+import { imageSrcSet, repoWebp, saveData, videoForScreen } from "@/lib/image";
 import { altText } from "@/lib/site";
 
 type Props = {
@@ -43,13 +43,13 @@ export default function EdHero({ title, subtitle, imageUrl, videoUrl, primary, s
     });
   }, []);
 
-  // Video (±2,8 MB) baru diunduh setelah halaman selesai dimuat, jadi tidak berebut jaringan dengan judul & poster.
-  // Pengunjung yang memilih kurangi gerakan cukup melihat poster, videonya tidak diunduh.
+  // Video (±2 MB, HP ±1 MB) baru diunduh setelah halaman selesai dimuat, jadi tidak berebut jaringan dengan judul & poster.
+  // Pengunjung yang memilih kurangi gerakan atau mode hemat data cukup melihat poster, videonya tidak diunduh.
   useEffect(() => {
     const v = video.current;
-    if (!v || !videoUrl || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!v || !videoUrl || window.matchMedia("(prefers-reduced-motion: reduce)").matches || saveData()) return;
     const start = () => {
-      v.src = videoUrl;
+      v.src = videoForScreen(videoUrl);
       v.play().catch(() => {});
     };
     if (document.readyState === "complete") start();
