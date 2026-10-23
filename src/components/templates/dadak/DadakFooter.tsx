@@ -73,6 +73,7 @@ export default async function DadakFooter({ brand }: { brand: Brand }) {
             <p className={heading}>Jam buka</p>
             <p className="dk-caps text-[15px]">Setiap hari</p>
             <p className="dk-display mt-1 text-3xl">{AMINOTO.hoursShort}</p>
+            <p className="dk-caps mt-1 text-[13px] opacity-70">{AMINOTO.hoursNote}</p>
           </div>
 
           {(brand.instagramUrl || brand.tiktokUrl) && (
