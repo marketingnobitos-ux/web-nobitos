@@ -1,7 +1,7 @@
 # Serah terima Web Nobitos — 23 Okt 2026
 
 > Untuk Fran. Ringkasan apa yang sudah live dan apa yang masih menunggu jawaban/data ([CEK]).
-> Versi live: kode `b74efa6` (dicek di VPS 23 Okt). Backup DB terakhir: `~/backups/web-nobitos-f7-3-20261023-1643.dump`.
+> Versi live: kode `00f46e2` (deploy 23 Okt sore). Backup DB terakhir: `~/backups/web-nobitos-f7-3-20261023-1643.dump`.
 > Daftar kerja yang bisa dicentang: artifact **PR Web Nobitos** https://claude.ai/artifact/Ta7PAsnkmLrhvfvi1bHyBV
 
 ## 1. Status singkat
@@ -82,9 +82,7 @@ Skor PageSpeed HP (23 Okt, median 3 run, target ≥ 85): Pak Joko 95 · Bolu 94 
 
 ## 6. Catatan teknis untuk sesi berikutnya
 
-- Update situs live: lihat `README.md`. `package-lock.json` di VPS berubah lokal (npm 10 di VPS menghapus kolom `libc`, hanya metadata, aman). Kalau `git pull` menolak karena file itu, jalankan `git checkout -- package-lock.json` dulu.
-- Menunggu deploy (🙋 izin): perbaikan urutan judul footer Pak Joko (`AngloFooter.tsx`), tampilan tidak berubah.
-- VPS menampilkan "System restart required": reboot malam hari setelah backup, di luar jam buka.
+- Update situs live: lihat `README.md`. `package-lock.json` di VPS berubah lokal (npm 10 di VPS menghapus kolom `libc`, hanya metadata, aman). Kalau `git pull` menolak karena file itu, jalankan `git checkout -- package-lock.json` dulu.- VPS menampilkan "System restart required": reboot malam hari setelah backup, di luar jam buka.
 - Pulihkan DB: `pg_restore --clean --if-exists -d "<DATABASE_URL tanpa ?schema=>" ~/backups/web-nobitos-f7-3-20261023-1643.dump`.
 - DB VPS masih menyimpan brand contoh `bakmi-jowo` & `bu-joko` (tidak tayang). Brand Bu Joko asli nanti pakai slug baru.
 - Ganti foto di `public/brands/aminoto|apw` → jalankan `npm run images:variants`.

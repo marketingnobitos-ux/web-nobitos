@@ -48,7 +48,7 @@ Detail PageSpeed (mobile, 23 Okt ±16.30): Pak Joko LCP 2,6 s · TBT 160 ms · C
 | 4 | Pak Joko | Alamat Kartini tanpa kode pos; Ciperna tanpa "Kabupaten Cirebon" & kode pos (`addressLocality` hilang di JSON-LD). | 🙋 Fran / admin | Admin > Lokasi & Jam Buka: lengkapi alamat (F6.14 Paket 3). |
 | 5 | Aminoto | Alamat Ciledug hanya "Dekat pintu tol Ciledug, Ciledug Kulon…" tanpa nama jalan/nomor. | 🙋 Fran [CEK] | Konfirmasi alamat dari pin Google Maps, isi di Admin. |
 | 6 | Semua | Search Console + Google Business Profile. | 🙋 Fran | F6.4. |
-| 7 ✅ kode 23 Okt, belum deploy | Pak Joko | `/cerita` heading loncat H1 → H3 (kartu cabang Kartini/Ciperna). | Claude (kode ANGLO, kecil) | Jadikan nama cabang H2 di halaman Cerita, atau tambah H2 bagian "Cabang". |
+| 7 ✅ live 23 Okt (`00f46e2`) | Pak Joko | `/cerita` heading loncat H1 → H3 (kartu cabang Kartini/Ciperna). | Claude (kode ANGLO, kecil) | Jadikan nama cabang H2 di halaman Cerita, atau tambah H2 bagian "Cabang". |
 | 8 ✅ ukur ulang 23 Okt: 3 run 94/91/90 | APW | Lighthouse 85, pas di batas. | 🙋 Fran | Keputusan animasi `gr-dish-in` (sudah ada di "Menunggu Fran"). |
 | 9 | Bolu | 5 foto chapter Beranda masih dari `/placeholder/`. Bukan butir Lampiran A, tapi foto bukan milik brand. | 🙋 Fran (foto asli) | F6.14 Paket 3. |
 | 10 | Bu Joko | Belum ada situs. | 🙋 Fran | F3 ditahan sampai operasional siap. |
