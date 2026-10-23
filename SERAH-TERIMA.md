@@ -81,7 +81,8 @@ Skor PageSpeed HP (23 Okt, median 3 run, target ≥ 85): Pak Joko 95 · Bolu 94 
 
 ## 6. Catatan teknis untuk sesi berikutnya
 
-- Update situs live: lihat `README.md`. `package-lock.json` di VPS berubah lokal (npm 10 di VPS menghapus kolom `libc`, hanya metadata, aman). Kalau `git pull` menolak karena file itu, jalankan `git checkout -- package-lock.json` dulu.- VPS menampilkan "System restart required": reboot malam hari setelah backup, di luar jam buka.
+- Update situs live: lihat `README.md`. `package-lock.json` di VPS berubah lokal (npm 10 di VPS menghapus kolom `libc`, hanya metadata, aman). Kalau `git pull` menolak karena file itu, jalankan `git checkout -- package-lock.json` dulu.
+- VPS di-reboot 24 Okt 2026 05.56 WIB (paket `libc6` & `apparmor`), semua layanan menyala otomatis. Reboot berikutnya: backup dulu (`/home/ubuntu/reboot-terjadwal.sh`), di luar jam buka.
 - Pulihkan DB: `pg_restore --clean --if-exists -d "<DATABASE_URL tanpa ?schema=>" ~/backups/web-nobitos-f7-3-20261023-1643.dump`.
 - DB VPS masih menyimpan brand contoh `bu-joko` (tidak tayang). Brand Bu Joko asli nanti pakai slug baru. Brand contoh `bakmi-jowo` ("Mas Joko") dihapus 23 Okt 2026 atas izin Fran (backup `~/backups/web-nobitos-pre-hapus-bakmi-jowo-20261023-2051.dump`).
 - Ganti foto di `public/brands/aminoto|apw` → jalankan `npm run images:variants`.
