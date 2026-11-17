@@ -91,10 +91,11 @@ export const GR_PHOTOS = {
     height: 367,
   },
   depan: {
-    src: "/brands/apw/tiktok/depan-jagoan-khitan.webp",
-    alt: "Tampak depan warung Ayam Panggang Wicaksono di bawah papan nama Klinik Jagoan Khitan pada malam hari",
-    width: 576,
-    height: 562,
+    // Foto kamera Fran 18 Nov 2026 (IMG_1637), bagian atas & kiri dipotong supaya papan klinik tidak terlihat.
+    src: "/brands/apw/foto/depan-kesambi.webp",
+    alt: "Pengunjung makan di bawah spanduk Ayam Panggang Wicaksono Kesambi pada malam hari",
+    width: 1200,
+    height: 900,
   },
   logo: { src: "/brands/apw/foto/logo-apw.webp", alt: "Logo Ayam Panggang Wicaksono", width: 150, height: 150 },
 } satisfies Record<string, GerabahPhoto>;

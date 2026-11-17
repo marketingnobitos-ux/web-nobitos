@@ -49,8 +49,8 @@ export const APW_MENU: MenuCategoryData[] = [
         portion: "1/4 ekor · dada / paha",
         price: 35000,
         featured: true,
-        // TODO: konfirmasi Fran — foto khusus ayam kampung (foto sekarang: ayam panggang di atas daun pisang dari video TikTok).
-        imageUrl: "/brands/apw/tiktok/piring-daun-pisang.webp",
+        // Foto kamera Fran 18 Nov 2026 (IMG_1671): ayam panggang, sate & kol di alas kertas.
+        imageUrl: "/brands/apw/foto/menu-ayam-panggang.webp",
         description: "Panas pelan, bumbu meresap sampai dalam.",
       },
       {
@@ -73,7 +73,8 @@ export const APW_MENU: MenuCategoryData[] = [
       },
       // TODO: konfirmasi Fran — foto ikan gurame panggang (belum ada, tampil tanpa foto).
       { name: "Ikan Gurame Panggang", price: 40000, description: "Daging lembut bertemu asap." },
-      { name: "Nasi", price: 5000, description: "Hangat, teman wajib di meja." },
+      // Foto kamera Fran 18 Nov 2026 (IMG_1669): nasi & sambal di atas daun pisang.
+      { name: "Nasi", price: 5000, description: "Hangat, teman wajib di meja.", imageUrl: "/brands/apw/foto/menu-nasi.webp" },
     ],
   },
   {

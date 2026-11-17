@@ -1,7 +1,7 @@
 // Samakan menu Ayam Panggang Wicaksono dengan APW_MENU di prisma/apw.ts (17 Nov 2026: menu baru dari Fran).
 // Berbeda dengan `npm run apw:seed`: hanya menyentuh menu brand `apw`. Cabang, teks halaman (Admin), promo & galeri
 // tidak diubah. Item dicocokkan lewat nama: harga, porsi, deskripsi, unggulan & urutan ikut kode; foto yang sudah diisi
-// di Admin dipertahankan (foto dari kode hanya dipakai kalau kosong); status "tersedia" tidak diubah.
+// upload Admin (/uploads/...) dipertahankan; foto bawaan repo (/brands/...) atau kosong ikut kode. Status "tersedia" tidak diubah.
 // Item & kategori yang tidak ada di APW_MENU dihapus (mis. "Sate Ati Ampela" → "Ati Ampela", "Mineral" → "Air Mineral").
 //   npm run apw:menu                  (DB lokal)
 //   npm run apw:menu -- --izinkan-vps (VPS, setelah backup DB)
@@ -45,7 +45,10 @@ async function main() {
         };
         const existing = await tx.menuItem.findFirst({ where: { ...where, name: item.name }, select: { id: true, imageUrl: true } });
         if (existing) {
-          await tx.menuItem.update({ where: { id: existing.id }, data: { ...data, imageUrl: existing.imageUrl ?? item.imageUrl ?? null } });
+          // Foto bawaan repo (/brands/...) boleh diganti foto baru dari kode; foto upload Admin (/uploads/...) dipertahankan.
+          const keepPhoto = existing.imageUrl && !existing.imageUrl.startsWith("/brands/");
+          const imageUrl = keepPhoto ? existing.imageUrl : (item.imageUrl ?? existing.imageUrl ?? null);
+          await tx.menuItem.update({ where: { id: existing.id }, data: { ...data, imageUrl } });
           keepItems.push(existing.id);
           updated++;
         } else {
