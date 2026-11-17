@@ -36,21 +36,14 @@ type MenuCategoryData = {
   items: { name: string; price: number; portion?: string; description?: string; imageUrl?: string; featured?: boolean }[];
 };
 
-/** Menu resmi APW (dari Fran, 29 Sep 2026). Deskripsi hanya untuk tiga menu unggulan (popup Beranda). */
+/**
+ * Menu resmi APW. Versi 17 Nov 2026 dari Fran (desain menu story "Smoky-nya bikin nagih"): urutan & deskripsi pendek
+ * baru, tambah Ikan Gurame Panggang, "Sate Ati Ampela" jadi "Ati Ampela" Rp 10.000, "Mineral" jadi "Air Mineral".
+ */
 export const APW_MENU: MenuCategoryData[] = [
   {
     name: "Makanan",
     items: [
-      { name: "Nasi", price: 5000 },
-      {
-        name: "Ayam Panggang Negeri",
-        portion: "1/4 ekor · dada / paha",
-        price: 25000,
-        featured: true,
-        // Foto dari video TikTok resmi APW (sajian ayam panggang di atas daun pisang).
-        imageUrl: "/brands/apw/tiktok/piring-sambal.webp",
-        description: "Seperempat ekor ayam negeri, dibaluri bumbu rempah lalu dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha.",
-      },
       {
         name: "Ayam Panggang Kampung",
         portion: "1/4 ekor · dada / paha",
@@ -58,17 +51,29 @@ export const APW_MENU: MenuCategoryData[] = [
         featured: true,
         // TODO: konfirmasi Fran — foto khusus ayam kampung (foto sekarang: ayam panggang di atas daun pisang dari video TikTok).
         imageUrl: "/brands/apw/tiktok/piring-daun-pisang.webp",
-        description: "Seperempat ekor ayam kampung, dibaluri bumbu rempah lalu dipanggang di dalam tungku gerabah. Pilih bagian dada atau paha.",
+        description: "Panas pelan, bumbu meresap sampai dalam.",
+      },
+      {
+        name: "Ayam Panggang Negeri",
+        portion: "1/4 ekor · dada / paha",
+        price: 25000,
+        featured: true,
+        // Foto dari video TikTok resmi APW (sajian ayam panggang di atas daun pisang).
+        imageUrl: "/brands/apw/tiktok/piring-sambal.webp",
+        description: "Wangi bakaran menempel di daging.",
       },
       {
         name: "Bebek Panggang",
-        portion: "paha / dada",
+        portion: "1/4 ekor · paha / dada",
         price: 38000,
         featured: true,
         // TODO: konfirmasi Fran — foto bebek asli (foto sekarang: nasi & lauk panggang dari reel IG).
         imageUrl: "/brands/apw/foto/menu-bebek-panggang.webp",
-        description: "Buat yang mau selain ayam: bebek panggang, pilih bagian paha atau dada. Paling pas dengan nasi dan sate pilihan.",
+        description: "Gurih pekat dengan aroma asap.",
       },
+      // TODO: konfirmasi Fran — foto ikan gurame panggang (belum ada, tampil tanpa foto).
+      { name: "Ikan Gurame Panggang", price: 40000, description: "Daging lembut bertemu asap." },
+      { name: "Nasi", price: 5000, description: "Hangat, teman wajib di meja." },
     ],
   },
   {
@@ -80,7 +85,7 @@ export const APW_MENU: MenuCategoryData[] = [
       { name: "Krupuk", price: 5000 },
       { name: "Kol Goreng", price: 6000 },
       { name: "Sate Kulit", price: 7000 },
-      { name: "Sate Ati Ampela", price: 7000 },
+      { name: "Ati Ampela", price: 10000 },
       { name: "Pete", price: 15000 },
     ],
   },
@@ -89,7 +94,7 @@ export const APW_MENU: MenuCategoryData[] = [
     items: [
       { name: "Teh Tawar Panas", price: 2000 },
       { name: "Es Teh Tawar", price: 3000 },
-      { name: "Mineral", price: 5000 },
+      { name: "Air Mineral", price: 5000 },
       { name: "Es Teh Manis", price: 5000 },
       { name: "Teh Manis Panas", price: 5000 },
       { name: "Es Teh Kampul", price: 8000 },

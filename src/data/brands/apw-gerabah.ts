@@ -21,12 +21,12 @@ export const GR_PHOTOS = {
     width: 552,
     height: 552,
   },
-  /** Foto piring hero Beranda dari Fran (17 Nov 2026), dipotong elips mengikuti piring, latar transparan. */
+  /** Foto piring hero Beranda dari Fran (17 Nov 2026), dipotong mengikuti tepi putih piring, latar transparan. */
   heroPiring: {
     src: "/brands/apw/foto/hero-piring-ayam.webp",
     alt: "Sepiring ayam panggang paha dengan nasi putih, sambal, timun, dan kol di atas alas kertas",
     width: 960,
-    height: 674,
+    height: 669,
   },
   sajian: {
     src: "/brands/apw/tiktok/sajian-piring-atas.webp",
@@ -210,7 +210,7 @@ export const GR = {
     extras: [
       {
         title: "Pilih sesukamu",
-        body: "Ayam negeri atau ayam kampung, bagian dada atau paha. Mau selain ayam? Ada bebek panggang. Lengkapi dengan sate usus, sate kulit, sate ati ampela, tempe, tahu, kol goreng, pete, atau krupuk.",
+        body: "Ayam negeri atau ayam kampung, bagian dada atau paha. Mau selain ayam? Ada bebek panggang dan ikan gurame panggang. Lengkapi dengan sate usus, sate kulit, ati ampela, tempe, tahu, kol goreng, pete, atau krupuk.",
       },
       { title: "Buat semua umur", body: "Datang bareng anak? Ada menu anak yang tidak pedas, tanpa bumbu panggang." },
       { title: "Dua cabang", body: "Kesambi buka 17.00–00.00 WIB, Kamis libur. Sumber buka 10.00–22.00 WIB setiap hari, satu tempat dengan Pecel Lele Aminoto Sumber." },

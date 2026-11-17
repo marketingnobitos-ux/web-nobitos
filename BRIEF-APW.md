@@ -24,11 +24,13 @@
 
 ## 2. Menu resmi (rupiah)
 
-**Makanan** — Nasi 5.000 · Ayam panggang negeri 1/4 (dada / paha) 25.000 · Ayam panggang kampung 1/4 (dada / paha) 35.000 · Bebek panggang (paha / dada) 38.000
+Versi 17 Nov 2026 dari Fran (desain menu story "Smoky-nya bikin nagih"):
 
-**Menu Tambahan** — Tempe 3.000 · Tahu 3.000 · Sate usus 4.000 · Krupuk 5.000 · Kol goreng 6.000 · Sate kulit 7.000 · Sate ati ampela 7.000 · Pete 15.000
+**Makanan** — Ayam panggang kampung 1/4 35.000 ("Panas pelan, bumbu meresap sampai dalam.") · Ayam panggang negeri 1/4 25.000 ("Wangi bakaran menempel di daging.") · Bebek panggang 1/4 38.000 ("Gurih pekat dengan aroma asap.") · Ikan gurame panggang 40.000 ("Daging lembut bertemu asap.") · Nasi 5.000 ("Hangat, teman wajib di meja.")
 
-**Minuman** — Teh tawar panas 2.000 · Es teh tawar 3.000 · Mineral 5.000 · Es teh manis 5.000 · Teh manis panas 5.000 · Es teh kampul 8.000 · Es jeruk 10.000 · Jeruk panas 10.000
+**Menu Tambahan** ("Pelengkap meja") — Tempe 3.000 · Tahu 3.000 · Sate usus 4.000 · Krupuk 5.000 · Kol goreng 6.000 · Sate kulit 7.000 · Ati ampela 10.000 · Pete 15.000
+
+**Minuman** — Teh tawar panas 2.000 · Es teh tawar 3.000 · Air mineral 5.000 · Es teh manis 5.000 · Teh manis panas 5.000 · Es teh kampul 8.000 · Es jeruk 10.000 · Jeruk panas 10.000
 
 Catatan: "Menu anak tidak pedas, tanpa bumbu panggang."
 Menu Unggulan (Beranda): Ayam Panggang Negeri, Ayam Panggang Kampung, Bebek Panggang.
