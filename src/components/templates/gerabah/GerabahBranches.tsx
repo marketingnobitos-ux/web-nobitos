@@ -39,7 +39,7 @@ export default async function GerabahBranches({ brandName, branches, instagramUr
             const key = branchKey(b.name);
             const hours = isCompleteWeek(b.hours) ? b.hours : null;
             const info = GR.branchInfo[b.name];
-            const photos = info?.photo ? [GR_PHOTOS[info.photo], GR_PHOTOS.senja] : [GR_PHOTOS.piringDaun, GR_PHOTOS.piringLengkap];
+            const photos = info?.photo ? [GR_PHOTOS[info.photo], GR_PHOTOS.antreTungku] : [GR_PHOTOS.piringDaun, GR_PHOTOS.piringLengkap];
             return (
               <section key={b.id} aria-labelledby={`cabang-${key}`} className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                 <div className="flex flex-col gap-6">

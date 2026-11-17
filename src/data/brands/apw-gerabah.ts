@@ -78,6 +78,13 @@ export const GR_PHOTOS = {
     width: 500,
     height: 252,
   },
+  // Foto kamera Fran 18 Nov 2026 (IMG_1629), warna dihangatkan seperti foto depan.
+  antreTungku: {
+    src: "/brands/apw/foto/antre-tungku-kesambi.webp",
+    alt: "Pembeli memesan di depan deretan tungku gerabah Ayam Panggang Wicaksono Kesambi pada malam hari",
+    width: 1200,
+    height: 675,
+  },
   senja: {
     src: "/brands/apw/tiktok/suasana-senja.webp",
     alt: "Pengunjung makan di bawah spanduk Ayam Panggang Wicaksono saat senja",
