@@ -91,11 +91,11 @@ export const GR_PHOTOS = {
     height: 367,
   },
   depan: {
-    // Foto kamera Fran 18 Nov 2026 (IMG_1637), bagian atas & kiri dipotong supaya papan klinik tidak terlihat.
+    // Foto kamera Fran 18 Nov 2026 (IMG_1637), dipotong sesuai contoh Fran, warna dihangatkan.
     src: "/brands/apw/foto/depan-kesambi.webp",
     alt: "Pengunjung makan di bawah spanduk Ayam Panggang Wicaksono Kesambi pada malam hari",
-    width: 1200,
-    height: 900,
+    width: 1000,
+    height: 1263,
   },
   logo: { src: "/brands/apw/foto/logo-apw.webp", alt: "Logo Ayam Panggang Wicaksono", width: 150, height: 150 },
 } satisfies Record<string, GerabahPhoto>;
