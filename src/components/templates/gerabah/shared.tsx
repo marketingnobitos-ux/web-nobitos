@@ -1,6 +1,7 @@
 // Bagian kecil yang dipakai bersama halaman template Gerabah (Ayam Panggang Wicaksono).
 import Link from "next/link";
 import type { GerabahPhoto } from "@/data/brands/apw-gerabah";
+import type { DayHours } from "@/lib/hours";
 import { imageSrcSet } from "@/lib/image";
 
 /** Navigasi utama. `icon` dipakai rail kiri (desktop). */
@@ -21,6 +22,25 @@ const harga = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
 /** 25000 -> "25.000". */
 export function formatHarga(value: number): string {
   return harga.format(value);
+}
+
+const DAY_NAMES = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+/**
+ * Ringkasan jam 7 hari untuk label: rentang yang paling sering ("17.00–00.00") + hari libur ("Kamis libur" /
+ * "Setiap hari"). Null kalau tidak ada hari buka.
+ */
+export function hoursSummary(hours: DayHours[]): { range: string; days: string } | null {
+  const counts = new Map<string, number>();
+  for (const h of hours) {
+    if (h.isClosed || !h.opens || !h.closes) continue;
+    const key = `${h.opens}–${h.closes}`.replaceAll(":", ".");
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  const [range] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0] ?? [];
+  if (!range) return null;
+  const closed = hours.filter((h) => h.isClosed).sort((a, b) => a.dayOfWeek - b.dayOfWeek).map((h) => DAY_NAMES[h.dayOfWeek - 1]);
+  return { range, days: closed.length ? `${closed.join(" & ")} libur` : "Setiap hari" };
 }
 
 /** Slug anchor kategori menu ("Menu Tambahan" -> "menu-tambahan"). */

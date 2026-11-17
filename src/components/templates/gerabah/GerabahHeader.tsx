@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import OpenBadge from "@/components/public/OpenBadge";
+import BranchStatus, { type BranchHoursInfo } from "@/components/templates/gerabah/BranchStatus";
 import { GERABAH_NAV, InstagramIcon, NavIcon, TikTokIcon, WRAP } from "@/components/templates/gerabah/shared";
 import { GR } from "@/data/brands/apw-gerabah";
-import type { DayHours } from "@/lib/hours";
 import { trackName } from "@/lib/track";
 
 type Props = {
@@ -14,15 +13,15 @@ type Props = {
   logoUrl: string | null;
   instagramUrl: string | null;
   tiktokUrl: string | null;
-  /** Jam cabang Kesambi untuk badge "Buka sekarang"; null = badge tidak dirender. */
-  hours: DayHours[] | null;
+  /** Cabang dengan jam 7 hari lengkap, untuk status buka/tutup; kosong = status tidak dirender. */
+  branches: BranchHoursInfo[];
 };
 
 /**
  * Desktop: rail ikon di kiri (seperti papan referensi) + bar atas transparan di atas blok warna hero.
  * HP: bar atas dengan tombol buka-tutup navigasi.
  */
-export default function GerabahHeader({ brandName, logoUrl, instagramUrl, tiktokUrl, hours }: Props) {
+export default function GerabahHeader({ brandName, logoUrl, instagramUrl, tiktokUrl, branches }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -117,7 +116,7 @@ export default function GerabahHeader({ brandName, logoUrl, instagramUrl, tiktok
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
-            {hours && <OpenBadge hours={hours} className="gr-glass hidden !rounded-full px-4 py-2 text-[12px] sm:flex" />}
+            <BranchStatus branches={branches} className="gr-glass hidden !rounded-full px-4 py-2 text-[12px] sm:flex" />
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
@@ -146,7 +145,7 @@ export default function GerabahHeader({ brandName, logoUrl, instagramUrl, tiktok
                 <NavIcon name={item.icon} className="h-6 w-6 opacity-70" />
               </Link>
             ))}
-            {hours && <OpenBadge hours={hours} className="gr-caps px-4 pb-3 pt-4 text-[var(--gr-cream)]/80" />}
+            <BranchStatus branches={branches} variant="stack" className="px-4 pb-3 pt-4 text-[13px] text-[var(--gr-cream)]/80" />
           </nav>
         )}
       </header>

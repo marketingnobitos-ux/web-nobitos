@@ -1,7 +1,7 @@
 import type { Branch, BranchHours } from "@prisma/client";
 import OpenBadge from "@/components/public/OpenBadge";
 import { HoursRing, HoursTable } from "@/components/templates/gerabah/HoursViz";
-import { BoardHero, InstagramIcon, Kicker, Photo, Pill, TikTokIcon, WRAP } from "@/components/templates/gerabah/shared";
+import { BoardHero, InstagramIcon, Kicker, Photo, Pill, TikTokIcon, WRAP, hoursSummary } from "@/components/templates/gerabah/shared";
 import { GR_PHOTOS } from "@/data/brands/apw-gerabah";
 import { gerabahText } from "@/lib/template-text";
 import { mapsLink, telUrl, whatsappUrl } from "@/lib/format";
@@ -16,13 +16,21 @@ type Props = {
   tiktokUrl: string | null;
 };
 
-/** Halaman Cabang Gerabah (APW hanya punya Kesambi): kartu alamat & kontak, tabel jam, foto tampak depan. */
+/**
+ * Halaman Cabang Gerabah (APW: Kesambi & Sumber): per cabang kartu alamat & kontak, cincin & tabel jam, foto.
+ * Cabang dengan foto tampak depan (GR.branchInfo) memakainya; cabang lain memakai foto sajian.
+ */
 export default async function GerabahBranches({ brandName, branches, instagramUrl, tiktokUrl }: Props) {
   const GR = await gerabahText();
   const [main] = branches;
   return (
     <>
-      <BoardHero kicker={GR.area} title={main ? ["Cabang", main.name] : GR.branches.title} lead={GR.branches.lead} dish={GR_PHOTOS.sajian} />
+      <BoardHero
+        kicker={GR.area}
+        title={branches.length === 1 ? ["Cabang", main.name] : GR.branches.title}
+        lead={GR.branches.lead}
+        dish={GR_PHOTOS.sajian}
+      />
 
       <div className="bg-[var(--gr-char)] py-16 md:py-24">
         <div className={`${WRAP} grid gap-16`}>
@@ -30,6 +38,8 @@ export default async function GerabahBranches({ brandName, branches, instagramUr
           {branches.map((b) => {
             const key = branchKey(b.name);
             const hours = isCompleteWeek(b.hours) ? b.hours : null;
+            const info = GR.branchInfo[b.name];
+            const photos = info?.photo ? [GR_PHOTOS[info.photo], GR_PHOTOS.senja] : [GR_PHOTOS.piringDaun, GR_PHOTOS.piringLengkap];
             return (
               <section key={b.id} aria-labelledby={`cabang-${key}`} className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                 <div className="flex flex-col gap-6">
@@ -39,7 +49,7 @@ export default async function GerabahBranches({ brandName, branches, instagramUr
                       {b.name}
                     </h2>
                     <p className="mt-4 max-w-lg text-[17px] leading-relaxed">{b.address}</p>
-                    <p className="mt-2 text-[var(--gr-cream)]/85">{GR.landmark}</p>
+                    {info?.landmark && <p className="mt-2 text-[var(--gr-cream)]/85">{info.landmark}</p>}
                     {hours && <OpenBadge hours={hours} className="gr-glass mt-6 !rounded-full px-4 py-2 text-sm" />}
                     <div className="mt-8 flex flex-wrap gap-3">
                       <Pill href={mapsLink(b)} external track={trackName("maps", key)} variant="gold">
@@ -62,7 +72,7 @@ export default async function GerabahBranches({ brandName, branches, instagramUr
                     {hours && (
                       <div className="gr-glass flex flex-col items-center justify-center gap-3 p-6 text-center">
                         <HoursRing hours={hours} size={132} />
-                        <p className="text-sm text-[var(--gr-cream)]/75">{GR.closedDay}</p>
+                        <p className="text-sm text-[var(--gr-cream)]/75">{hoursSummary(hours)?.days}</p>
                       </div>
                     )}
                     <div className="rounded-[28px] bg-[var(--gr-slate)] p-6 ring-1 ring-[var(--gr-line)] md:p-8">
@@ -73,8 +83,8 @@ export default async function GerabahBranches({ brandName, branches, instagramUr
                 </div>
 
                 <div className="grid gap-6">
-                  <Photo photo={GR_PHOTOS.depan} className="aspect-square w-full rounded-[28px] ring-1 ring-[var(--gr-line)]" />
-                  <Photo photo={GR_PHOTOS.senja} className="aspect-[16/9] w-full rounded-[28px] ring-1 ring-[var(--gr-line)]" />
+                  <Photo photo={photos[0]} className="aspect-square w-full rounded-[28px] ring-1 ring-[var(--gr-line)]" />
+                  <Photo photo={photos[1]} className="aspect-[16/9] w-full rounded-[28px] ring-1 ring-[var(--gr-line)]" />
                 </div>
               </section>
             );

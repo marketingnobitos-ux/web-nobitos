@@ -84,7 +84,7 @@ Dibangun sekali di platform, lalu tiap brand tinggal isi data.
 
 ## F2 — Ayam Panggang Wicaksono (APW) · 12 Okt – 6 Nov
 
-Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: **hanya Kesambi** (dikonfirmasi Fran 29 Sep). Cabang **Cipto** di DB lokal & `prisma/seed.ts` adalah **data contoh**: bukan cabang APW, jangan dipakai untuk pengecekan tampilan/JSON-LD/screenshot.
+Sumber: IG https://www.instagram.com/ayampanggangwicaksono/ · TikTok @ayampanggang.wicaksono · Cabang: **Kesambi** (dikonfirmasi Fran 29 Sep) + **Sumber** (ditambah 17 Nov 2026: satu tempat dengan Aminoto Sumber, 10.00–22.00 setiap hari; jam Kesambi jadi 17.00–00.00, Kamis libur; `npm run apw:cabang`). Cabang **Cipto** di DB lokal & `prisma/seed.ts` adalah **data contoh**: bukan cabang APW, jangan dipakai untuk pengecekan tampilan/JSON-LD/screenshot.
 
 - [x] **F2.1** 🙋 Fran beli domain (usulan: `ayampanggangwicaksono.web.id`) + arahkan A record ke 43.129.49.26. — 22 Okt 2026: domain `ayampanggangwicaksono.web.id` dibeli Fran, A record apex & www → 43.129.49.26 (dicek lewat 1.1.1.1 & 8.8.8.8), sudah terdaftar di Admin.
 > Catatan 22 Okt: draf TUNGKU (`32ba000`, `94bb0e0`, `5596e63`, `55797d3` + perubahan yang belum di-commit) diganti template GERABAH atas referensi baru dari Fran. F2.2 & F2.3 dikerjakan ulang di sesi yang sama: brief ditambah di `BRIEF-APW.md` bagian 4b (fakta baru dari caption TikTok resmi), referensi dipilih Fran: https://dribbble.com/shots/27744577-Daily-Dishes-Lab-Culinary-Web-Experience.

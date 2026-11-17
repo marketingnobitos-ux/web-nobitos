@@ -14,8 +14,9 @@
 | Slogan (bio & logo IG) | "Smokie nya bikin nagih" |
 | Ciri khas | Dipanggang di dalam tungku gerabah (Fran + reel IG: "dipanggang pakai tungku grabah tradisional"). Dari video: ayam dibaluri bumbu rempah, dimasukkan ke tungku gerabah (api kompor di bawah tungku, bukan arang), diangkat saat warnanya gelap. |
 | Alamat (bio IG) | Jl. DR. Cipto Mangunkusumo No.142, Kesambi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45134 |
-| Jam (bio IG) | 16.00–00.00 WIB, Kamis libur |
-| Cabang | **Hanya Kesambi, Cirebon** (Cipto = data contoh, dihapus) |
+| Jam Kesambi | 17.00–00.00 WIB, Kamis libur (Fran & bio TikTok, 17 Nov 2026; sebelumnya 16.00–00.00) |
+| Cabang | **Kesambi** (Kota Cirebon) dan **Sumber** (Kab. Cirebon, ditambah 17 Nov 2026). Cipto = data contoh, dihapus |
+| Cabang Sumber (Fran, 17 Nov 2026) | Jl. Pangeran Cakrabuana No.8, Kemantren, Kec. Sumber, Kabupaten Cirebon 45611 — satu tempat dengan Pecel Lele Aminoto Sumber (pin Maps https://maps.app.goo.gl/Das6D7ae2z6v8ZjYA). Jam 10.00–22.00 setiap hari |
 | Instagram | https://www.instagram.com/ayampanggangwicaksono/ |
 | TikTok | https://www.tiktok.com/@ayampanggang.wicaksono |
 | Warna (menu cetak) | marun tua `#6B0F14` (header, tombol) · emas `#F5A623` (aksen) · krem `#FBF4E8` (latar) |

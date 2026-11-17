@@ -103,9 +103,9 @@ export const TEMPLATE_TEXT_FIELDS: Partial<Record<BrandTemplate, TextGroup[]>> =
     {
       title: "Info singkat",
       fields: [
-        { path: "hoursShort", label: "Jam buka singkat" },
-        { path: "closedDay", label: "Hari libur" },
-        { path: "landmark", label: "Patokan lokasi" },
+        // Jam buka tidak di sini: dibaca dari jam 7 hari tiap cabang (Admin > Lokasi & Jam Buka).
+        { path: "branchInfo.Kesambi.landmark", label: "Patokan lokasi cabang Kesambi" },
+        { path: "branchInfo.Sumber.landmark", label: "Patokan lokasi cabang Sumber" },
       ],
     },
     {

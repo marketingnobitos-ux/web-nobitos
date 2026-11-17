@@ -40,16 +40,17 @@ export const APW_IMAGES = {
   logo: { src: "/brands/apw/foto/logo-apw.webp", alt: "Logo Ayam Panggang Wicaksono" },
 } as const;
 
-/** Cabang (satu-satunya): Kesambi. Ditulis ke DB oleh `npm run apw:seed`; halaman membaca dari DB. */
+/** Cabang Kesambi (pertama, buka 14 Juni 2026). Ditulis ke DB oleh `npm run apw:seed` / `apw:cabang`; halaman membaca dari DB. */
 export const APW_BRANCH = {
   slug: "kesambi",
   name: "Kesambi",
   /** Wilayah, untuk label singkat. */
   area: "Kesambi, Cirebon",
-  // Alamat & jam dari bio Instagram resmi (dipakai atas persetujuan Fran, 29 Sep 2026).
+  // Alamat dari bio Instagram resmi (dipakai atas persetujuan Fran, 29 Sep 2026).
   address: "Jl. DR. Cipto Mangunkusumo No.142, Kesambi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45134",
-  openHours: "16.00 – 00.00 WIB, Kamis libur",
-  hours: weeklyHours("16:00", "00:00", [DAY.KAMIS]),
+  // Jam dari Fran (17 Nov 2026), sama dengan bio TikTok resmi: 17.00–00.00, Kamis libur.
+  openHours: "17.00 – 00.00 WIB, Kamis libur",
+  hours: weeklyHours("17:00", "00:00", [DAY.KAMIS]),
   // TODO: konfirmasi Fran — nomor WhatsApp cabang. Kosong = tombol WA tidak dirender.
   whatsapp: null as string | null,
   // Pin Google Maps resmi dari Fran (23 Okt 2026), tempat "Ayam Panggang Wicaksono".
@@ -58,6 +59,26 @@ export const APW_BRANCH = {
   lat: -6.731826 as number | null,
   lng: 108.55016 as number | null,
 };
+
+/** Cabang Sumber (dari Fran, 17 Nov 2026): satu tempat dengan Pecel Lele Sambel Dadak Aminoto Sumber. */
+export const APW_SUMBER = {
+  slug: "sumber",
+  name: "Sumber",
+  area: "Sumber, Kab. Cirebon",
+  // Pin dari Fran = tempat Aminoto Sumber; alamat & koordinat sama dengan cabang Sumber di src/data/brands/aminoto.ts.
+  address: "Jl. Pangeran Cakrabuana No.8, Kemantren, Kec. Sumber, Kabupaten Cirebon 45611",
+  // Jam dari Fran (17 Nov 2026). TODO: konfirmasi Fran — bio TikTok resmi menulis 11.00–22.00, setiap hari.
+  openHours: "10.00 – 22.00 WIB, setiap hari",
+  hours: weeklyHours("10:00", "22:00"),
+  // TODO: konfirmasi Fran — nomor WhatsApp cabang Sumber.
+  whatsapp: null as string | null,
+  mapsUrl: "https://maps.app.goo.gl/Das6D7ae2z6v8ZjYA" as string | null,
+  lat: -6.7585171 as number | null,
+  lng: 108.4922366 as number | null,
+};
+
+/** Semua cabang APW, urut tampil (Kesambi, Sumber). */
+export const APW_BRANCHES = [APW_BRANCH, APW_SUMBER];
 
 export const APW = {
   /** Teks tagline tercetak di menu resmi. */

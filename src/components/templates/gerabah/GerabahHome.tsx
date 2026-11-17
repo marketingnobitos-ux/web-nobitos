@@ -1,8 +1,8 @@
 import type { Brand } from "@prisma/client";
 import OpenBadge from "@/components/public/OpenBadge";
 import GerabahHero from "@/components/templates/gerabah/GerabahHero";
-import { HoursRing, WeekBars } from "@/components/templates/gerabah/HoursViz";
-import { Kicker, Photo, Pill, WRAP, formatHarga } from "@/components/templates/gerabah/shared";
+import { HoursRing } from "@/components/templates/gerabah/HoursViz";
+import { Kicker, Photo, Pill, WRAP, formatHarga, hoursSummary } from "@/components/templates/gerabah/shared";
 import { GR_PHOTOS, GR_SLIDES } from "@/data/brands/apw-gerabah";
 import { gerabahText } from "@/lib/template-text";
 import { mapsLink } from "@/lib/format";
@@ -18,9 +18,10 @@ type Branch = { name: string; address: string; mapsUrl: string | null; lat: numb
  * Beranda Gerabah, urutan mengikuti referensi: papan hero berslide → deret menu unggulan → papan data berkartu kaca
  * (harga, jam, status) → tiga langkah proses → papan menu (seperti menu cetak) → suasana → lokasi.
  */
-export default async function GerabahHome({ brand, featured, categories, branch }: { brand: Brand; featured: Featured[]; categories: Category[]; branch: Branch | null }) {
+export default async function GerabahHome({ brand, featured, categories, branches }: { brand: Brand; featured: Featured[]; categories: Category[]; branches: Branch[] }) {
   const GR = await gerabahText();
-  const hours = branch && isCompleteWeek(branch.hours) ? branch.hours : null;
+  // Jam belum lengkap tidak dipakai untuk status & ringkasan (status tidak pernah ditebak).
+  const withHours = branches.filter((b) => isCompleteWeek(b.hours));
   const cheapest = [...featured].sort((a, b) => a.price - b.price)[0];
   const menuCount = categories.reduce((n, c) => n + c.items.length, 0);
   const slides = GR_SLIDES.map((s) => ({ ...s, photo: GR_PHOTOS[s.photo] }));
@@ -33,12 +34,12 @@ export default async function GerabahHome({ brand, featured, categories, branch 
         slides={slides}
         startPrice={cheapest ? { price: cheapest.price, name: cheapest.name, portion: cheapest.portion } : null}
         menuCount={menuCount}
-        hours={hours}
+        branches={withHours.map((b) => ({ name: b.name, hours: b.hours }))}
       />
 
       {featured.length > 0 && <FeaturedRow featured={featured} />}
 
-      <DataBoard hours={hours} cheapest={cheapest} categories={categories} />
+      <DataBoard branches={withHours} cheapest={cheapest} categories={categories} />
 
       <Proses />
 
@@ -46,7 +47,7 @@ export default async function GerabahHome({ brand, featured, categories, branch 
 
       <Suasana />
 
-      {branch && <Lokasi branch={branch} hours={hours} />}
+      {branches.length > 0 && <Lokasi branches={branches} />}
     </>
   );
 }
@@ -96,8 +97,7 @@ function FeaturedRow({ featured }: { featured: Featured[] }) {
 }
 
 /** Papan data: foto sajian di tengah latar buram, kartu kaca berisi angka asli (harga, jumlah menu, jam, status). */
-async function DataBoard({ hours, cheapest, categories }: { hours: DayHours[] | null; cheapest?: Featured; categories: Category[] }) {
-  const GR = await gerabahText();
+function DataBoard({ branches, cheapest, categories }: { branches: Branch[]; cheapest?: Featured; categories: Category[] }) {
   const total = categories.reduce((n, c) => n + c.items.length, 0);
   return (
     <section aria-labelledby="data-title" className="relative isolate overflow-hidden bg-[var(--gr-char-2)] py-20 md:py-28">
@@ -163,27 +163,25 @@ async function DataBoard({ hours, cheapest, categories }: { hours: DayHours[] | 
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:order-3 lg:mt-0 lg:grid-cols-1">
-            {hours && (
-              <div className="gr-glass flex items-center gap-5 p-6">
-                <HoursRing hours={hours} />
-                <div>
-                  <p className="gr-caps text-[var(--gr-cream)]/60">Jam buka</p>
-                  <p className="gr-display mt-2 whitespace-nowrap text-[22px] sm:text-[26px]">{GR.hoursShort}</p>
-                  <OpenBadge hours={hours} className="mt-2 text-[13px] text-[var(--gr-cream)]/85" />
+            {/* Satu kartu per cabang: cincin jam dari tabel BranchHours, ringkasan jam & hari libur, status buka. */}
+            {branches.map((b) => {
+              const sum = hoursSummary(b.hours);
+              return (
+                <div key={b.name} className="gr-glass flex items-center gap-5 p-6">
+                  <HoursRing hours={b.hours} size={96} />
+                  <div className="min-w-0">
+                    <p className="gr-caps text-[var(--gr-cream)]/60">Jam buka {b.name}</p>
+                    {sum && (
+                      <>
+                        <p className="gr-display mt-2 whitespace-nowrap text-[22px] sm:text-[24px]">{sum.range}</p>
+                        <p className="mt-1 text-[13px] text-[var(--gr-cream)]/75">{sum.days}</p>
+                      </>
+                    )}
+                    <OpenBadge hours={b.hours} className="mt-2 text-[13px] text-[var(--gr-cream)]/85" />
+                  </div>
                 </div>
-              </div>
-            )}
-            {hours && (
-              <div className="gr-glass p-6">
-                <div className="flex items-baseline justify-between">
-                  <p className="gr-caps text-[var(--gr-cream)]/60">Seminggu</p>
-                  <p className="text-[13px] text-[var(--gr-cream)]/75">{GR.closedDay}</p>
-                </div>
-                <div className="mt-4">
-                  <WeekBars hours={hours} />
-                </div>
-              </div>
-            )}
+              );
+            })}
             <div className="gr-glass p-6">
               <p className="gr-caps text-[var(--gr-cream)]/60">Cara panggang</p>
               <p className="gr-display mt-2 text-[26px]">Tungku gerabah</p>
@@ -308,31 +306,58 @@ async function Suasana() {
   );
 }
 
-/** Lokasi: blok daun pisang dengan alamat, patokan, status buka, tombol Maps. */
-async function Lokasi({ branch, hours }: { branch: Branch; hours: DayHours[] | null }) {
+/** Lokasi: blok daun pisang, satu kartu per cabang (alamat, patokan, jam, status buka, tombol Maps). */
+async function Lokasi({ branches }: { branches: Branch[] }) {
   const GR = await gerabahText();
   const { lokasi } = GR.home;
   return (
     <section aria-labelledby="lokasi-title" className="gr-lines bg-[var(--gr-leaf)] py-20 md:py-24">
-      <div className={`${WRAP} grid gap-10 md:grid-cols-[1.1fr_0.9fr] md:items-center`}>
-        <div>
-          <Kicker className="text-[var(--gr-cream)]/80">{lokasi.kicker}</Kicker>
-          <h2 id="lokasi-title" className="gr-display mt-5 text-[clamp(40px,6vw,88px)]">
-            {branch.name}
-          </h2>
-          <p className="mt-5 max-w-lg text-[17px] leading-relaxed">{branch.address}</p>
-          <p className="mt-2 text-[var(--gr-cream)]/80">{GR.landmark}</p>
-          {hours && <OpenBadge hours={hours} className="gr-glass mt-6 !rounded-full px-4 py-2 text-sm" />}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Pill href={mapsLink(branch)} external track={trackName("maps", branchKey(branch.name))} variant="gold">
-              {lokasi.cta}
-            </Pill>
-            <Pill href="/cabang" track={trackName("cabang")}>
-              {lokasi.more}
-            </Pill>
+      <div className={WRAP}>
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <Kicker className="text-[var(--gr-cream)]/80">{lokasi.kicker}</Kicker>
+            <h2 id="lokasi-title" className="gr-display mt-5 text-[clamp(40px,6vw,88px)]">
+              {branches.length > 1 ? `${branches.length} cabang` : branches[0].name}
+            </h2>
           </div>
+          <Pill href="/cabang" track={trackName("cabang")} className="self-start md:self-auto">
+            {lokasi.more}
+          </Pill>
         </div>
-        <Photo photo={GR_PHOTOS.depan} className="aspect-[4/3] w-full rounded-[28px] ring-1 ring-white/20 md:aspect-square" />
+
+        <ul className={`mt-10 grid gap-5 ${branches.length > 1 ? "md:grid-cols-2" : ""}`}>
+          {branches.map((b) => {
+            const info = GR.branchInfo[b.name];
+            const photo = GR_PHOTOS[info?.photo ?? "sajian"];
+            const sum = hoursSummary(b.hours);
+            const hours = isCompleteWeek(b.hours) ? b.hours : null;
+            return (
+              <li key={b.name} className="grid overflow-hidden rounded-[28px] bg-[rgb(22_19_17/0.28)] ring-1 ring-white/20 sm:grid-cols-[0.9fr_1.1fr]">
+                <Photo
+                  photo={photo}
+                  sizes="(min-width: 768px) 22vw, (min-width: 640px) 45vw, 100vw"
+                  className={`aspect-[4/3] h-full w-full sm:aspect-auto ${info?.photo ? "" : "bg-[var(--gr-char)] !object-contain p-6"}`}
+                />
+                <div className="flex flex-col p-6 md:p-7">
+                  <h3 className="gr-display text-[clamp(30px,3.4vw,44px)]">{b.name}</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed">{b.address}</p>
+                  {info?.landmark && <p className="mt-2 text-sm text-[var(--gr-cream)]/80">{info.landmark}</p>}
+                  {sum && (
+                    <p className="mt-4 text-[15px] font-semibold">
+                      {sum.range} WIB · <span className="font-normal text-[var(--gr-cream)]/85">{sum.days}</span>
+                    </p>
+                  )}
+                  {hours && <OpenBadge hours={hours} className="gr-glass mt-3 !rounded-full px-4 py-2 text-sm" />}
+                  <div className="mt-auto pt-6">
+                    <Pill href={mapsLink(b)} external track={trackName("maps", branchKey(b.name))} variant="gold">
+                      {lokasi.cta}
+                    </Pill>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

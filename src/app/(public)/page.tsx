@@ -96,7 +96,7 @@ export default async function HomePage() {
   }
 
   if (brand.template === "GERABAH") {
-    const [featured, categories, branch] = await Promise.all([
+    const [featured, categories, branches] = await Promise.all([
       prisma.menuItem.findMany({
         where: { brandId: brand.id, isFeatured: true, isAvailable: true },
         orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
@@ -112,7 +112,7 @@ export default async function HomePage() {
           items: { where: { isAvailable: true }, orderBy: [{ order: "asc" }, { createdAt: "asc" }], select: { id: true, name: true, price: true, portion: true } },
         },
       }),
-      prisma.branch.findFirst({
+      prisma.branch.findMany({
         where: { brandId: brand.id },
         orderBy: { order: "asc" },
         select: { name: true, address: true, mapsUrl: true, lat: true, lng: true, hours: { select: { dayOfWeek: true, isClosed: true, opens: true, closes: true } } },
@@ -121,7 +121,7 @@ export default async function HomePage() {
     return (
       <>
         {jsonLd}
-        <GerabahHome brand={brand} featured={featured} categories={categories.filter((c) => c.items.length > 0)} branch={branch} />
+        <GerabahHome brand={brand} featured={featured} categories={categories.filter((c) => c.items.length > 0)} branches={branches} />
         <TemplateExtras brandId={brand.id} brandName={brand.name} variant="gerabah" />
       </>
     );

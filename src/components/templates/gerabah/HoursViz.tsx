@@ -1,13 +1,11 @@
 "use client";
-// Visual data jam buka dari tabel BranchHours (bukan angka karangan): cincin 24 jam & batang per hari.
+// Visual data jam buka dari tabel BranchHours (bukan angka karangan): cincin 24 jam & tabel per hari.
 import { useEffect, useState } from "react";
 import type { DayHours } from "@/lib/hours";
 
-const DAY_SHORT = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
-
 const toHours = (t: string) => Number(t.slice(0, 2)) + Number(t.slice(3)) / 60;
 
-/** Lama buka satu hari dalam jam; tutup <= buka dianggap lewat tengah malam (16:00–00:00 = 8 jam). */
+/** Lama buka satu hari dalam jam; tutup <= buka dianggap lewat tengah malam (17:00–00:00 = 7 jam). */
 function openLength(d: DayHours): number {
   if (d.isClosed || !d.opens || !d.closes) return 0;
   const open = toHours(d.opens);
@@ -55,37 +53,6 @@ export function HoursRing({ hours, size = 112 }: { hours: DayHours[]; size?: num
         SEHARI
       </text>
     </svg>
-  );
-}
-
-/** Batang jam buka Senin–Minggu; hari ini (WIB) disorot setelah terpasang di browser. */
-export function WeekBars({ hours }: { hours: DayHours[] }) {
-  const [today, setToday] = useState<number | null>(null);
-  useEffect(() => setToday(wibDay(new Date())), []);
-
-  const days = [1, 2, 3, 4, 5, 6, 7].map((d) => hours.find((h) => h.dayOfWeek === d));
-  const max = Math.max(1, ...days.map((d) => (d ? openLength(d) : 0)));
-  return (
-    <ul className="flex h-24 items-end gap-2" aria-label="Jam buka per hari">
-      {days.map((d, i) => {
-        const len = d ? openLength(d) : 0;
-        const isToday = today === i + 1;
-        const label = d?.isClosed ? `${DAY_SHORT[i]}: libur` : `${DAY_SHORT[i]}: ${len} jam`;
-        return (
-          <li key={DAY_SHORT[i]} className="flex flex-1 flex-col items-center gap-1.5" aria-label={label}>
-            <span className={`relative flex h-16 w-full items-end overflow-hidden rounded-full ${len ? "bg-white/10" : "border border-dashed border-white/30"}`}>
-              <span
-                className={`block w-full rounded-full ${isToday ? "bg-[var(--gr-gold)]" : len ? "bg-[var(--gr-cream)]/70" : ""}`}
-                style={{ height: `${(len / max) * 100}%` }}
-              />
-            </span>
-            <span className={`text-[10px] font-semibold ${isToday ? "text-[var(--gr-gold)]" : "text-[var(--gr-cream)]/60"}`} aria-hidden>
-              {DAY_SHORT[i]}
-            </span>
-          </li>
-        );
-      })}
-    </ul>
   );
 }
 

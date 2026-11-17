@@ -5,7 +5,7 @@
 // (grand opening 14 Juni 2026, "depan Jagoan Khitan", "dipanggang pakai tungku grabah", "kalau udah agak gelap tandanya matang").
 // Web ini etalase, bukan untuk pesan: tidak ada keranjang, tombol order, atau link GrabFood/GoFood.
 // Klaim yang belum dikonfirmasi (pendiri, resep turun-temurun, halal, penghargaan, rating) tidak ditulis.
-import { APW, APW_BRANCH } from "@/data/brands/apw";
+import { APW } from "@/data/brands/apw";
 
 export type GerabahPhoto = { src: string; alt: string; width: number; height: number };
 
@@ -109,10 +109,10 @@ export const GR_SLIDES: { title: string[]; body: string; photo: GerabahPhotoKey;
     side: { label: "Satu porsi", value: "1/4 ekor" },
   },
   {
-    title: ["Sore sampai", "tengah", "malam"],
-    body: "Buka 16.00–00.00 WIB, Kamis libur. Datang sendiri, bareng teman, atau sekeluarga.",
+    title: ["Dua cabang,", "siang sampai", "malam"],
+    body: "Sumber buka 10.00–22.00 setiap hari, Kesambi 17.00–00.00 (Kamis libur). Datang sendiri, bareng teman, atau sekeluarga.",
     photo: "api",
-    side: { label: "Jam buka", value: "16.00–00.00" },
+    side: { label: "Cabang", value: "Kesambi & Sumber" },
   },
 ];
 
@@ -123,11 +123,18 @@ export const GR = {
   tagline: APW.tagline,
   /** Sejak grand opening (caption TikTok resmi 13 & 14 Juni 2026). */
   since: "Buka sejak 14 Juni 2026",
-  /** Patokan lokasi dari caption TikTok resmi ("Depan Jagoan Khitan"). */
-  landmark: "Depan Klinik Jagoan Khitan",
-  area: APW_BRANCH.area,
-  hoursShort: "16.00–00.00",
-  closedDay: "Kamis libur",
+  /** Wilayah semua cabang, untuk label singkat. */
+  area: "Kesambi & Sumber, Cirebon",
+  /**
+   * Info tambahan per cabang, dicocokkan dengan nama cabang di DB. Jam buka tidak ditulis di sini: dibaca dari tabel
+   * BranchHours (Admin > Lokasi & Jam Buka). `photo` = foto tampak depan; cabang tanpa foto memakai foto sajian.
+   */
+  branchInfo: {
+    // Patokan dari caption TikTok resmi ("Depan Jagoan Khitan").
+    Kesambi: { landmark: "Depan Klinik Jagoan Khitan", photo: "depan" },
+    // Dari Fran (17 Nov 2026): pin Maps sama dengan Pecel Lele Sambel Dadak Aminoto Sumber.
+    Sumber: { landmark: "Satu tempat dengan Pecel Lele Sambel Dadak Aminoto Sumber", photo: null },
+  } as Record<string, { landmark: string; photo: GerabahPhotoKey | null }>,
 
   home: {
     statsTitle: "Sekilas di meja",
@@ -174,7 +181,7 @@ export const GR = {
 
   story: {
     title: ["Cerita", "dari tungku"],
-    lead: "Ayam Panggang Wicaksono buka di Kesambi, Cirebon, sejak 14 Juni 2026. Dapur kami berpusat di deretan tungku gerabah.",
+    lead: "Ayam Panggang Wicaksono buka di Kesambi, Cirebon, sejak 14 Juni 2026, dan kini juga di Sumber. Dapur kami berpusat di deretan tungku gerabah.",
     chapters: [
       {
         kicker: "Tungku",
@@ -201,14 +208,14 @@ export const GR = {
         body: "Ayam negeri atau ayam kampung, bagian dada atau paha. Mau selain ayam? Ada bebek panggang. Lengkapi dengan sate usus, sate kulit, sate ati ampela, tempe, tahu, kol goreng, pete, atau krupuk.",
       },
       { title: "Buat semua umur", body: "Datang bareng anak? Ada menu anak yang tidak pedas, tanpa bumbu panggang." },
-      { title: "Sore sampai tengah malam", body: "Buka 16.00–00.00 WIB, Kamis libur. Kami tunggu di Kesambi, Cirebon." },
+      { title: "Dua cabang", body: "Kesambi buka 17.00–00.00 WIB, Kamis libur. Sumber buka 10.00–22.00 WIB setiap hari, satu tempat dengan Pecel Lele Aminoto Sumber." },
     ],
     // TODO: konfirmasi Fran — asal-usul (siapa Wicaksono; logo tertulis "Sejak 2024"). Sengaja belum ditulis.
   },
 
   branches: {
-    title: ["Cabang", "Kesambi"],
-    lead: "Satu-satunya cabang kami, di Jl. DR. Cipto Mangunkusumo, Kesambi, Cirebon.",
+    title: ["Dua", "cabang"],
+    lead: "Kesambi di Jl. DR. Cipto Mangunkusumo, Kota Cirebon, dan Sumber di Jl. Pangeran Cakrabuana, satu tempat dengan Pecel Lele Aminoto Sumber.",
     follow: "Kabar terbaru di media sosial",
   },
 

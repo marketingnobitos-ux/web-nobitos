@@ -17,6 +17,7 @@
     "bakmi-pak-joko:seed": "tsx --env-file=.env prisma/seed-bakmi-pak-joko.ts",
     "bakmi-pak-joko:cabang": "tsx --env-file=.env prisma/bakmi-pak-joko-cabang.ts",
     "apw:seed": "tsx --env-file=.env prisma/seed-apw.ts",
+    "apw:cabang": "tsx --env-file=.env prisma/apw-cabang.ts",
     "aminoto:seed": "tsx --env-file=.env prisma/seed-aminoto.ts",
     "admin:set-password": "tsx --env-file=.env prisma/admin-user.ts",
     "images:variants": "node scripts/image-variants.mjs",

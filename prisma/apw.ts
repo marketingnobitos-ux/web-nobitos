@@ -3,12 +3,12 @@
 //
 // BERBEDA dengan seed Pak Joko: seed ini MENIMPA data brand `apw` (data contoh dari prisma/seed.ts diganti data asli).
 // - Kolom brand ditimpa; menu, konten halaman, promo & galeri contoh dihapus lalu menu resmi dibuat ulang.
-// - Cabang selain Kesambi (Cipto contoh) dihapus; Kesambi diisi dari APW_BRANCH.
+// - Cabang selain Kesambi & Sumber (Cipto contoh) dihapus; keduanya diisi dari APW_BRANCHES.
 // - Hanya menyentuh baris milik brand `apw`. Domain & data analitik tidak diubah.
 // Jadi isian Admin untuk brand ini ikut tertimpa: setelah live, ubah data lewat Admin atau perbarui file ini dulu.
 //   npm run apw:seed   (prisma/seed-apw.ts)
 import { PrismaClient } from "@prisma/client";
-import { APW, APW_BRANCH } from "../src/data/brands/apw";
+import { APW, APW_BRANCHES } from "../src/data/brands/apw";
 
 export const APW_SLUG = "apw";
 
@@ -120,8 +120,9 @@ export async function seedApw(prisma: PrismaClient, { allowRemote = false } = {}
 
   const removed = await prisma.$transaction(async (tx) => {
     const where = { brandId: brand.id };
-    const oldBranches = await tx.branch.findMany({ where: { ...where, NOT: { name: APW_BRANCH.name } }, select: { name: true } });
-    await tx.branch.deleteMany({ where: { ...where, NOT: { name: APW_BRANCH.name } } });
+    const names = APW_BRANCHES.map((b) => b.name);
+    const oldBranches = await tx.branch.findMany({ where: { ...where, name: { notIn: names } }, select: { name: true } });
+    await tx.branch.deleteMany({ where: { ...where, name: { notIn: names } } });
     const items = await tx.menuItem.deleteMany({ where });
     await tx.menuCategory.deleteMany({ where });
     const pages = await tx.pageContent.deleteMany({ where });
@@ -145,15 +146,17 @@ export async function seedApw(prisma: PrismaClient, { allowRemote = false } = {}
       });
     }
 
-    const { slug: _slug, area: _area, hours, ...fields } = APW_BRANCH;
-    const branchData = { ...fields, phone: null, order: 0 };
-    const existing = await tx.branch.findFirst({ where: { ...where, name: APW_BRANCH.name } });
-    const kesambi = existing
-      ? await tx.branch.update({ where: { id: existing.id }, data: branchData })
-      : await tx.branch.create({ data: { brandId: brand.id, ...branchData } });
-    // Jam terstruktur 7 hari (bio IG: 16.00–00.00, Kamis libur) ditulis ulang utuh.
-    await tx.branchHours.deleteMany({ where: { branchId: kesambi.id } });
-    await tx.branchHours.createMany({ data: hours.map((h) => ({ branchId: kesambi.id, ...h })) });
+    for (const [order, b] of APW_BRANCHES.entries()) {
+      const { slug: _slug, area: _area, hours, ...fields } = b;
+      const branchData = { ...fields, phone: null, order };
+      const existing = await tx.branch.findFirst({ where: { ...where, name: b.name } });
+      const branch = existing
+        ? await tx.branch.update({ where: { id: existing.id }, data: branchData })
+        : await tx.branch.create({ data: { brandId: brand.id, ...branchData } });
+      // Jam terstruktur 7 hari ditulis ulang utuh.
+      await tx.branchHours.deleteMany({ where: { branchId: branch.id } });
+      await tx.branchHours.createMany({ data: hours.map((h) => ({ branchId: branch.id, ...h })) });
+    }
 
     return { branches: oldBranches.map((b) => b.name), items: items.count, pages: pages.count, promos: promos.count, albums: albums.count };
   });

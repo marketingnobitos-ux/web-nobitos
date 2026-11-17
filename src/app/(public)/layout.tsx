@@ -77,9 +77,11 @@ export default async function PublicLayout({ children }: { children: React.React
     ...(editorial || anglo || dadak ? { "--paper": brand.colorSecondary } : {}),
     ...(tungku ? { "--paper": "#ffffff", "--cream": brand.colorSecondary } : {}),
   } as CSSProperties;
-  // Gerabah: badge "Buka sekarang" di header butuh jam cabang (APW hanya Kesambi).
-  const gerabahHours = gerabah
-    ? (await prisma.branch.findFirst({ where: { brandId: brand.id }, orderBy: { order: "asc" }, select: { hours: true } }))?.hours ?? []
+  // Gerabah: status buka/tutup di header butuh jam tiap cabang (APW: Kesambi & Sumber). Jam belum lengkap tidak ditampilkan.
+  const gerabahBranches = gerabah
+    ? (await prisma.branch.findMany({ where: { brandId: brand.id }, orderBy: { order: "asc" }, select: { name: true, hours: true } })).filter((b) =>
+        isCompleteWeek(b.hours),
+      )
     : [];
 
   return (
@@ -110,7 +112,7 @@ export default async function PublicLayout({ children }: { children: React.React
             logoUrl={brand.logoUrl}
             instagramUrl={brand.instagramUrl}
             tiktokUrl={brand.tiktokUrl}
-            hours={isCompleteWeek(gerabahHours) ? gerabahHours : null}
+            branches={gerabahBranches}
           />
         ) : tungku ? (
           <TungkuHeader brandName={brand.name} logoUrl={brand.logoUrl} instagramUrl={brand.instagramUrl} tiktokUrl={brand.tiktokUrl} />

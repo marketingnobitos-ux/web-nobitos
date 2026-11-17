@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import OpenBadge from "@/components/public/OpenBadge";
+import BranchStatus, { type BranchHoursInfo } from "@/components/templates/gerabah/BranchStatus";
 import { Kicker, Pill, formatHarga } from "@/components/templates/gerabah/shared";
 import type { GerabahPhoto } from "@/data/brands/apw-gerabah";
-import type { DayHours } from "@/lib/hours";
 import { trackName } from "@/lib/track";
 
 export type HeroSlide = { title: string[]; body: string; photo: GerabahPhoto; side: { label: string; value: string } };
@@ -16,7 +15,8 @@ type Props = {
   /** Harga termurah menu unggulan + namanya (blok daun pisang). */
   startPrice: { price: number; name: string; portion: string | null } | null;
   menuCount: number;
-  hours: DayHours[] | null;
+  /** Cabang dengan jam 7 hari lengkap, untuk kartu "Status hari ini". */
+  branches: BranchHoursInfo[];
 };
 
 const INTERVAL_MS = 7000;
@@ -34,7 +34,7 @@ const SMOKE = [
  * di pertemuan blok, judul kapital besar yang berganti tiap slide, kartu kaca status buka & data porsi.
  * Ganti otomatis tiap 7 detik (berhenti saat kursor/fokus di hero atau pengguna memilih kurangi gerakan).
  */
-export default function GerabahHero({ brandName, kicker, slides, startPrice, menuCount, hours }: Props) {
+export default function GerabahHero({ brandName, kicker, slides, startPrice, menuCount, branches }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -88,10 +88,10 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
 
         {/* Kanan atas: asap — kartu kaca status & data slide. */}
         <div className="hidden flex-col items-end gap-3 px-6 pb-8 pt-32 lg:flex lg:pr-12 xl:pr-20">
-          {hours && (
+          {branches.length > 0 && (
             <div className="gr-glass w-[260px] px-5 py-4">
               <p className="gr-caps text-[var(--gr-cream)]/60">Status hari ini</p>
-              <OpenBadge hours={hours} className="mt-2 text-[15px]" />
+              <BranchStatus branches={branches} variant="stack" className="mt-2 text-[14px]" />
             </div>
           )}
           <div key={index} className="gr-glass gr-slide-in w-[260px] px-5 py-4">
