@@ -1,7 +1,6 @@
 import type { Brand } from "@prisma/client";
 import OpenBadge from "@/components/public/OpenBadge";
 import GerabahHero from "@/components/templates/gerabah/GerabahHero";
-import { HoursRing } from "@/components/templates/gerabah/HoursViz";
 import { Kicker, Photo, Pill, WRAP, formatHarga, hoursSummary } from "@/components/templates/gerabah/shared";
 import { GR_PHOTOS, GR_SLIDES } from "@/data/brands/apw-gerabah";
 import { gerabahText } from "@/lib/template-text";
@@ -15,15 +14,14 @@ type Category = { id: string; name: string; items: { id: string; name: string; p
 type Branch = { name: string; address: string; mapsUrl: string | null; lat: number | null; lng: number | null; hours: DayHours[] };
 
 /**
- * Beranda Gerabah, urutan mengikuti referensi: papan hero berslide → deret menu unggulan → papan data berkartu kaca
- * (harga, jam, status) → tiga langkah proses → papan menu (seperti menu cetak) → suasana → lokasi.
+ * Beranda Gerabah: papan hero berslide → deret menu unggulan → tiga langkah proses → papan menu (seperti menu cetak)
+ * → suasana → lokasi. Ringkas 18 Nov 2026: papan "Sekilas" dihapus karena hanya mengulang harga, jam & jumlah menu.
  */
 export default async function GerabahHome({ brand, featured, categories, branches }: { brand: Brand; featured: Featured[]; categories: Category[]; branches: Branch[] }) {
   const GR = await gerabahText();
   // Jam belum lengkap tidak dipakai untuk status & ringkasan (status tidak pernah ditebak).
   const withHours = branches.filter((b) => isCompleteWeek(b.hours));
   const cheapest = [...featured].sort((a, b) => a.price - b.price)[0];
-  const menuCount = categories.reduce((n, c) => n + c.items.length, 0);
 
   return (
     <>
@@ -33,13 +31,10 @@ export default async function GerabahHome({ brand, featured, categories, branche
         slides={GR_SLIDES}
         dish={GR_PHOTOS.heroPiring}
         startPrice={cheapest ? { price: cheapest.price, name: cheapest.name, portion: cheapest.portion } : null}
-        menuCount={menuCount}
         branches={withHours.map((b) => ({ name: b.name, hours: b.hours }))}
       />
 
       {featured.length > 0 && <FeaturedRow featured={featured} />}
-
-      <DataBoard branches={withHours} cheapest={cheapest} categories={categories} />
 
       <Proses />
 
@@ -92,104 +87,6 @@ function FeaturedRow({ featured }: { featured: Featured[] }) {
           </Pill>
         </li>
       </ul>
-    </section>
-  );
-}
-
-/** Papan data: foto sajian di tengah latar buram, kartu kaca berisi angka asli (harga, jumlah menu, jam, status). */
-function DataBoard({ branches, cheapest, categories }: { branches: Branch[]; cheapest?: Featured; categories: Category[] }) {
-  const total = categories.reduce((n, c) => n + c.items.length, 0);
-  return (
-    <section aria-labelledby="data-title" className="relative isolate overflow-hidden bg-[var(--gr-char-2)] py-20 md:py-28">
-      {/* Latar: foto yang sama, diperbesar & dibuat buram (resolusi rendah tidak terlihat). */}
-      <div aria-hidden className="absolute inset-0 -z-10">
-        <Photo photo={GR_PHOTOS.piringLengkap} className="h-full w-full scale-125 opacity-45 blur-3xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgb(22_19_17/0.2),rgb(22_19_17/0.85)_75%)]" />
-      </div>
-
-      <div className={WRAP}>
-        <div className="mx-auto max-w-2xl text-center">
-          <Kicker className="justify-center text-[var(--gr-cream)]/75">Sekilas</Kicker>
-          <h2 id="data-title" className="gr-serif mt-4 text-[clamp(36px,5vw,64px)]">
-            Yang perlu kamu tahu <em>sebelum datang</em>
-          </h2>
-        </div>
-
-        <div className="mt-12 grid items-center gap-4 md:mt-16 lg:grid-cols-[1fr_minmax(0,1.25fr)_1fr] lg:gap-6">
-          <div className="grid gap-4 sm:grid-cols-2 lg:order-1 lg:grid-cols-1">
-            {cheapest && (
-              <div className="gr-glass p-6">
-                <p className="gr-caps text-[var(--gr-cream)]/60">Harga mulai</p>
-                <p className="gr-display mt-3 text-[44px]">
-                  <span className="mr-2 text-[0.5em] align-[0.35em]">Rp</span>
-                  {formatHarga(cheapest.price)}
-                </p>
-                <p className="mt-1 text-sm text-[var(--gr-cream)]/75">
-                  {cheapest.name}
-                  {cheapest.portion && `, ${cheapest.portion}`}
-                </p>
-              </div>
-            )}
-            <div className="gr-glass p-6">
-              <p className="gr-caps text-[var(--gr-cream)]/60">Pilihan menu</p>
-              <p className="gr-display mt-3 text-[44px]">{total}</p>
-              {/* Batang bertumpuk: porsi tiap kategori dari jumlah item sebenarnya. */}
-              <div className="mt-4 flex h-2 overflow-hidden rounded-full bg-white/10">
-                {categories.map((c, i) => (
-                  <span key={c.id} className={["bg-[var(--gr-gold)]", "bg-[var(--gr-cream)]/80", "bg-[var(--gr-clay)]"][i % 3]} style={{ width: `${(c.items.length / Math.max(total, 1)) * 100}%` }} />
-                ))}
-              </div>
-              <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-[var(--gr-cream)]/75">
-                {categories.map((c, i) => (
-                  <li key={c.id} className="flex items-center gap-1.5">
-                    <span aria-hidden className={`h-2 w-2 rounded-full ${["bg-[var(--gr-gold)]", "bg-[var(--gr-cream)]/80", "bg-[var(--gr-clay)]"][i % 3]}`} />
-                    {c.name} {c.items.length}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="relative mx-auto w-full max-w-[560px] lg:order-2">
-            <Photo photo={GR_PHOTOS.piringLengkap} className="aspect-[16/10] w-full rounded-[28px] shadow-[0_40px_80px_-30px_rgb(0_0_0/0.8)] ring-1 ring-white/15" />
-            <div className="absolute inset-x-0 -bottom-5 flex justify-center gap-2">
-              <Pill href="/menu" track={trackName("menu")} variant="gold" className="!min-h-0 !py-2.5 shadow-lg">
-                Lihat menu
-              </Pill>
-              <Pill href="/cabang" track={trackName("cabang")} className="!min-h-0 bg-[rgb(22_19_17/0.7)] !py-2.5 shadow-lg backdrop-blur">
-                Cara ke sana
-              </Pill>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:order-3 lg:mt-0 lg:grid-cols-1">
-            {/* Satu kartu per cabang: cincin jam dari tabel BranchHours, ringkasan jam & hari libur, status buka. */}
-            {branches.map((b) => {
-              const sum = hoursSummary(b.hours);
-              return (
-                <div key={b.name} className="gr-glass flex items-center gap-5 p-6">
-                  <HoursRing hours={b.hours} size={96} />
-                  <div className="min-w-0">
-                    <p className="gr-caps text-[var(--gr-cream)]/60">Jam buka {b.name}</p>
-                    {sum && (
-                      <>
-                        <p className="gr-display mt-2 whitespace-nowrap text-[22px] sm:text-[24px]">{sum.range}</p>
-                        <p className="mt-1 text-[13px] text-[var(--gr-cream)]/75">{sum.days}</p>
-                      </>
-                    )}
-                    <OpenBadge hours={b.hours} className="mt-2 text-[13px] text-[var(--gr-cream)]/85" />
-                  </div>
-                </div>
-              );
-            })}
-            <div className="gr-glass p-6">
-              <p className="gr-caps text-[var(--gr-cream)]/60">Cara panggang</p>
-              <p className="gr-display mt-2 text-[26px]">Tungku gerabah</p>
-              <p className="mt-1 text-sm text-[var(--gr-cream)]/75">Api kompor di bawah tungku, bukan arang terbuka.</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

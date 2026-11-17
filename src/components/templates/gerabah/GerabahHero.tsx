@@ -6,7 +6,7 @@ import { Kicker, Pill, formatHarga } from "@/components/templates/gerabah/shared
 import type { GerabahPhoto } from "@/data/brands/apw-gerabah";
 import { trackName } from "@/lib/track";
 
-export type HeroSlide = { title: string[]; body: string; side: { label: string; value: string } };
+export type HeroSlide = { title: string[]; body: string };
 
 type Props = {
   brandName: string;
@@ -16,7 +16,6 @@ type Props = {
   dish: GerabahPhoto;
   /** Harga termurah menu unggulan + namanya (blok daun pisang). */
   startPrice: { price: number; name: string; portion: string | null } | null;
-  menuCount: number;
   /** Cabang dengan jam 7 hari lengkap, untuk kartu "Status hari ini". */
   branches: BranchHoursInfo[];
 };
@@ -36,7 +35,7 @@ const SMOKE = [
  * di pertemuan blok, judul kapital besar yang berganti tiap slide, kartu kaca status buka & data porsi.
  * Ganti otomatis tiap 7 detik (berhenti saat kursor/fokus di hero atau pengguna memilih kurangi gerakan).
  */
-export default function GerabahHero({ brandName, kicker, slides, dish, startPrice, menuCount, branches }: Props) {
+export default function GerabahHero({ brandName, kicker, slides, dish, startPrice, branches }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -88,7 +87,7 @@ export default function GerabahHero({ brandName, kicker, slides, dish, startPric
           <Dish photo={dish} />
         </div>
 
-        {/* Kanan atas: asap — kartu kaca status & data slide. */}
+        {/* Kanan atas: asap — satu kartu kaca status buka (harga & menu sudah ada di blok lain). */}
         <div className="hidden flex-col items-end gap-3 px-6 pb-8 pt-32 lg:flex lg:pr-12 xl:pr-20">
           {branches.length > 0 && (
             <div className="gr-glass w-[260px] px-5 py-4">
@@ -96,19 +95,6 @@ export default function GerabahHero({ brandName, kicker, slides, dish, startPric
               <BranchStatus branches={branches} variant="stack" className="mt-2 text-[14px]" />
             </div>
           )}
-          <div key={index} className="gr-glass gr-slide-in w-[260px] px-5 py-4">
-            <p className="gr-caps text-[var(--gr-cream)]/60">{slide.side.label}</p>
-            <p className="gr-display mt-2 text-[26px]">{slide.side.value}</p>
-          </div>
-          <div className="gr-glass flex w-[260px] items-center justify-between px-5 py-4">
-            <div>
-              <p className="gr-caps text-[var(--gr-cream)]/60">Pilihan menu</p>
-              <p className="gr-display mt-2 text-[26px]">{menuCount} menu</p>
-            </div>
-            <Pill href="/menu" track={trackName("menu")} arrow className="!min-h-0 !px-3 !py-2 !text-[11px]">
-              Lihat
-            </Pill>
-          </div>
         </div>
 
         {/* Kiri bawah: asap — kalimat slide & tombol. Desktop: ruang kanan = setengah sajian supaya teks tidak tertutup. */}

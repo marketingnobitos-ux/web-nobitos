@@ -111,21 +111,18 @@ export type GerabahPhotoKey = keyof typeof GR_PHOTOS;
 
 /** Slide hero Beranda. Warna blok: kiri atas `clay` (gerabah), kanan `slate` (asap) & `leaf` (daun pisang). */
 /** Slide hero Beranda; foto piringnya sama untuk semua slide (GR_PHOTOS.heroPiring). */
-export const GR_SLIDES: { title: string[]; body: string; side: { label: string; value: string } }[] = [
+export const GR_SLIDES: { title: string[]; body: string }[] = [
   {
     title: ["Dipanggang", "di tungku", "gerabah"],
     body: "Ayam dibaluri bumbu rempah, lalu dipanggang di dalam tungku gerabah sampai wangi bakarannya keluar.",
-    side: { label: "Pemanggang", value: "Tungku gerabah" },
   },
   {
     title: ["Smokie-nya", "bikin", "nagih"],
     body: "Seporsi ayam panggang, nasi hangat di atas daun pisang, sambal, dan lalapan. Sederhana, tapi bikin balik lagi.",
-    side: { label: "Satu porsi", value: "1/4 ekor" },
   },
   {
     title: ["Dua cabang,", "siang sampai", "malam"],
     body: "Sumber buka 10.00–22.00 setiap hari, Kesambi 17.00–00.00 (Kamis libur). Datang sendiri, bareng teman, atau sekeluarga.",
-    side: { label: "Cabang", value: "Kesambi & Sumber" },
   },
 ];
 

@@ -116,7 +116,6 @@ export default function GerabahHeader({ brandName, logoUrl, instagramUrl, tiktok
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
-            <BranchStatus branches={branches} className="gr-glass hidden !rounded-full px-4 py-2 text-[12px] sm:flex" />
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
