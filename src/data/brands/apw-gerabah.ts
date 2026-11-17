@@ -21,6 +21,13 @@ export const GR_PHOTOS = {
     width: 552,
     height: 552,
   },
+  /** Foto piring hero Beranda dari Fran (17 Nov 2026), dipotong elips mengikuti piring, latar transparan. */
+  heroPiring: {
+    src: "/brands/apw/foto/hero-piring-ayam.webp",
+    alt: "Sepiring ayam panggang paha dengan nasi putih, sambal, timun, dan kol di atas alas kertas",
+    width: 960,
+    height: 674,
+  },
   sajian: {
     src: "/brands/apw/tiktok/sajian-piring-atas.webp",
     alt: "Sepiring ayam panggang, nasi di atas daun pisang, sambal, timun, dan lalapan dilihat dari atas",
@@ -95,23 +102,21 @@ export const GR_PHOTOS = {
 export type GerabahPhotoKey = keyof typeof GR_PHOTOS;
 
 /** Slide hero Beranda. Warna blok: kiri atas `clay` (gerabah), kanan `slate` (asap) & `leaf` (daun pisang). */
-export const GR_SLIDES: { title: string[]; body: string; photo: GerabahPhotoKey; side: { label: string; value: string } }[] = [
+/** Slide hero Beranda; foto piringnya sama untuk semua slide (GR_PHOTOS.heroPiring). */
+export const GR_SLIDES: { title: string[]; body: string; side: { label: string; value: string } }[] = [
   {
     title: ["Dipanggang", "di tungku", "gerabah"],
     body: "Ayam dibaluri bumbu rempah, lalu dipanggang di dalam tungku gerabah sampai wangi bakarannya keluar.",
-    photo: "ayamTungku",
     side: { label: "Pemanggang", value: "Tungku gerabah" },
   },
   {
     title: ["Smokie-nya", "bikin", "nagih"],
     body: "Seporsi ayam panggang, nasi hangat di atas daun pisang, sambal, dan lalapan. Sederhana, tapi bikin balik lagi.",
-    photo: "sajian",
     side: { label: "Satu porsi", value: "1/4 ekor" },
   },
   {
     title: ["Dua cabang,", "siang sampai", "malam"],
     body: "Sumber buka 10.00–22.00 setiap hari, Kesambi 17.00–00.00 (Kamis libur). Datang sendiri, bareng teman, atau sekeluarga.",
-    photo: "api",
     side: { label: "Cabang", value: "Kesambi & Sumber" },
   },
 ];

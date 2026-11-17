@@ -24,14 +24,14 @@ export default async function GerabahHome({ brand, featured, categories, branche
   const withHours = branches.filter((b) => isCompleteWeek(b.hours));
   const cheapest = [...featured].sort((a, b) => a.price - b.price)[0];
   const menuCount = categories.reduce((n, c) => n + c.items.length, 0);
-  const slides = GR_SLIDES.map((s) => ({ ...s, photo: GR_PHOTOS[s.photo] }));
 
   return (
     <>
       <GerabahHero
         brandName={brand.name}
         kicker={`Ayam panggang tungku gerabah · ${GR.area}`}
-        slides={slides}
+        slides={GR_SLIDES}
+        dish={GR_PHOTOS.heroPiring}
         startPrice={cheapest ? { price: cheapest.price, name: cheapest.name, portion: cheapest.portion } : null}
         menuCount={menuCount}
         branches={withHours.map((b) => ({ name: b.name, hours: b.hours }))}

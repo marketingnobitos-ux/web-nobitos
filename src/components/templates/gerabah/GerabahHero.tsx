@@ -6,12 +6,14 @@ import { Kicker, Pill, formatHarga } from "@/components/templates/gerabah/shared
 import type { GerabahPhoto } from "@/data/brands/apw-gerabah";
 import { trackName } from "@/lib/track";
 
-export type HeroSlide = { title: string[]; body: string; photo: GerabahPhoto; side: { label: string; value: string } };
+export type HeroSlide = { title: string[]; body: string; side: { label: string; value: string } };
 
 type Props = {
   brandName: string;
   kicker: string;
   slides: HeroSlide[];
+  /** Foto piring berlatar transparan, sama untuk semua slide. */
+  dish: GerabahPhoto;
   /** Harga termurah menu unggulan + namanya (blok daun pisang). */
   startPrice: { price: number; name: string; portion: string | null } | null;
   menuCount: number;
@@ -34,7 +36,7 @@ const SMOKE = [
  * di pertemuan blok, judul kapital besar yang berganti tiap slide, kartu kaca status buka & data porsi.
  * Ganti otomatis tiap 7 detik (berhenti saat kursor/fokus di hero atau pengguna memilih kurangi gerakan).
  */
-export default function GerabahHero({ brandName, kicker, slides, startPrice, menuCount, branches }: Props) {
+export default function GerabahHero({ brandName, kicker, slides, dish, startPrice, menuCount, branches }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -69,7 +71,7 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
       {/* Papan 2×2 mulai lg (1024 px); di bawahnya blok ditumpuk dengan sajian di antara judul & kalimat. */}
       <div className="grid lg:h-full lg:grid-cols-[48fr_52fr] lg:grid-rows-[60fr_40fr]">
         {/* Kiri atas: gerabah — nama brand & judul slide. */}
-        <div className="bg-[var(--gr-clay)] px-4 pb-[calc(min(39vw,180px)+1.5rem)] pt-28 sm:px-6 md:px-10 lg:pb-10 lg:pl-14 lg:pr-8 lg:pt-32 xl:pl-20">
+        <div className="bg-[var(--gr-clay)] px-4 pb-[calc(min(31vw,148px)+1.5rem)] pt-28 sm:px-6 md:px-10 lg:pb-10 lg:pl-14 lg:pr-8 lg:pt-32 xl:pl-20">
           <Kicker className="text-[var(--gr-cream)]/85">{kicker}</Kicker>
           <h1 className="gr-caps mt-3 text-[13px] text-[var(--gr-cream)]">{brandName}</h1>
           <p key={index} className="gr-display gr-slide-in relative z-[3] mt-6 text-[clamp(38px,10.5vw,64px)] lg:text-[clamp(44px,5vw,80px)]">
@@ -81,9 +83,9 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
           </p>
         </div>
 
-        {/* HP: sajian di antara blok judul & blok kalimat (margin negatif = setengah tinggi sajian). */}
-        <div className="pointer-events-none relative z-[2] mx-auto -my-[min(39vw,180px)] w-[min(78vw,360px)] lg:hidden">
-          <Dish slides={slides} index={index} />
+        {/* HP: piring di antara blok judul & blok kalimat (margin negatif = setengah tinggi piring). */}
+        <div className="pointer-events-none relative z-[2] mx-auto -my-[min(31vw,148px)] w-[min(88vw,420px)] lg:hidden">
+          <Dish photo={dish} />
         </div>
 
         {/* Kanan atas: asap — kartu kaca status & data slide. */}
@@ -110,7 +112,7 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
         </div>
 
         {/* Kiri bawah: asap — kalimat slide & tombol. Desktop: ruang kanan = setengah sajian supaya teks tidak tertutup. */}
-        <div className="px-4 pb-12 pt-[calc(min(39vw,180px)+2rem)] sm:px-6 md:px-10 lg:pb-12 lg:pl-14 lg:pr-[calc(clamp(130px,14vw,250px)+2rem)] lg:pt-10 xl:pl-20">
+        <div className="px-4 pb-12 pt-[calc(min(31vw,148px)+2rem)] sm:px-6 md:px-10 lg:pb-12 lg:pl-14 lg:pr-[calc(clamp(140px,15vw,270px)+2rem)] lg:pt-10 xl:pl-20">
           <p key={index} className="gr-slide-in max-w-[40ch] text-[17px] leading-relaxed text-[var(--gr-cream)]/85">
             {slide.body}
           </p>
@@ -125,11 +127,11 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
         </div>
 
         {/* Kanan bawah: daun pisang — harga mulai & navigasi slide (ruang kiri = setengah sajian). */}
-        <div className="flex flex-col justify-end gap-6 bg-[var(--gr-leaf)] px-4 pb-10 pt-10 sm:px-6 md:px-10 lg:items-end lg:pl-[calc(clamp(130px,14vw,250px)+2rem)] lg:pr-12 xl:pr-20">
+        <div className="flex flex-col justify-end gap-6 bg-[var(--gr-leaf)] px-4 pb-10 pt-10 sm:px-6 md:px-10 lg:items-end lg:pl-[calc(clamp(140px,15vw,270px)+2rem)] lg:pr-12 xl:pr-20">
           {startPrice && (
             <div className="lg:text-right">
               <p className="gr-caps text-[var(--gr-cream)]/70">Mulai dari</p>
-              <p className="gr-display mt-2 text-[clamp(40px,4.4vw,64px)]">Rp {formatHarga(startPrice.price)}</p>
+              <p className="gr-display mt-2 whitespace-nowrap text-[clamp(36px,3.6vw,64px)]">Rp {formatHarga(startPrice.price)}</p>
               <p className="mt-1 text-sm text-[var(--gr-cream)]/80">
                 {startPrice.name}
                 {startPrice.portion && ` · ${startPrice.portion}`}
@@ -172,45 +174,33 @@ export default function GerabahHero({ brandName, kicker, slides, startPrice, men
         </div>
       </div>
 
-      {/* Desktop: sajian melayang tepat di pertemuan empat blok (seperti referensi); lebar = 2 × ruang yang disisakan sel. */}
-      <div className="pointer-events-none absolute left-[48%] top-[60%] z-[2] hidden w-[clamp(260px,28vw,500px)] -translate-x-1/2 -translate-y-1/2 lg:block">
-        <Dish slides={slides} index={index} />
+      {/* Desktop: piring melayang tepat di pertemuan empat blok (seperti referensi); lebar = 2 × ruang yang disisakan sel. */}
+      <div className="pointer-events-none absolute left-[48%] top-[60%] z-[2] hidden w-[clamp(280px,30vw,540px)] -translate-x-1/2 -translate-y-1/2 lg:block">
+        <Dish photo={dish} />
       </div>
     </section>
   );
 }
 
-function Dish({ slides, index }: { slides: HeroSlide[]; index: number }) {
+/**
+ * Piring melayang naik-turun pelan dengan asap di atasnya. Tidak diputar: fotonya diambil miring, jadi berputar
+ * terlihat janggal. Satu foto untuk semua slide supaya tidak ada kedip saat slide berganti.
+ */
+function Dish({ photo }: { photo: GerabahPhoto }) {
   return (
-    <div className="relative aspect-square">
+    <div className="relative" style={{ aspectRatio: `${photo.width} / ${photo.height}` }}>
       {SMOKE.map((s) => (
         <span
           key={s.left + s.delay}
           aria-hidden
           className="gr-smoke"
-          style={{ left: s.left, top: "18%", width: s.size, height: s.size, animationDelay: s.delay, ["--gr-drift" as string]: s.drift }}
+          style={{ left: s.left, top: "0%", width: s.size, height: s.size, animationDelay: s.delay, ["--gr-drift" as string]: s.drift }}
         />
       ))}
-      {slides.map((s, i) => (
-        <div
-          key={s.photo.src}
-          aria-hidden={i !== index}
-          className={`gr-dish absolute inset-0 transition-[opacity,translate,scale] duration-[900ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] ${
-            i === index ? "opacity-100" : "translate-y-6 scale-95 opacity-0"
-          }`}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={s.photo.src}
-            alt={i === index ? s.photo.alt : ""}
-            width={s.photo.width}
-            height={s.photo.height}
-            fetchPriority={i === 0 ? "high" : undefined}
-            loading={i === 0 ? "eager" : "lazy"}
-            className="gr-spin h-full w-full rounded-full object-cover"
-          />
-        </div>
-      ))}
+      <div className="gr-dish gr-dish-in absolute inset-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} fetchPriority="high" className="gr-float h-full w-full object-contain" />
+      </div>
     </div>
   );
 }

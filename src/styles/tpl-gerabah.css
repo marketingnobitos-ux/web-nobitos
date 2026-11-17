@@ -150,6 +150,10 @@
   .tpl-gerabah .gr-spin {
     animation: gr-spin 120s linear infinite;
   }
+  /* Piring hero melayang naik-turun pelan. */
+  .tpl-gerabah .gr-float {
+    animation: gr-float 6s ease-in-out infinite;
+  }
 
   /* Asap: gumpalan putih buram yang naik pelan dari sajian. */
   .tpl-gerabah .gr-smoke {
@@ -189,6 +193,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .tpl-gerabah .gr-spin,
+    .tpl-gerabah .gr-float,
     .tpl-gerabah .gr-smoke,
     .tpl-gerabah .gr-slide-in,
     .tpl-gerabah .gr-dish-in {
@@ -210,6 +215,16 @@
 @keyframes gr-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes gr-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
   }
 }
 
