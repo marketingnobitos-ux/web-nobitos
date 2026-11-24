@@ -27,22 +27,54 @@ export const BAKMI_PAK_JOKO_BRAND = {
 
 type MenuCategoryData = {
   name: string;
-  items: { name: string; price: number; description?: string; featured?: boolean }[];
+  items: {
+    name: string;
+    price: number;
+    description?: string;
+    featured?: boolean;
+    /** Nama lama di DB; dipakai `npm run bakmi-pak-joko:menu` supaya baris lama diganti nama, bukan dihapus (foto tetap). */
+    formerly?: string;
+  }[];
 };
 
-/** Menu resmi "MENU BAKMI JOWO MAS JOKO TMG". Deskripsi hanya untuk menu andalan (brief 4.3). */
+/** Menu resmi "BAKMI JOWO ANGLO MAS JOKO TMG" (foto menu baru dari Fran, 25 Nov 2026). Deskripsi hanya untuk menu andalan (brief 4.3). */
 export const BAKMI_PAK_JOKO_MENU: MenuCategoryData[] = [
   {
-    name: "Makanan",
+    name: "Bakmi",
     items: [
-      { name: "Nasi Goreng", price: 19000 },
-      { name: "Bakmi Goreng", price: 21000, featured: true, description: "Gurih, suwiran ayam banyak, bawang goreng renyah." },
-      { name: "Bakmi Nyemek / Cemek", price: 21000, featured: true, description: "Kuah gurih kental, sayur melimpah, telur diaduk." },
-      { name: "Bakmi Godog / Rebus", price: 21000 },
-      { name: "Kwetiaw Goreng / Rebus", price: 21000 },
-      { name: "Otok Owok / Mawut / Magelangan", price: 21000 },
-      { name: "Bihun Goreng / Rebus", price: 21000 },
+      { name: "Bakmi Godog Telur Ayam", price: 21000, formerly: "Bakmi Godog / Rebus" },
+      { name: "Bakmi Godog Telur Bebek", price: 25000 },
+      {
+        name: "Bakmi Nyemek Telur Ayam",
+        price: 21000,
+        featured: true,
+        description: "Kuah gurih kental, sayur melimpah, telur diaduk.",
+        formerly: "Bakmi Nyemek / Cemek",
+      },
+      { name: "Bakmi Nyemek Telur Bebek", price: 25000 },
+      {
+        name: "Bakmi Goreng Telur Ayam",
+        price: 21000,
+        featured: true,
+        description: "Gurih, suwiran ayam banyak, bawang goreng renyah.",
+        formerly: "Bakmi Goreng",
+      },
+      { name: "Bakmi Goreng Telur Bebek", price: 25000 },
+    ],
+  },
+  {
+    name: "Makanan Lainnya",
+    items: [
+      { name: "Bakmi Goreng Ati Ampela", price: 26000 },
+      { name: "Bakmi Goreng Kulit", price: 26000 },
+      { name: "Nasi Goreng Ori", price: 19000, formerly: "Nasi Goreng" },
+      { name: "Nasi Goreng Ati Ampela", price: 25000 },
+      { name: "Nasi Goreng Kulit", price: 25000 },
       { name: "Nasi Godog", price: 21000 },
+      // Ejaan mengikuti foto menu Fran 25 Nov 2026 (menu lama: "Otok Owok").
+      { name: "Orok Owok / Mawut / Magelangan", price: 21000, formerly: "Otok Owok / Mawut / Magelangan" },
+      { name: "Kwetiaw Goreng / Rebus", price: 21000 },
+      { name: "Bihun Goreng / Rebus", price: 21000 },
     ],
   },
   {
@@ -53,14 +85,17 @@ export const BAKMI_PAK_JOKO_MENU: MenuCategoryData[] = [
       { name: "Kepala Ayam", price: 3000 },
       { name: "Sate Usus", price: 4000 },
       { name: "Kerupuk", price: 4000 },
-      { name: "Sate Kulit", price: 6000 },
-      { name: "Sate Ati Ampela", price: 6000 },
+      { name: "Sate Kulit", price: 7000 },
+      { name: "Sate Ati Ampela", price: 7000 },
+      { name: "Telur Bebek", price: 6000 },
     ],
   },
   {
     name: "Minuman",
     items: [
-      { name: "Teh Tawar Panas / Es Tawar", price: 2000 },
+      // Di foto satu baris "2.000 / 3.000"; dipisah karena harga di web satu angka per item.
+      { name: "Teh Tawar Panas", price: 2000, formerly: "Teh Tawar Panas / Es Tawar" },
+      { name: "Es Tawar", price: 3000 },
       { name: "Mineral", price: 5000 },
       { name: "Es Teh Manis", price: 5000 },
       { name: "Es Teh Kampul", price: 8000 },

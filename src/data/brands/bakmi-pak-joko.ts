@@ -35,10 +35,10 @@ export const BAKMI_PAK_JOKO = {
       "Satu wajan, satu porsi, di atas anglo arang. Aroma *smoky*-nya sudah tercium sebelum bakmi sampai di meja.",
     ctaMenu: "Lihat Menu",
     ctaLocation: "Cari Lokasi",
-    // Dikonfirmasi Fran 29 Sep 2026: kedua cabang 16.00–23.00; libur beda per cabang.
-    hours: "Buka 16.00 – 23.00 · Libur: Rabu (Kartini), Senin (Ciperna)",
+    // Fran 25 Nov 2026: Kartini 16.00–23.30, Ciperna tetap 16.00–23.00; libur beda per cabang.
+    hours: "Kartini 16.00 – 23.30, libur Rabu · Ciperna 16.00 – 23.00, libur Senin",
     /** Label stiker di kolase hero (brief 6.2). */
-    stickers: ["Dimasak di atas anglo", "Buka 16.00–23.00"],
+    stickers: ["Dimasak di atas anglo", "Buka mulai 16.00"],
   },
 
   /** Teks antarmuka template Anglo (brief 6.2 & 6.3). */
@@ -92,8 +92,9 @@ export const BAKMI_PAK_JOKO = {
       slug: "kartini",
       name: "Kartini",
       address: "Jl. Kartini, belakang Masjid At-Taqwa, Kebonbaru, Kejaksan, Kota Cirebon",
-      hours: "16.00 – 23.00, Rabu libur",
-      openingHours: weeklyHours("16:00", "23:00", [DAY.RABU]),
+      // Fran 25 Nov 2026: tutup 23.30 (sebelumnya 23.00).
+      hours: "16.00 – 23.30, Rabu libur",
+      openingHours: weeklyHours("16:00", "23:30", [DAY.RABU]),
       lat: -6.7096251,
       lng: 108.558381,
       whatsapp: "0851-9602-8889",

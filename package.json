@@ -16,6 +16,7 @@
     "bolu:alamat-favicon": "tsx --env-file=.env prisma/bolu-sunyaragi.ts --address --favicon",
     "bakmi-pak-joko:seed": "tsx --env-file=.env prisma/seed-bakmi-pak-joko.ts",
     "bakmi-pak-joko:cabang": "tsx --env-file=.env prisma/bakmi-pak-joko-cabang.ts",
+    "bakmi-pak-joko:menu": "tsx --env-file=.env prisma/bakmi-pak-joko-menu.ts",
     "apw:seed": "tsx --env-file=.env prisma/seed-apw.ts",
     "apw:cabang": "tsx --env-file=.env prisma/apw-cabang.ts",
     "apw:menu": "tsx --env-file=.env prisma/apw-menu.ts",
