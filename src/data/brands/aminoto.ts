@@ -27,9 +27,9 @@ export const AMINOTO_IMAGES = {
 
 export type AminotoImage = { src: string; alt: string; srcHp?: string };
 
-/** Jam buka semua cabang (Fran 23 Okt 2026): setiap hari 11.00–22.00, Jumat 12.45–22.00 (setelah salat Jumat). */
-export const AMINOTO_HOURS: DayHours[] = weeklyHours("11:00", "22:00").map((h) => (h.dayOfWeek === DAY.JUMAT ? { ...h, opens: "12:45" } : h));
-export const AMINOTO_OPEN_HOURS = "11.00 – 22.00, Jumat 12.45 – 22.00";
+/** Jam buka semua cabang (Fran 25 Nov 2026): setiap hari 10.00–22.00, Jumat 12.45–22.00 (setelah salat Jumat). */
+export const AMINOTO_HOURS: DayHours[] = weeklyHours("10:00", "22:00").map((h) => (h.dayOfWeek === DAY.JUMAT ? { ...h, opens: "12:45" } : h));
+export const AMINOTO_OPEN_HOURS = "10.00 – 22.00, Jumat 12.45 – 22.00";
 
 /**
  * Cabang resmi. Alamat, titik & telepon dari Google Maps; link Maps dari deliveryaminoto.my.id.
@@ -68,7 +68,7 @@ export const AMINOTO_BRANCHES = [
 export const AMINOTO = {
   shortName: "Aminoto",
   kicker: "Pecel Lele · Sambel Dadak",
-  hoursShort: "11.00–22.00",
+  hoursShort: "10.00–22.00",
   hoursNote: "Jumat mulai 12.45",
 
   hero: {
@@ -112,7 +112,7 @@ export const AMINOTO = {
     lead: "Cipto, Sumber, dan Ciledug. Datang langsung, pesan di kasir, sambalnya diulek saat itu juga.",
     cta: "Info lengkap cabang",
     pageTitle: "Cabang & kontak",
-    pageSub: "Tiga cabang di Cirebon · Buka setiap hari 11.00–22.00, Jumat mulai 12.45",
+    pageSub: "Tiga cabang di Cirebon · Buka setiap hari 10.00–22.00, Jumat mulai 12.45",
   },
 
   /** Rating Google Maps tiap cabang (dicek 22 Okt 2026). Perbarui kalau angkanya sudah jauh berubah. */
@@ -140,7 +140,7 @@ export const AMINOTO = {
     paragraphs: [
       "Pecel Lele Sambel Dadak Aminoto berangkat dari satu hal sederhana: sambal paling enak itu sambal yang baru diulek. Karena itu sambal kami dibuat dadakan, diulek di cobek saat pesananmu masuk.",
       "Lelenya digoreng sampai garing, ayam dan bebeknya dijual per porsi, dan gurame, nila, ayam, juga bebek bisa dibakar di atas bara kalau kamu lebih suka aroma panggang. Sambalnya sudah termasuk di harga menu, tinggal pilih lauk dan nasinya.",
-      "Sekarang Aminoto ada di tiga tempat di Cirebon: Cipto, Sumber, dan Ciledug. Buka setiap hari dari pukul 11.00 sampai 22.00 (hari Jumat mulai pukul 12.45, setelah salat Jumat), buat makan siang, makan malam, atau ramai-ramai bareng keluarga dan teman.",
+      "Sekarang Aminoto ada di tiga tempat di Cirebon: Cipto, Sumber, dan Ciledug. Buka setiap hari dari pukul 10.00 sampai 22.00 (hari Jumat mulai pukul 12.45, setelah salat Jumat), buat makan siang, makan malam, atau ramai-ramai bareng keluarga dan teman.",
     ],
     valuesTitle: "Yang kami jaga.",
     values: [

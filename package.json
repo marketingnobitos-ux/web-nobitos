@@ -21,6 +21,7 @@
     "apw:cabang": "tsx --env-file=.env prisma/apw-cabang.ts",
     "apw:menu": "tsx --env-file=.env prisma/apw-menu.ts",
     "aminoto:seed": "tsx --env-file=.env prisma/seed-aminoto.ts",
+    "aminoto:cabang": "tsx --env-file=.env prisma/aminoto-cabang.ts",
     "admin:set-password": "tsx --env-file=.env prisma/admin-user.ts",
     "images:variants": "node scripts/image-variants.mjs",
     "postinstall": "prisma generate"
