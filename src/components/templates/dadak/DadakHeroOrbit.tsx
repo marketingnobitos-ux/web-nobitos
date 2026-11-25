@@ -13,7 +13,7 @@ type Props = {
 /**
  * Hero Beranda Dadak: kata "SAMBEL / DADAK" raksasa di belakang, piring lele bakar (dilihat dari atas) berputar di
  * tengah dengan teks melingkar, tiga piring kecil mengambang di sekitarnya. Saat digulir, kata-kata menjauh dan
- * piring membesar (CSS scroll-driven; browser tanpa dukungan cukup melihat versi diam). Semua gerak berhenti untuk
+ * piring membesar (progres gulir dari DadakScrollFx, variabel --p). Semua gerak berhenti untuk
  * pengguna yang memilih kurangi gerakan.
  */
 export default function DadakHeroOrbit({ title, sub, cta, orbit }: Props) {
@@ -22,7 +22,7 @@ export default function DadakHeroOrbit({ title, sub, cta, orbit }: Props) {
   const [top, bottom] = orbit.words;
 
   return (
-    <section aria-labelledby="page-title" className="dk-hero relative isolate overflow-hidden bg-[var(--dk-deep)] pb-14 pt-[150px] text-[var(--dk-cream)] md:pb-20 md:pt-32">
+    <section aria-labelledby="page-title" data-dk-fx="top" className="dk-hero relative isolate overflow-hidden bg-[var(--dk-deep)] pb-14 pt-[150px] text-[var(--dk-cream)] md:pb-20 md:pt-32">
       {/* Cahaya bara di belakang piring */}
       <div aria-hidden className="dk-glow absolute left-1/2 top-[44%] -z-10 aspect-square w-[min(150vw,1100px)] -translate-x-1/2 -translate-y-1/2 rounded-full" />
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import DadakBranchCard, { type DadakBranch } from "@/components/templates/dadak/DadakBranchCard";
 import DadakCobekZoom from "@/components/templates/dadak/DadakCobekZoom";
 import DadakHeroOrbit from "@/components/templates/dadak/DadakHeroOrbit";
+import DadakScrollFx from "@/components/templates/dadak/DadakScrollFx";
 import { ArrowUpRight, Btn, ClosingCta, DEEP, Img, Label, PhotoStrip, WRAP, formatHarga } from "@/components/templates/dadak/shared";
 import { AMINOTO_IMAGES } from "@/data/brands/aminoto";
 import { dadakText } from "@/lib/template-text";
@@ -28,6 +29,9 @@ export default async function DadakHome({ brandName, featured, branches }: Props
 
   return (
     <>
+      {/* Penggerak efek gulir hero & adegan cobek (jalan di semua browser, termasuk Safari iPhone). */}
+      <DadakScrollFx />
+
       {/* 1. Hero: piring berputar + kata raksasa */}
       <DadakHeroOrbit title={hero.title} sub={hero.sub} cta={hero.cta} orbit={AMINOTO.orbit} />
 
