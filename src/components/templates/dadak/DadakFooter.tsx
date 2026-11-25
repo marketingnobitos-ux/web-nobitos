@@ -41,7 +41,8 @@ export default async function DadakFooter({ brand }: { brand: Brand }) {
           </nav>
 
           {branches.length > 0 && (
-            <div>
+            // Tablet (2 kolom): cabang memakai lebar penuh supaya 3 cabang tidak meluber ke samping.
+            <div className="sm:col-span-2 lg:col-span-1">
               <p className={heading}>Cabang</p>
               <ul className="grid gap-6 sm:grid-cols-3">
                 {branches.map((b) => {
