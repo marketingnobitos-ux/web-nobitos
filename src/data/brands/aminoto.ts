@@ -4,24 +4,35 @@
 // Web ini etalase: tidak ada keranjang, tombol pesan, atau link ojol. Menu, harga & cabang ada di DB (prisma/aminoto.ts).
 import { DAY, weeklyHours, type DayHours } from "@/lib/hours";
 
-/** Foto asli dari reel IG resmi @pecellele.aminoto (frame video tanpa teks overlay), dipotong portrait 3:4 untuk strip & kartu. */
+/**
+ * Foto produk dari Google Drive Fran (folder "gambar", 25 Nov 2026), diolah di scratchpad: piring dilihat dari atas
+ * dipotong bulat (latar transparan) untuk piring berputar, sisanya portrait 3:4. Hero Cerita, Cabang & latar rating
+ * masih frame reel IG resmi @pecellele.aminoto (suasana warung).
+ */
 const F = "/brands/aminoto/foto";
 export const AMINOTO_IMAGES = {
-  hero: { src: `${F}/hero-bara.webp`, srcHp: `${F}/hero-bara-hp.webp`, alt: "Ayam dibakar di atas bara yang menyala" },
-  heroMenu: { src: `${F}/hero-menu.webp`, alt: "Pecel lele di atas daun pisang dengan nasi, lalapan, dan sambal" },
+  heroMenu: { src: `${F}/hero-menu-meja.webp`, srcHp: `${F}/hero-menu-meja-hp.webp`, alt: "Nasi, ayam goreng, tahu, tempe, lalapan, dan sambal dadak di meja kayu" },
   heroCerita: { src: `${F}/hero-cerita.webp`, alt: "Pembeli antre di depan papan menu Sambel Dadak Aminoto" },
   heroCabang: { src: `${F}/hero-cabang.webp`, alt: "Warung tenda Aminoto di malam hari" },
-  panelBara: { src: `${F}/panel-bara.webp`, alt: "Ayam dibakar di atas bara" },
+  panelBara: { src: `${F}/panel-lele-bakar.webp`, alt: "Lele bakar di cobek batu dengan tahu, tempe, dan sambal dadak" },
   latar: { src: `${F}/latar-ramai.webp`, alt: "Papan nama Aminoto di atas ruang makan" },
-  ctaPiring: { src: `${F}/cta-piring.webp`, alt: "Sepiring pecel lele dengan sambal dadak" },
+  catering: { src: `${F}/catering-sebar.webp`, alt: "Sate usus, nasi ayam, kangkung, dan sambal dadak tersaji di meja" },
+  sambal: { src: `${F}/sambal-cobek.webp`, alt: "Sambal dadak merah di cobek batu" },
+  /** Piring dari atas, dipotong bulat dengan latar transparan. */
+  plates: {
+    lele: { src: `${F}/piring-lele.webp`, alt: "Lele bakar dengan tahu, tempe, timun, dan lalapan di cobek batu, dilihat dari atas" },
+    ayam: { src: `${F}/piring-ayam.webp`, alt: "Ayam goreng di atas selada, dilihat dari atas" },
+    sate: { src: `${F}/piring-sate.webp`, alt: "Sate usus dengan tahu, tempe, dan timun, dilihat dari atas" },
+    kangkung: { src: `${F}/piring-kangkung.webp`, alt: "Tumis kangkung bertabur bawang goreng di piring merah" },
+  },
   strip: [
-    { src: `${F}/strip-papan.webp`, alt: "Pembeli di depan papan menu Sambal Dadak Aminoto" },
-    { src: `${F}/strip-melayani.webp`, alt: "Kru Aminoto mengantar pesanan ke meja" },
-    { src: `${F}/strip-tenda.webp`, alt: "Meja makan di bawah tenda Aminoto" },
-    { src: `${F}/strip-malam.webp`, alt: "Warung Aminoto ramai di malam hari" },
-    { src: `${F}/strip-dalam.webp`, alt: "Pembeli antre di dalam ruang makan Aminoto" },
-    { src: `${F}/strip-spanduk.webp`, alt: "Spanduk Sambel Dadak: lele, ayam, bebek, nila" },
-    { src: `${F}/strip-ramai.webp`, alt: "Pembeli memesan di kasir Aminoto" },
+    { src: `${F}/strip-lele.webp`, alt: "Dua ekor lele bakar dengan tahu, tempe, dan jeruk limau" },
+    { src: `${F}/strip-sambal.webp`, alt: "Nasi, ayam goreng, tahu, dan sambal dadak" },
+    { src: `${F}/strip-sate.webp`, alt: "Sate usus dengan lalapan dan sambal dadak" },
+    { src: `${F}/strip-makan.webp`, alt: "Tangan menyuwir lele bakar di cobek" },
+    { src: `${F}/strip-ayam.webp`, alt: "Ayam goreng dengan bawang goreng, tahu, tempe, dan sambal" },
+    { src: `${F}/strip-kangkung.webp`, alt: "Tumis kangkung bertabur bawang goreng" },
+    { src: `${F}/strip-nasi.webp`, alt: "Nasi putih, ayam goreng, tahu, tempe, kol, dan timun" },
   ],
 };
 
@@ -75,6 +86,20 @@ export const AMINOTO = {
     title: "Sambalnya diulek pas kamu pesan.",
     sub: "Pecel lele, ayam, bebek & ikan bakar · Tiga cabang di Cirebon",
     cta: "Cari cabang terdekat",
+  },
+
+  /** Hero Beranda: kata raksasa di belakang piring, teks melingkar, stiker. */
+  orbit: {
+    words: ["Sambel", "Dadak"],
+    ring: "Diulek pas kamu pesan · Pecel lele · Ayam · Bebek · Ikan bakar · ",
+    sticker: "Sambal sudah termasuk",
+    menuCta: "Lihat menu",
+  },
+
+  /** Adegan zoom ke cobek sambal saat halaman digulir. */
+  cobek: {
+    lines: ["Cabai.", "Tomat.", "Cobek.", "Diulek sekarang."],
+    body: "Sambal dadak baru diulek waktu pesananmu masuk, dan sudah termasuk di harga menu.",
   },
 
   intro: {

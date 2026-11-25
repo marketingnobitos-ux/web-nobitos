@@ -1,6 +1,8 @@
 import Link from "next/link";
 import DadakBranchCard, { type DadakBranch } from "@/components/templates/dadak/DadakBranchCard";
-import { ArrowUpRight, Btn, ClosingCta, DEEP, Img, Label, PageHero, PhotoStrip, WRAP, formatHarga } from "@/components/templates/dadak/shared";
+import DadakCobekZoom from "@/components/templates/dadak/DadakCobekZoom";
+import DadakHeroOrbit from "@/components/templates/dadak/DadakHeroOrbit";
+import { ArrowUpRight, Btn, ClosingCta, DEEP, Img, Label, PhotoStrip, WRAP, formatHarga } from "@/components/templates/dadak/shared";
 import { AMINOTO_IMAGES } from "@/data/brands/aminoto";
 import { dadakText } from "@/lib/template-text";
 import { whatsappUrl } from "@/lib/format";
@@ -16,8 +18,9 @@ export type DadakFeatured = {
 type Props = { brandName: string; featured: DadakFeatured[]; branches: DadakBranch[] };
 
 /**
- * Beranda Dadak (referensi Fran "kado"): hero foto penuh, sambutan dua kolom, strip foto, menu andalan di hijau tua,
- * panel catering + "bisa dibakar", cabang, rating Google di atas foto, penutup.
+ * Beranda Dadak (referensi Fran "kado"): hero piring berputar, sambutan dua kolom, strip foto berjalan, zoom ke cobek
+ * sambal, menu andalan di hijau tua, panel catering + "bisa dibakar", cabang, rating Google di atas foto, penutup.
+ * Foto produk dari Drive Fran (25 Nov 2026).
  */
 export default async function DadakHome({ brandName, featured, branches }: Props) {
   const AMINOTO = await dadakText();
@@ -25,12 +28,8 @@ export default async function DadakHome({ brandName, featured, branches }: Props
 
   return (
     <>
-      {/* 1. Hero */}
-      <PageHero image={AMINOTO_IMAGES.hero} title={hero.title} sub={hero.sub} tall>
-        <Btn href="/cabang" track={trackName("cabang")} variant="cream" arrow={false}>
-          {hero.cta}
-        </Btn>
-      </PageHero>
+      {/* 1. Hero: piring berputar + kata raksasa */}
+      <DadakHeroOrbit title={hero.title} sub={hero.sub} cta={hero.cta} orbit={AMINOTO.orbit} />
 
       {/* 2. Sambutan */}
       <section aria-labelledby="intro-title" className={`${WRAP} grid gap-8 py-20 md:grid-cols-[1fr_1.25fr] md:py-28`}>
@@ -48,9 +47,14 @@ export default async function DadakHome({ brandName, featured, branches }: Props
         </div>
       </section>
 
-      {/* 3. Strip foto */}
+      {/* 3. Strip foto (berjalan di desktop) */}
       <div className="pb-2">
         <PhotoStrip />
+      </div>
+
+      {/* 3b. Zoom ke cobek sambal */}
+      <div className="mt-2">
+        <DadakCobekZoom lines={AMINOTO.cobek.lines} body={AMINOTO.cobek.body} />
       </div>
 
       {/* 4. Menu andalan */}
@@ -93,7 +97,7 @@ export default async function DadakHome({ brandName, featured, branches }: Props
       <section aria-label="Catering dan menu bakar" className="grid md:grid-cols-2">
         <div className="dk-wash-lime flex flex-col items-center justify-center px-6 py-20 text-center md:py-24">
           <h2 className="dk-display max-w-[13ch] text-[clamp(36px,4.2vw,56px)]">{catering.title}</h2>
-          <Img image={AMINOTO_IMAGES.strip[1]} sizes="128px" className="mt-8 aspect-[3/4] w-32" />
+          <Img image={AMINOTO_IMAGES.catering} sizes="160px" className="mt-8 aspect-[3/4] w-40 -rotate-3 shadow-[12px_12px_0_var(--dk-deep)] transition-transform duration-300 hover:rotate-0" />
           <p className="dk-caps mt-8 max-w-[34ch] text-[14px] font-medium leading-relaxed">{catering.body}</p>
           <a href={whatsappUrl(catering.whatsapp, catering.message)} target="_blank" rel="noopener noreferrer" data-track={trackName("wa", "catering")} className="dk-btn dk-btn-line mt-8">
             {catering.cta}

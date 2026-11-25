@@ -115,6 +115,95 @@
     display: none;
   }
 
+  /* ---------- Gerak (foto produk Drive Fran, 25 Nov 2026) ---------- */
+
+  /* Piring dilihat dari atas, berputar pelan. Durasi diatur lewat style inline (Plate). */
+  .tpl-dadak .dk-spin {
+    animation: dk-spin 80s linear infinite;
+  }
+  .tpl-dadak .dk-plate {
+    filter: drop-shadow(0 28px 32px rgb(0 0 0 / 0.45)) drop-shadow(0 6px 8px rgb(0 0 0 / 0.3));
+  }
+  /* Piring kecil mengambang naik-turun. */
+  .tpl-dadak .dk-bob {
+    animation: dk-bob 7s ease-in-out infinite;
+  }
+  .tpl-dadak .dk-sticker {
+    animation: dk-wobble 5s ease-in-out infinite;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 0.35);
+  }
+
+  /* Hero: cahaya bara + huruf garis. */
+  .tpl-dadak .dk-glow {
+    background: radial-gradient(circle, rgb(221 242 71 / 0.28) 0%, rgb(255 120 40 / 0.14) 32%, transparent 66%);
+  }
+  .tpl-dadak .dk-outline {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--dk-lime);
+  }
+
+  /* Strip foto berjalan (desktop). */
+  @media (min-width: 768px) {
+    .tpl-dadak .dk-marquee {
+      animation: dk-marquee 60s linear infinite;
+    }
+    .tpl-dadak .dk-strip:hover .dk-marquee {
+      animation-play-state: paused;
+    }
+  }
+
+  /* Adegan zoom cobek: keadaan akhir sebagai bawaan (browser tanpa scroll-driven animation). */
+  .tpl-dadak .dk-zoom-photo {
+    clip-path: circle(75% at 50% 50%);
+  }
+
+  @supports (animation-timeline: view()) {
+    /* Hero: saat digulir, kata menjauh ke samping dan piring membesar. */
+    .tpl-dadak .dk-word-l,
+    .tpl-dadak .dk-word-r,
+    .tpl-dadak .dk-hero-stage {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 0 90vh;
+    }
+    .tpl-dadak .dk-word-l {
+      animation-name: dk-drift-l;
+    }
+    .tpl-dadak .dk-word-r {
+      animation-name: dk-drift-r;
+    }
+    .tpl-dadak .dk-hero-stage {
+      animation-name: dk-stage;
+    }
+
+    /* Cobek: lingkaran kecil melebar memenuhi layar, lalu kata muncul satu per satu. */
+    .tpl-dadak .dk-zoom-photo {
+      animation: dk-zoom linear both;
+      animation-timeline: view();
+      animation-range: contain 0% contain 45%;
+    }
+    .tpl-dadak .dk-zoom-shade {
+      animation: dk-fade-in linear both;
+      animation-timeline: view();
+      animation-range: contain 30% contain 50%;
+    }
+    .tpl-dadak .dk-zoom-line {
+      animation: dk-rise linear both;
+      animation-timeline: view();
+      animation-range: contain calc(40% + var(--i, 0) * 9%) contain calc(50% + var(--i, 0) * 9%);
+    }
+    /* Timeline view() harus milik section, bukan elemen sticky di dalamnya. */
+    .tpl-dadak .dk-zoom {
+      view-timeline-name: --dk-zoom;
+    }
+    .tpl-dadak .dk-zoom .dk-zoom-photo,
+    .tpl-dadak .dk-zoom .dk-zoom-shade,
+    .tpl-dadak .dk-zoom .dk-zoom-line {
+      animation-timeline: --dk-zoom;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .tpl-dadak .dk-btn,
     .tpl-dadak .dk-btn svg {
@@ -123,5 +212,90 @@
     .tpl-dadak .dk-btn:hover svg {
       transform: none;
     }
+    .tpl-dadak .dk-spin,
+    .tpl-dadak .dk-bob,
+    .tpl-dadak .dk-sticker,
+    .tpl-dadak .dk-marquee,
+    .tpl-dadak .dk-word-l,
+    .tpl-dadak .dk-word-r,
+    .tpl-dadak .dk-hero-stage,
+    .tpl-dadak .dk-zoom-photo,
+    .tpl-dadak .dk-zoom-shade,
+    .tpl-dadak .dk-zoom-line {
+      animation: none !important;
+    }
+  }
+}
+
+@keyframes dk-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes dk-bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -14px;
+  }
+}
+@keyframes dk-wobble {
+  0%,
+  100% {
+    rotate: -8deg;
+  }
+  50% {
+    rotate: 6deg;
+  }
+}
+@keyframes dk-marquee {
+  to {
+    translate: calc(-50% - 4px) 0;
+  }
+}
+@keyframes dk-drift-l {
+  to {
+    translate: -28vw 0;
+    opacity: 0.25;
+  }
+}
+@keyframes dk-drift-r {
+  to {
+    translate: 28vw 0;
+    opacity: 0.25;
+  }
+}
+@keyframes dk-stage {
+  to {
+    scale: 1.18;
+    translate: 0 8vh;
+  }
+}
+@keyframes dk-zoom {
+  from {
+    clip-path: circle(16% at 50% 50%);
+  }
+  to {
+    clip-path: circle(75% at 50% 50%);
+  }
+}
+@keyframes dk-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes dk-rise {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
   }
 }
